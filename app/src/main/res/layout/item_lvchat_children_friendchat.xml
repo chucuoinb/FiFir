@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:id="@+id/layoutChat"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <ImageView
+        android:id="@+id/lvChat_fr_Ava"
+        android:layout_width="@dimen/ava"
+        android:layout_height="@dimen/ava"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:src="@drawable/ic_menu_gallery"
+        android:visibility="invisible"/>
+    <TextView
+        android:id="@+id/lvChat_fr_tvChat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="20dp"
+        android:paddingLeft="20dp"
+        android:layout_marginRight="@dimen/margin"
+        android:layout_toRightOf="@+id/lvChat_fr_Ava"
+        android:background="@drawable/friend_chat"
+        android:gravity="center_vertical"
+        android:minWidth="100dp"
+        android:minHeight="@dimen/ava"
+        android:text="abc"
+        />
+</RelativeLayout>

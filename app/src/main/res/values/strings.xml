@@ -1,0 +1,41 @@
+<resources>
+    <string name="app_name">MiniSN</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+    <!--login-->
+    <string name="login_username">Tên đăng nhập</string>
+    <string name="login_password">Mật khẩu</string>
+    <string name="login_saveaccount">Lưu tài khoản.</string>
+    <string name="login_keeplogin">Duy trì đăng nhập.</string>
+    <string name="login_login">Đăng nhập</string>
+    <string name="login_create">Không có tài khoản? Đăng kí</string>
+    <string name="login_isEmty">Vui lòng nhập đủ các trường!</string>
+    <string name="login_error_user">Tên đăng nhập có 8-16 kí tự</string>
+    <string name="login_error_password">Mật khẩu có 8-16 kí tự</string>
+    <string name="login_fail">Tên đăng nhập hoặc mật khẩu không đúng</string>
+    <string name="login_user_not_exist">Tên đăng nhập này chưa tồn tại.</string>
+    <string name="login_question_register">Đăng kí ngay?</string>
+    <string name="login_success">Đăng nhập thành công</string>
+
+
+    <!--register-->
+    <string name="reg_username">username</string>
+    <string name="reg_pass">password</string>
+    <string name="reg_repass">Nhập lại password</string>
+    <string name="reg_bt_reg">Register</string>
+    <string name="reg_login">Có tài khoản? Đăng nhập</string>
+    <string name="title_activity_main">Main</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+
+    <!--chat-->
+    <string name="chat_sending">Đang gửi</string>
+    <string name="chat_input_message">Nhập văn bản</string>
+
+    <!--notify-->
+    <string name="notify_title_message">Có tin nhắn mới</string>
+    <string name="notify_content_message">Click để xem</string>
+</resources>

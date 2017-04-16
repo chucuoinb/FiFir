@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="colorGreen">#2196F3</color>
+    <color name="colorButton">#64B5F6</color>
+    <color name="backGroundLogin">#6E21A2</color>
+    <color name="backGroundButton">#80000000</color>
+    <color name="backgrounp_status">#DFD8C8</color>
+    <color name="Mychat">#00D7D7</color>
+    <color name="friendChat">#D7FF73</color>
+    <color name="alphaBlack">#80000000</color>
+    <color name="orange">#ff5500</color>
+    <color name="white">#ffffff</color>
+    <color name="transparent">#00000000</color>
+    <color name="date_color">#999999</color>
+    <color name="black">#000000</color>
+    <color name="gray">#999999</color>
+    <color name="blue">#0066cc</color>
+    <color name="gold">#e6b121</color>
+    <color name="blueback">#99FFFF</color>
+    <color name="articlecolor">#3399FF</color>
+    <color name="article_title">#3399FF</color>
+    <color name="cachecolor">#8ad0e8</color>
+    <color name="black_overlay">#66000000</color>
+    <color name="color_background_chat">#DFD8C8</color>
+</resources>

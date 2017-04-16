@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:id="@+id/layoutChat"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+
+    <ImageView
+        android:id="@+id/lvChat_my_Ava"
+        android:layout_width="@dimen/ava"
+        android:layout_height="@dimen/ava"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:visibility="invisible"
+        android:src="@drawable/ic_menu_gallery" />
+
+    <TextView
+        android:id="@+id/lvChat_my_tvChat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/padingEdittext"
+        android:paddingLeft="@dimen/padingEdittext"
+        android:layout_marginLeft="@dimen/margin"
+        android:layout_toLeftOf="@+id/lvChat_my_Ava"
+        android:layout_toStartOf="@+id/lvChat_my_Ava"
+        android:background="@drawable/my_chat"
+        android:gravity="center_vertical"
+        android:minWidth="100dp"
+        android:minHeight="@dimen/ava"/>
+</RelativeLayout>
