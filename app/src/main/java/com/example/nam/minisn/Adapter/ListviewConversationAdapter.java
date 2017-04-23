@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.nam.minisn.ItemListview.Friend;
-import com.example.nam.minisn.ItemListview.ItemListviewConversation;
+import com.example.nam.minisn.ItemListview.Conversation;
 import com.example.nam.minisn.R;
 import com.example.nam.minisn.Util.Const;
 
@@ -21,12 +21,12 @@ import java.util.ArrayList;
  * Created by Nam on 2/21/2017.
  */
 
-public class ListviewConversationAdapter extends ArrayAdapter<ItemListviewConversation> {
+public class ListviewConversationAdapter extends ArrayAdapter<Conversation> {
     private Context context;
     private int layout;
-    private ArrayList<ItemListviewConversation> data = null;
+    private ArrayList<Conversation> data = null;
 
-    public ListviewConversationAdapter(Context context, int layout, ArrayList<ItemListviewConversation> data) {
+    public ListviewConversationAdapter(Context context, int layout, ArrayList<Conversation> data) {
         super(context, layout, data);
         this.context = context;
         this.layout = layout;
@@ -42,12 +42,11 @@ public class ListviewConversationAdapter extends ArrayAdapter<ItemListviewConver
             LayoutInflater inflater = ((Activity) context).getLayoutInflater();
             row = inflater.inflate(layout, parent, false);
             holder = new Holder();
-            holder.avatar = (ImageView) row.findViewById(R.id.lv_conversation_avafriend);
             holder.nameConversation = (TextView) row.findViewById(R.id.lv_conversation_nameConversation);
             row.setTag(holder);
         } else
             holder = (Holder) row.getTag();
-        ItemListviewConversation temp = data.get(position);
+        Conversation temp = data.get(position);
         int size;
         size = temp.getListFriends().size();
         holder.nameConversation.setText(temp.getNameConservation());

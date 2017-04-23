@@ -25,4 +25,6 @@
     <color name="cachecolor">#8ad0e8</color>
     <color name="black_overlay">#66000000</color>
     <color name="color_background_chat">#DFD8C8</color>
+    <color name="color_button_cancel">#f6f7f9</color>
+    <color name="color_name_conversation">#006f6c</color>
 </resources>

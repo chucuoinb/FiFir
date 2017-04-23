@@ -38,4 +38,8 @@
     <!--notify-->
     <string name="notify_title_message">Có tin nhắn mới</string>
     <string name="notify_content_message">Click để xem</string>
+
+    <!--item_listview_request_friend-->
+    <string name="accept">Chấp nhận</string>
+    <string name="cancel">Xóa yêu cầu</string>
 </resources>

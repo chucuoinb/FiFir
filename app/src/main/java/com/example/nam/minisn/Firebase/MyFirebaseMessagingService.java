@@ -7,39 +7,26 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import android.widget.Toast;
+import android.widget.RemoteViews;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.nam.minisn.Activity.ChatActivity;
-import com.example.nam.minisn.ItemListview.Friend;
-import com.example.nam.minisn.ItemListview.ItemListviewConversation;
+import com.example.nam.minisn.Activity.RequestFriendActivity;
 import com.example.nam.minisn.R;
 import com.example.nam.minisn.Util.Const;
 import com.example.nam.minisn.Util.SharedPrefManager;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
+    private RemoteViews mContentView;
     public MyFirebaseMessagingService() {
     }
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-//        super.onMessageReceived(remoteMessage);
-//        if (remoteMessage.getNotification() != null) {
-//            Log.d(Const.TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
-//        }
         if (remoteMessage.getData().size() > 0) {
             try {
                 JSONObject json = new JSONObject(remoteMessage.getData().toString());
@@ -51,16 +38,17 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }
     }
 
-    //Xử lý message FCM gửi về
+    //solve message FCM response
     public void resolveMessageFcm(JSONObject json) {
         try {
             JSONObject jsonObject = json.getJSONObject(Const.KEY_JSON_MESSAGE);
-//            Log.d(Const.TAG,String.valueOf(jsonObject.getInt(Const.CODE)));
             switch (jsonObject.getInt(Const.CODE)) {
                 case Const.TYPE_MESSAGE:
                     receiveMessage(jsonObject);
                     break;
                 case Const.TYPE_REQUEST_FRIEND:
+                    Log.d(Const.TAG,"request friend");
+                    solveRequestFriend();
                     break;
                 case Const.TYPE_RESPONSE_FRIEND:
                     break;
@@ -87,7 +75,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 bundle.putString(Const.NAME_CONVERSATION,nameConversation);
                 bundle.putString(Const.USERNAME_SEND, usernameSend);
                 bundle.putInt(Const.CONVERSATION_ID, idConversation);
-                pushNotify(bundle);
+                pushNotifyMessage(bundle);
             }
 
         } catch (JSONException e) {
@@ -106,7 +94,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     }
 
-    public void pushNotify(Bundle bundle) {
+    public void pushNotifyMessage(Bundle bundle) {
         int icon = R.drawable.icon_notify;
         String title = getResources().getString(R.string.notify_title_message);
         String content = getResources().getString(R.string.notify_content_message);
@@ -125,30 +113,20 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     }
 
-//    public String getNameConversation(int id){
-//        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-//        JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.GET, Const.URL_GET_LIST_CONVERSATION + "/?"+
-//                Const.TOKEN +"="+token
-//                ,new Response.Listener<JSONObject>() {
-//            @Override
-//            public void onResponse(JSONObject jsonObject) {
-//                try{
-//
-//                    }
-//                }catch (JSONException e){
-//                    e.printStackTrace();
-//                    Log.d(Const.TAG,"JSON error: "+ e.getMessage());
-//                }
-//
-//            }
-//        },new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError volleyError) {
-//                Log.d(Const.TAG,"Request Error");
-//            }
-//        });
-//
-//        requestQueue.add(objectRequest);
-//        progressDialog.dismiss();
-//    }
+    public void solveRequestFriend(){
+        int icon = R.drawable.icon_notify;
+        String title = getResources().getString(R.string.notify_title_message);
+        String content = getResources().getString(R.string.notify_content_message);
+        Intent intentNotify = new Intent(getApplicationContext(), RequestFriendActivity.class);
+        intentNotify.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        NotificationManager manager = (NotificationManager)getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        PendingIntent pending = PendingIntent.getActivity(getApplicationContext(),0,intentNotify,0);
+        NotificationCompat.Builder notification = new NotificationCompat.Builder(getApplicationContext()).
+                setContentTitle(title).
+                setContentText(content).
+                setSmallIcon(icon).
+                setContentIntent(pending).
+                setAutoCancel(true);
+        manager.notify(Const.ID_NOTIFICATION, notification.build());
+    }
 }

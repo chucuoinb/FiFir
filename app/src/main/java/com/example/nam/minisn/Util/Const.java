@@ -44,10 +44,14 @@ public class Const {
     public static final String URL_UPLOAD_AVATAR = URL + "user/upload_avatar.php";
     public static final String URL_DOWNLOAD_AVATAR = URL+ "user/download_avatar.php";
     public static final String URL_SEND_MESSAGE = URL +"conversation/send_message.php";
+    public static final String URL_GET_REQUEST_FRIEND = URL + "friend/get_request_friend.php?";
 
     //Share preferen
     public static final String FCM_TOKEN = "fcm_token";
     public static final String SHARED_PREF_NAME = "Preferences";
+    public static final int LOGIN = 1;
+    public static final int NO_LOGIN = 2;
+    public static final String IS_LOGIN = "login";
 
     //Code responce
     public static final int REQUEST_CODE_REGISTER =100;
@@ -74,6 +78,50 @@ public class Const {
 
 
     public static final int ID_NOTIFICATION = 1111;
+
+    //Database
+    public static final String DB_CONVERSATION = "conversation";
+    public static final String DB_DATA_CONVERSATION = "data_conversation";
+    public static final String DB_FRIEND = "friend";
+    public static final String DB_USERS = "users";
+    public static final String DB_USERS_SAVE = "users_save";
+    public static final String SELECT = "select ";
+    public static final String FROM = " from ";
+    public static final String WHERE = " where ";
+    public static final String UPDATE = "update ";
+    public static final String SET = " set ";
+    public static final String VALUES = " values ";
+    public static final String INSERT = "insert into ";
+
+
+    public static final String SAVE_COL2 ="save_username";
+    public static final String SAVE_COL0 ="id";
+    public static final String SAVE_COL1 ="save_id";
+
+    public static final String USERS_COL0 = "use_id";
+    public static final String USERS_COL1 = "use_username";
+    public static final String USERS_COL2 = "use_displayname";
+    public static final String USERS_COL3 = "use_gender";
+
+    public static final String FRIENDS_COL0 = "id";
+    public static final String FRIENDS_COL1 = "fri_id";
+    public static final String FRIENDS_COL2 = "fri_username";
+    public static final String FRIENDS_COL3 = "fri_display";
+    public static final String FRIENDS_COL4 = "use_id";
+    public static final String FRIENDS_COL5 = "fri_gender";
+
+    public static final String DATA_CONVERSATION_COL0 = "id";
+    public static final String DATA_CONVERSATION_COL1 = "id_conversation";
+    public static final String DATA_CONVERSATION_COL2 = "id_send";
+    public static final String DATA_CONVERSATION_COL3 = "message";
+    public static final String DATA_CONVERSATION_COL4 = "time";
+
+    public static final String CONVERSATION_COL0 = "id";
+    public static final String CONVERSATION_COL1 = "name_conversation";
+    public static final String CONVERSATION_COL2 = "id_conversation";
+    public static final String CONVERSATION_COL3 = "last_message";
+    public static final String CONVERSATION_COL4 = "time_last_message";
+    public static final String CONVERSATION_COL5 = "use_id";
     //method
     public static final void log(String message){
         Log.d(Const.TAG,message);

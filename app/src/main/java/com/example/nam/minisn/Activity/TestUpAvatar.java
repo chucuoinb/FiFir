@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
@@ -15,7 +14,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -25,21 +23,15 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.nam.minisn.ItemListview.Friend;
-import com.example.nam.minisn.ItemListview.ItemListviewConversation;
 import com.example.nam.minisn.R;
 import com.example.nam.minisn.UseVoley.CustomRequest;
 import com.example.nam.minisn.Util.Const;
-import com.example.nam.minisn.Util.SharedPrefManager;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
@@ -74,7 +66,7 @@ public class TestUpAvatar extends AppCompatActivity implements View.OnClickListe
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
-//        File file = new File();
+//        File file = icon_new File();
     }
 
     @Override
@@ -84,7 +76,7 @@ public class TestUpAvatar extends AppCompatActivity implements View.OnClickListe
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
 
             filePath = data.getData();
-//            File file = new File(filePath);
+//            File file = icon_new File(filePath);
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
                 imgUp.setImageBitmap(bitmap);
@@ -123,7 +115,7 @@ public class TestUpAvatar extends AppCompatActivity implements View.OnClickListe
         params.put(Const.AVATAR,convertBitmapToBase64(bmp));
 //        Log.d(Const.TAG,convertBitmapToBase64(bmp));
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-//        final ProgressDialog dialog = new ProgressDialog(getApplicationContext());
+//        final ProgressDialog dialog = icon_new ProgressDialog(getApplicationContext());
 //        dialog.show();
         CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, Const.URL + "test.php", params,
                 new Response.Listener<JSONObject>() {

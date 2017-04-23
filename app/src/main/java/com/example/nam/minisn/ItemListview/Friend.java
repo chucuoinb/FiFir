@@ -5,6 +5,8 @@ package com.example.nam.minisn.ItemListview;
  */
 
 public class Friend {
+
+    private int id;
     private String username;
     private String displayName;
     private int gender;
@@ -14,7 +16,12 @@ public class Friend {
         this.displayName = displayName;
         this.gender = gender;
     }
-
+    public Friend(String username, String displayName, int gender,int id) {
+        this.username = username;
+        this.displayName = displayName;
+        this.gender = gender;
+        this.id=id;
+    }
     public Friend() {
 
     }
@@ -43,6 +50,13 @@ public class Friend {
         this.username = username;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
 
 }

@@ -1,9 +1,7 @@
 package com.example.nam.minisn.Adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,23 +9,22 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.nam.minisn.ItemListview.ItemListviewChat;
+import com.example.nam.minisn.ItemListview.Chat;
 import com.example.nam.minisn.R;
 import com.example.nam.minisn.Util.Const;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Nam on 2/27/2017.
  */
 
-public class ListviewChatAdapter extends ArrayAdapter<ItemListviewChat> {
+public class ListviewChatAdapter extends ArrayAdapter<Chat> {
     private Context context;
     private int layout;
-    private ArrayList<ItemListviewChat> data = new ArrayList<>();
+    private ArrayList<Chat> data = new ArrayList<>();
 
-    public ListviewChatAdapter(Context context, int layout, ArrayList<ItemListviewChat> data) {
+    public ListviewChatAdapter(Context context, int layout, ArrayList<Chat> data) {
         super(context, layout, data);
         this.context = context;
         this.layout = layout;
@@ -49,7 +46,7 @@ public class ListviewChatAdapter extends ArrayAdapter<ItemListviewChat> {
     public View getView(int position, View convertView, ViewGroup parent) {
         View row = convertView;
         int type = getItemViewType(position);
-        ItemListviewChat item = data.get(position);
+        Chat item = data.get(position);
         Holder holder = null;
         if (row ==null){
             holder =new Holder();

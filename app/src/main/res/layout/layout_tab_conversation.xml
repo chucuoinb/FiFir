@@ -9,7 +9,9 @@
             android:id="@+id/tab_Conversation_lv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1">
+            android:divider="#dededd"
+            android:layout_weight="1"
+            android:listSelector="@drawable/listview">
         </ListView>
 
     <android.support.design.widget.FloatingActionButton

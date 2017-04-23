@@ -4,15 +4,15 @@ package com.example.nam.minisn.ItemListview;
  * Created by Nam on 2/21/2017.
  */
 
-public class ItemListviewChat {
+public class Chat {
     private String message;
     private int gender;
     private int typeMessage;
 
-    public ItemListviewChat() {
+    public Chat() {
     }
 
-    public ItemListviewChat(int typeMessage, String message, int gender) {
+    public Chat(int typeMessage, String message, int gender) {
         this.typeMessage = typeMessage;
         this.message = message;
         this.gender = gender;

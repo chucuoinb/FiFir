@@ -12,7 +12,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,7 +22,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.example.nam.minisn.Adapter.ListviewChatAdapter;
-import com.example.nam.minisn.ItemListview.ItemListviewChat;
+import com.example.nam.minisn.ItemListview.Chat;
 import com.example.nam.minisn.R;
 import com.example.nam.minisn.UseVoley.CustomRequest;
 import com.example.nam.minisn.Util.Const;
@@ -34,13 +33,11 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Objects;
-import java.util.Random;
 
 public class ChatActivity extends AppCompatActivity {
     private ListView lvChat;
     private ListviewChatAdapter adapter;
-    private ArrayList<ItemListviewChat> data = new ArrayList<>();
+    private ArrayList<Chat> data = new ArrayList<>();
     private Intent intent;
     private Bundle bundle;
     private Button btSend;
@@ -65,7 +62,7 @@ public class ChatActivity extends AppCompatActivity {
             public void onReceive(Context context, Intent intent) {
                 String newMessage = intent.getExtras().getString(Const.MESSAGE);
 
-                data.add(new ItemListviewChat(Const.MESSAGE_RECEIVE,newMessage,Const.GENDER_WOMAN));
+                data.add(new Chat(Const.MESSAGE_RECEIVE,newMessage,Const.GENDER_WOMAN));
                 adapter.notifyDataSetChanged();
                 Log.d(Const.TAG, newMessage);
             }
@@ -77,7 +74,7 @@ public class ChatActivity extends AppCompatActivity {
         String newMessage = bundle.getString(Const.MESSAGE,"");
         Log.d(Const.TAG,newMessage);
         if(!"".equals(newMessage))
-            data.add(new ItemListviewChat(Const.MESSAGE_RECEIVE,newMessage,Const.GENDER_WOMAN));
+            data.add(new Chat(Const.MESSAGE_RECEIVE,newMessage,Const.GENDER_WOMAN));
         token = SharedPrefManager.getInstance(getApplicationContext()).getString(Const.FCM_TOKEN);
         nameConversation = bundle.getString(Const.NAME_CONVERSATION);
         idConversation = bundle.getInt(Const.CONVERSATION_ID);
@@ -89,7 +86,6 @@ public class ChatActivity extends AppCompatActivity {
 
         tvNameConversation.setText(nameConversation);
         edInputMessage.addTextChangedListener(changeMessage);
-//        data.add(new ItemListviewChat(Const.MESSAGE_SEND,"abc",Const.GENDER_MAN));
         adapter = new ListviewChatAdapter(ChatActivity.this,R.id.layoutChat,data);
         lvChat.setAdapter(adapter);
         btSend.setOnClickListener(btSendClick);
@@ -130,7 +126,7 @@ public class ChatActivity extends AppCompatActivity {
             params.put(Const.TOKEN,bundle.getString(Const.TOKEN));
             btSend.setEnabled(false);
             btSend.setBackgroundResource(R.drawable.button_send_message_2);
-            data.add(new ItemListviewChat(Const.MESSAGE_SEND,message,Const.GENDER_MAN));
+            data.add(new Chat(Const.MESSAGE_SEND,message,Const.GENDER_MAN));
             adapter.notifyDataSetChanged();
             edInputMessage.setText("");
             sendMessage(params);
