@@ -50,5 +50,6 @@ public class Main extends AppCompatActivity {
             else
                 tabLayout.getTabAt(i).setIcon(R.drawable.globe_24);
         }
+
     }
 }
