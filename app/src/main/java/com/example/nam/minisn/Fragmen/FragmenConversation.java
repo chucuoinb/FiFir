@@ -63,8 +63,14 @@ public class FragmenConversation extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        progressDialog = new ProgressDialog(getActivity(), R.style.AppTheme_Dialog);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("Loading");
+        progressDialog.show();
         rootView = inflater.inflate(R.layout.layout_tab_conversation, container, false);
         bundle = getArguments();
+//        data = (ArrayList<Conversation>) bundle.getSerializable(Const.DB_CONVERSATION);
+        Log.d(Const.TAG,"size:"+String.valueOf(data.size()));
         use_id = SharedPrefManager.getInstance(getActivity()).getInt(Const.ID);
         token = SharedPrefManager.getInstance(getActivity()).getString(Const.TOKEN);
         init();
@@ -73,10 +79,7 @@ public class FragmenConversation extends Fragment {
 
     public void init() {
         lvConversation = (ListView) rootView.findViewById(R.id.tab_Conversation_lv);
-        progressDialog = new ProgressDialog(getActivity(), R.style.AppTheme_Dialog);
-        progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Loading");
-        progressDialog.show();
+
         adapter = new ListviewConversationAdapter(getActivity(), R.layout.item_lvconversation, data);
         lvConversation.setAdapter(adapter);
         getListConversation();
@@ -92,6 +95,8 @@ public class FragmenConversation extends Fragment {
                     Const.CONVERSATION_COL1 +
                     "," +
                     Const.CONVERSATION_COL2 +
+                    "," +
+                    Const.CONVERSATION_COL6 +
                     Const.FROM +
                     Const.DB_CONVERSATION +
                     Const.WHERE +
@@ -99,11 +104,24 @@ public class FragmenConversation extends Fragment {
                     "= '" +
                     use_id +
                     "'";
-            Cursor cursor = db.getDatabase().rawQuery(sql,null);
-            Log.d(Const.TAG,"count:"+String.valueOf(cursor.getCount()));
+            Cursor cursor = db.getDatabase().rawQuery(sql, null);
+            Log.d(Const.TAG, "conversatinon:"+String.valueOf(cursor.getCount()));
+            while (cursor.moveToNext()) {
+                int idConversation = cursor.getInt(cursor.getColumnIndex(Const.CONVERSATION_COL2));
+                String nameConversation = cursor.getString(cursor.getColumnIndex(Const.CONVERSATION_COL1));
+                boolean isNew = cursor.getInt(cursor.getColumnIndex(Const.CONVERSATION_COL6)) == 1;
+                Conversation conversation = new Conversation(nameConversation, idConversation);
+                conversation.setNew(isNew);
+                data.add(conversation);
+            }
+            db.getDatabase().close();
+            adapter.notifyDataSetChanged();
+            progressDialog.dismiss();
         } catch (IOException e) {
             e.printStackTrace();
             Log.d(Const.TAG, e.getMessage());
+            progressDialog.dismiss();
+            Toast.makeText(getActivity(), "Có lỗi xảy ra", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -113,10 +131,7 @@ public class FragmenConversation extends Fragment {
             intent = new Intent(getActivity(), ChatActivity.class);
             Conversation item = data.get(position);
             bundle.putInt(Const.CONVERSATION_ID, item.getId());
-            if (item.getListFriends().size() > 1) {
-                bundle.putString(Const.NAME_CONVERSATION, item.getNameConservation());
-            } else
-                bundle.putString(Const.NAME_CONVERSATION, item.getListFriends().get(0).getDisplayName());
+            bundle.putString(Const.NAME_CONVERSATION, item.getNameConservation());
             intent.putExtra(Const.PACKAGE, bundle);
             startActivity(intent);
         }

@@ -24,10 +24,8 @@ public class TabsAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position){
             case 0:
-                Main.changeIcon(0);
                 return FragmenConversation.newInstance(bundle);
             case 1:
-                Main.changeIcon(1);
                 return FragmenFriend.newInstance(bundle);
 //            case 2:
 //                return FragmentStatus.newInstance(bundle);

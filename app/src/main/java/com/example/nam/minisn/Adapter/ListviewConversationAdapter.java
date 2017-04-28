@@ -17,6 +17,8 @@ import com.example.nam.minisn.Util.Const;
 
 import java.util.ArrayList;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 /**
  * Created by Nam on 2/21/2017.
  */
@@ -43,30 +45,28 @@ public class ListviewConversationAdapter extends ArrayAdapter<Conversation> {
             row = inflater.inflate(layout, parent, false);
             holder = new Holder();
             holder.nameConversation = (TextView) row.findViewById(R.id.lv_conversation_nameConversation);
+            holder.lastMessage = (TextView)row.findViewById(R.id.lv_conversation_lastmessage) ;
+            holder.iconNew = (ImageView)row.findViewById(R.id.lv_conversation_new);
+            holder.time = (TextView)row.findViewById(R.id.lv_conversation_time);
+            holder.avatar =(CircleImageView)row.findViewById(R.id.lv_conversation_avata);
             row.setTag(holder);
         } else
             holder = (Holder) row.getTag();
         Conversation temp = data.get(position);
-        int size;
-        size = temp.getListFriends().size();
         holder.nameConversation.setText(temp.getNameConservation());
-        if (size > 1) {
-            holder.avatar.setImageResource(R.drawable.group_24);
-        } else {
-            Friend friend = temp.getListFriends().get(0);
-            int gender = friend.getGender();
-            int ava = (gender == Const.GENDER_UNKNOW) ? R.drawable.people_24 :
-                    ((gender == Const.GENDER_MAN) ? R.drawable.man_24 : R.drawable.woman_24);
-            holder.avatar.setImageResource(ava);
-            if ("".equals(friend.getDisplayName()))
-                friend.setDisplayName(friend.getUsername());
-            holder.nameConversation.setText(friend.getDisplayName());
-        }
+        if (temp.isNew())
+            holder.iconNew.setVisibility(View.INVISIBLE);
+        else
+            holder.iconNew.setVisibility(View.INVISIBLE);
         return row;
     }
 
     public static class Holder {
-        ImageView avatar;
+        CircleImageView avatar;
+        ImageView iconNew;
         TextView nameConversation;
+        TextView lastMessage;
+        TextView time;
+
     }
 }

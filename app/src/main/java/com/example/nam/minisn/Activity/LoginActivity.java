@@ -49,7 +49,7 @@ public class LoginActivity extends AppCompatActivity {
     private Intent intentLogin, intentReg;
     private ProgressDialog progressDialog;
     private int use_id;
-
+    private SQLiteDataController database;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +59,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void init() {
+        database =  new SQLiteDataController(getApplicationContext());
         edUser = (EditText) findViewById(R.id.login_ed_user);
         edPass = (EditText) findViewById(R.id.login_ed_password);
         cbSave = (CheckBox) findViewById(R.id.login_cb_save);
@@ -120,14 +121,16 @@ public class LoginActivity extends AppCompatActivity {
                                 SharedPrefManager.getInstance(getApplicationContext()).savePreferences(Const.TOKEN, token);
                                 SharedPrefManager.getInstance(getApplicationContext()).savePreferences(Const.USERNAME, newObject.getString(Const.USERNAME));
                                 SharedPrefManager.getInstance(getApplicationContext()).savePreferences(Const.ID, use_id);
+                                SharedPrefManager.getInstance(getApplicationContext()).savePreferences(Const.IS_LOGIN, Const.LOGIN);
                                 intentLogin.putExtra(Const.PACKAGE, bundle);
                                 setEnableEdit(true);
-                                SharedPrefManager.getInstance(getApplicationContext()).savePreferences(Const.IS_LOGIN, Const.LOGIN);
-                                if (!checkLogged(use_id)) {
-                                    saveAccount(use_id,username);
+                                database.openDataBase();
+                                if (!database.checkLogged(use_id)) {
+                                    database.saveAccount(use_id,username);
                                     saveListFriend(token);
                                     saveListConversation(token);
                                 }
+                                database.close();
                                 progressDialog.dismiss();
                                 Toast.makeText(LoginActivity.this, getResources().getString(R.string.login_success), Toast.LENGTH_SHORT).show();
                                 startActivity(intentLogin);
@@ -225,21 +228,21 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    private boolean checkLogged(int id) {
-        SQLiteDataController sql = new SQLiteDataController(getBaseContext());
-        try {
-            sql.isCreatedDatabase();
-            sql.openDataBase();
-            Cursor cursor = sql.getDatabase().rawQuery(Const.SELECT + "*" + Const.FROM + Const.DB_USERS_SAVE + Const.WHERE +
-                    Const.SAVE_COL1 + " = '" + id + "'", null);
-            Log.d(Const.TAG,String.valueOf(cursor.getCount()>0));
-            return cursor.getCount() > 0;
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.d(Const.TAG, e.getMessage());
-            return false;
-        }
-    }
+//    private boolean checkLogged(int id) {
+//        SQLiteDataController sql = new SQLiteDataController(getBaseContext());
+//        try {
+//            sql.isCreatedDatabase();
+//            sql.openDataBase();
+//            Cursor cursor = sql.getDatabase().rawQuery(Const.SELECT + "*" + Const.FROM + Const.DB_USERS_SAVE + Const.WHERE +
+//                    Const.SAVE_COL1 + " = '" + id + "'", null);
+//            Log.d(Const.TAG,String.valueOf(cursor.getCount()>0));
+//            return cursor.getCount() > 0;
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            Log.d(Const.TAG, e.getMessage());
+//            return false;
+//        }
+//    }
 
     public void saveListConversation(String token) {
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
@@ -252,11 +255,14 @@ public class LoginActivity extends AppCompatActivity {
                     if (jsonObject.getInt(Const.CODE) == Const.CODE_OK) {
                         JSONArray listConversation = jsonObject.getJSONArray(Const.DATA);
                         int leght = listConversation.length();
+                        Log.d(Const.TAG,"leght:"+String.valueOf(leght));
                         for (int i = 0; i < leght; i++) {
                             JSONObject object = listConversation.getJSONObject(i);
                             int idConversation = object.getInt(Const.ID);
                             String nameConversation = object.getString(Const.NAME_CONVERSATION);
-                            insertConversation(idConversation, nameConversation);
+                            database.openDataBase();
+                            database.insertConversation(idConversation, nameConversation,use_id);
+                            database.close();
                         }
                     } else
                         Toast.makeText(getApplicationContext(), "Co loi xay ra", Toast.LENGTH_SHORT).show();
@@ -277,34 +283,34 @@ public class LoginActivity extends AppCompatActivity {
         progressDialog.dismiss();
     }
 
-    private void insertConversation(int id, String name) {
-        SQLiteDataController db = new SQLiteDataController(getBaseContext());
-        try {
-            db.isCreatedDatabase();
-            db.openDataBase();
-            String sql = Const.INSERT +
-                    Const.DB_CONVERSATION +
-                    " (" +
-                    Const.CONVERSATION_COL1 +
-                    "," +
-                    Const.CONVERSATION_COL2 +
-                    "," +
-                    Const.CONVERSATION_COL5 +
-                    ")" +
-                    Const.VALUES +
-                    "('" +
-                    name +
-                    "','" +
-                    id +
-                    "','" +
-                    use_id +
-                    "')";
-            db.getDatabase().execSQL(sql);
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.d(Const.TAG, e.getMessage());
-        }
-    }
+//    private void insertConversation(int id, String name) {
+//        SQLiteDataController db = new SQLiteDataController(getBaseContext());
+//        try {
+//            db.isCreatedDatabase();
+//            db.openDataBase();
+//            String sql = Const.INSERT +
+//                    Const.DB_CONVERSATION +
+//                    " (" +
+//                    Const.CONVERSATION_COL1 +
+//                    "," +
+//                    Const.CONVERSATION_COL2 +
+//                    "," +
+//                    Const.CONVERSATION_COL5 +
+//                    ")" +
+//                    Const.VALUES +
+//                    "('" +
+//                    name +
+//                    "','" +
+//                    id +
+//                    "','" +
+//                    use_id +
+//                    "')";
+//            db.getDatabase().execSQL(sql);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            Log.d(Const.TAG, e.getMessage());
+//        }
+//    }
 
 
     public void saveListFriend(String token) {
@@ -325,7 +331,9 @@ public class LoginActivity extends AppCompatActivity {
                             int gender = obj.getInt(Const.GENDER);
                             int fri_id = obj.getInt(Const.ID);
 //                            Log.d(Const.TAG,username+":"+displayName+":"+gender+":"+fri_id+":"+use_id);
-                            insertListFriend(fri_id, username, use_id, gender);
+                            database.openDataBase();
+                            database.insertListFriend(fri_id, username, use_id, gender);
+                            database.close();
                         }
                     } else
                         Toast.makeText(getApplicationContext(), "Co loi xay ra", Toast.LENGTH_SHORT).show();
@@ -346,62 +354,62 @@ public class LoginActivity extends AppCompatActivity {
         progressDialog.dismiss();
     }
 
-    public void insertListFriend(int fri_id, String fri_username, int id, int gender) {
-//        Log.d(Const.TAG, fri_username + ":" + gender + ":" + fri_id + ":" + use_id);
-        SQLiteDataController db = new SQLiteDataController(LoginActivity.this);
-        try {
-            db.isCreatedDatabase();
-            db.openDataBase();
-            String sql = Const.INSERT +
-                    Const.DB_FRIEND +
-                    " (" +
-                    Const.FRIENDS_COL1 +
-                    "," +
-                    Const.FRIENDS_COL2 +
-                    "," +
-                    Const.FRIENDS_COL4 +
-                    "," +
-                    Const.FRIENDS_COL5 +
-                    ")" +
-                    Const.VALUES +
-                    "('" +
-                    fri_id +
-                    "','" +
-                    fri_username +
-                    "','" +
-                    id +
-                    "','" +
-                    gender +
-                    "')";
-            db.getDatabase().execSQL(sql);
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.d(Const.TAG, e.getMessage());
-        }
-    }
+//    public void insertListFriend(int fri_id, String fri_username, int id, int gender) {
+////        Log.d(Const.TAG, fri_username + ":" + gender + ":" + fri_id + ":" + use_id);
+//        SQLiteDataController db = new SQLiteDataController(LoginActivity.this);
+//        try {
+//            db.isCreatedDatabase();
+//            db.openDataBase();
+//            String sql = Const.INSERT +
+//                    Const.DB_FRIEND +
+//                    " (" +
+//                    Const.FRIENDS_COL1 +
+//                    "," +
+//                    Const.FRIENDS_COL2 +
+//                    "," +
+//                    Const.FRIENDS_COL4 +
+//                    "," +
+//                    Const.FRIENDS_COL5 +
+//                    ")" +
+//                    Const.VALUES +
+//                    "('" +
+//                    fri_id +
+//                    "','" +
+//                    fri_username +
+//                    "','" +
+//                    id +
+//                    "','" +
+//                    gender +
+//                    "')";
+//            db.getDatabase().execSQL(sql);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            Log.d(Const.TAG, e.getMessage());
+//        }
+//    }
 
-    public void saveAccount(int id,String username){
-        SQLiteDataController db = new SQLiteDataController(getBaseContext());
-        try {
-            db.isCreatedDatabase();
-            db.openDataBase();
-            String sql = Const.INSERT +
-                    Const.DB_USERS_SAVE +
-                    " (" +
-                    Const.SAVE_COL1 +
-                    "," +
-                    Const.SAVE_COL2 +
-                    ")" +
-                    Const.VALUES +
-                    "('" +
-                    id +
-                    "','" +
-                    username +
-                    "')";
-            db.getDatabase().execSQL(sql);
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.d(Const.TAG, e.getMessage());
-        }
-    }
+//    public void saveAccount(int id,String username){
+//        SQLiteDataController db = new SQLiteDataController(getBaseContext());
+//        try {
+//            db.isCreatedDatabase();
+//            db.openDataBase();
+//            String sql = Const.INSERT +
+//                    Const.DB_USERS_SAVE +
+//                    " (" +
+//                    Const.SAVE_COL1 +
+//                    "," +
+//                    Const.SAVE_COL2 +
+//                    ")" +
+//                    Const.VALUES +
+//                    "('" +
+//                    id +
+//                    "','" +
+//                    username +
+//                    "')";
+//            db.getDatabase().execSQL(sql);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            Log.d(Const.TAG, e.getMessage());
+//        }
+//    }
 }

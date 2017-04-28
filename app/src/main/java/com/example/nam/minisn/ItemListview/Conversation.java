@@ -1,15 +1,34 @@
 package com.example.nam.minisn.ItemListview;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by Nam on 2/21/2017.
  */
 
-public class Conversation {
+public class Conversation implements Serializable{
     private int id;
     private String nameConservation;
-    private ArrayList<Friend> listFriends;
+    private String avatar;
+    private boolean isNew;
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public boolean isNew() {
+        return isNew;
+    }
+
+    public void setNew(boolean aNew) {
+        isNew = aNew;
+    }
+
 
     public Conversation() {
     }
@@ -17,29 +36,22 @@ public class Conversation {
     public String getNameConservation() {
         return nameConservation;
     }
-
+    public Conversation(String nameConservation,int id){
+        this.nameConservation=nameConservation;
+        this.id= id;
+    }
     public void setNameConservation(String nameConservation) {
         this.nameConservation = nameConservation;
     }
 
-    public Conversation(String nameConservation, ArrayList<Friend> friends, int id) {
+    public Conversation(String nameConservation, String avatar, int id) {
         this.id = id;
-        this.listFriends = friends;
+        this.avatar = avatar;
         this.nameConservation=nameConservation;
     }
 
-    public ArrayList<Friend> getListFriends() {
 
-        return listFriends;
-    }
 
-    public void setListFriends(ArrayList<Friend> listFriends) {
-        this.listFriends = listFriends;
-    }
-
-    public void addFriend(Friend friend){
-        listFriends.add(friend);
-    }
     public int getId() {
         return id;
     }

@@ -9,7 +9,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="5dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:orientation="horizontal">
 
         <RelativeLayout
@@ -20,10 +21,11 @@
             android:orientation="vertical">
 
             <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/lv_conversation_avata"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/test"
-                android:gravity="center"/>
+                android:gravity="center"
+                android:src="@drawable/test"/>
 
             <ImageView
                 android:id="@+id/lv_conversation_new"
@@ -86,4 +88,5 @@
 
         </LinearLayout>
     </LinearLayout>
+
 </LinearLayout>

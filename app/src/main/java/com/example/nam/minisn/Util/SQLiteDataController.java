@@ -1,15 +1,21 @@
 package com.example.nam.minisn.Util;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+
+import com.example.nam.minisn.Activity.LoginActivity;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by Nam on 4/20/2017.
@@ -20,7 +26,6 @@ public class SQLiteDataController extends SQLiteOpenHelper {
     private static String DB_NAME = "minisn.sqlite";
 
 
-
     private SQLiteDatabase database;
     private final Context mContext;
 
@@ -28,6 +33,11 @@ public class SQLiteDataController extends SQLiteOpenHelper {
         super(con, DB_NAME, null, 1);
         DB_PATH = String.format(DB_PATH, con.getPackageName());
         this.mContext = con;
+        try {
+            isCreatedDatabase();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -152,6 +162,7 @@ public class SQLiteDataController extends SQLiteOpenHelper {
 
         return result;
     }
+
     public SQLiteDatabase getDatabase() {
         return database;
     }
@@ -160,4 +171,151 @@ public class SQLiteDataController extends SQLiteOpenHelper {
         this.database = database;
     }
 
+    public void saveMessage(String message, int idConversation, int idSend) {
+        String time = Const.getTimeNow();
+
+        String sql = Const.INSERT +
+                Const.DB_DATA_CONVERSATION +
+                " (" +
+                Const.DATA_CONVERSATION_COL1 +
+                "," +
+                Const.DATA_CONVERSATION_COL2 +
+                "," +
+                Const.DATA_CONVERSATION_COL3 +
+                "," +
+                Const.DATA_CONVERSATION_COL4 +
+                ")" +
+                Const.VALUES +
+                "('" +
+                idConversation +
+                "','" +
+                idSend +
+                "','" +
+                message +
+                "','" +
+                time +
+                "')";
+        database.execSQL(sql);
+    }
+
+    public boolean isExistConversation(int idConversation) {
+        String sql = Const.SELECT +
+                " * " +
+                Const.FROM +
+                Const.DB_CONVERSATION +
+                Const.WHERE +
+                Const.CONVERSATION_COL2 +
+                "='" +
+                idConversation +
+                "'";
+        Cursor cursor = database.rawQuery(sql, null);
+        if (cursor.getCount() > 0)
+            return true;
+        else
+            return false;
+    }
+
+    public void addConversation(int idConversation, String nameConversation, String lastMessage, int use_id, int is_new_message) {
+        String time = Const.getTimeNow();
+        String sql = Const.INSERT +
+                Const.DB_CONVERSATION +
+                " (" +
+                Const.CONVERSATION_COL1 +
+                "," +
+                Const.CONVERSATION_COL2 +
+                "," +
+                Const.CONVERSATION_COL3 +
+                "," +
+                Const.CONVERSATION_COL4 +
+                "," +
+                Const.CONVERSATION_COL5 +
+                "," +
+                Const.CONVERSATION_COL6 +
+                ")" +
+                Const.VALUES +
+                "('" +
+                nameConversation +
+                "','" +
+                idConversation +
+                "','" +
+                lastMessage +
+                "','" +
+                time +
+                "','" +
+                use_id +
+                "','" +
+                is_new_message +
+                "')";
+        database.execSQL(sql);
+    }
+
+    public boolean checkLogged(int id) {
+        Cursor cursor = database.rawQuery(Const.SELECT + "*" + Const.FROM + Const.DB_USERS_SAVE + Const.WHERE +
+                Const.SAVE_COL1 + " = '" + id + "'", null);
+        return cursor.getCount() > 0;
+    }
+
+    public void saveAccount(int id, String username) {
+        String sql = Const.INSERT +
+                Const.DB_USERS_SAVE +
+                " (" +
+                Const.SAVE_COL1 +
+                "," +
+                Const.SAVE_COL2 +
+                ")" +
+                Const.VALUES +
+                "('" +
+                id +
+                "','" +
+                username +
+                "')";
+        database.execSQL(sql);
+    }
+
+    public void insertListFriend(int fri_id, String fri_username, int id, int gender) {
+//        Log.d(Const.TAG, fri_username + ":" + gender + ":" + fri_id + ":" + use_id);
+        String sql = Const.INSERT +
+                Const.DB_FRIEND +
+                " (" +
+                Const.FRIENDS_COL1 +
+                "," +
+                Const.FRIENDS_COL2 +
+                "," +
+                Const.FRIENDS_COL4 +
+                "," +
+                Const.FRIENDS_COL5 +
+                ")" +
+                Const.VALUES +
+                "('" +
+                fri_id +
+                "','" +
+                fri_username +
+                "','" +
+                id +
+                "','" +
+                gender +
+                "')";
+        database.execSQL(sql);
+    }
+
+    public void insertConversation(int id, String name, int use_id) {
+        String sql = Const.INSERT +
+                Const.DB_CONVERSATION +
+                " (" +
+                Const.CONVERSATION_COL1 +
+                "," +
+                Const.CONVERSATION_COL2 +
+                "," +
+                Const.CONVERSATION_COL5 +
+                ")" +
+                Const.VALUES +
+                "('" +
+                name +
+                "','" +
+                id +
+                "','" +
+                use_id +
+                "')";
+        database.execSQL(sql);
+    }
 }

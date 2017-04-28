@@ -1,6 +1,7 @@
 package com.example.nam.minisn.Fragmen;
 
 import android.app.ProgressDialog;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -19,15 +20,20 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.nam.minisn.Adapter.ListviewFriendAdapter;
+import com.example.nam.minisn.ItemListview.Conversation;
 import com.example.nam.minisn.ItemListview.Friend;
 import com.example.nam.minisn.R;
 import com.example.nam.minisn.Util.Const;
+import com.example.nam.minisn.Util.SQLiteDataController;
+import com.example.nam.minisn.Util.SharedPrefManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.SocketHandler;
 
 /**
  * Created by Nam on 2/24/2017.
@@ -40,6 +46,7 @@ public class FragmenFriend extends Fragment {
     private ProgressDialog progressDialog;
     private ListviewFriendAdapter adapter;
     private ArrayList<Friend> friends = new ArrayList<>();
+    private int use_id;
     public FragmenFriend() {
     }
 
@@ -52,60 +59,65 @@ public class FragmenFriend extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        progressDialog = new ProgressDialog(getActivity(), R.style.AppTheme_Dialog);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("Loading");
+        progressDialog.show();
         rootView = inflater.inflate(R.layout.layout_tab_friend,container,false);
         bundle = getArguments();
+//        friends = (ArrayList<Friend>)bundle.getSerializable(Const.DB_FRIEND);
         init();
         return rootView;
     }
 
     public void init(){
+        use_id = SharedPrefManager.getInstance(getActivity()).getInt(Const.ID);
         lvFriend = (ListView)rootView.findViewById(R.id.tab_Friend_lvFriend);
-        progressDialog = new ProgressDialog(getActivity(), R.style.AppTheme_Dialog);
-        progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Loading");
-        progressDialog.show();
+
         adapter = new ListviewFriendAdapter(getActivity(),R.layout.item_lvfriend,friends);
         lvFriend.setAdapter(adapter);
         getListFriend();
     }
 
     public void getListFriend(){
-        RequestQueue request = Volley.newRequestQueue(getActivity());
-        JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.GET, Const.URL_GET_LIST_FRIEND + "/?"+
-                Const.TOKEN +"="+bundle.getString(Const.TOKEN)
-                ,new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject jsonObject) {
-                try{
-                    if (Const.CODE_OK == jsonObject.getInt(Const.CODE)){
-                        JSONArray listFriend = jsonObject.getJSONArray(Const.DATA);
-                        for (int i = 0;i<listFriend.length();i++){
-                            JSONObject obj = listFriend.getJSONObject(i);
-                            Friend friend = new Friend();
-                            friend.setUsername(obj.getString(Const.USERNAME));
-                            friend.setDisplayName(obj.getString(Const.DISPLAY_NAME));
-                            friend.setGender(obj.getInt(Const.GENDER));
-                            friends.add(friend);
-                        }
-                        adapter.notifyDataSetChanged();
-                    }else
-                        Toast.makeText(getActivity(),"Co loi xay ra",Toast.LENGTH_SHORT).show();
-                }catch (JSONException e){
-                    e.printStackTrace();
-                    Log.d(Const.TAG,"JSON error: "+ e.getMessage());
-                }
-
+        SQLiteDataController db = new SQLiteDataController(getActivity());
+        try {
+            db.isCreatedDatabase();
+            db.openDataBase();
+            String sql = Const.SELECT +
+                    Const.FRIENDS_COL1 +
+                    "," +
+                    Const.FRIENDS_COL2 +
+                    "," +
+                    Const.FRIENDS_COL3 +
+                    "," +
+                    Const.FRIENDS_COL5 +
+                    Const.FROM +
+                    Const.DB_FRIEND +
+                    Const.WHERE +
+                    Const.FRIENDS_COL4 +
+                    "= '" +
+                    use_id +
+                    "'";
+            Cursor cursor = db.getDatabase().rawQuery(sql, null);
+            Log.d(Const.TAG, "friend:"+String.valueOf(cursor.getCount()));
+            while (cursor.moveToNext()) {
+                int fri_id= cursor.getInt(cursor.getColumnIndex(Const.FRIENDS_COL1));
+                String fri_username = cursor.getString(cursor.getColumnIndex(Const.FRIENDS_COL2));
+                String fri_display = cursor.getString(cursor.getColumnIndex(Const.FRIENDS_COL3));
+                Friend friend = new Friend(fri_id,fri_username,fri_display);
+                friends.add(friend);
             }
-        },new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError volleyError) {
-                Log.d(Const.TAG,"Request Error");
-            }
-        });
+            db.getDatabase().close();
 
-        request.add(objectRequest);
-        progressDialog.dismiss();
-
+            adapter.notifyDataSetChanged();
+            progressDialog.dismiss();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.d(Const.TAG, e.getMessage());
+            progressDialog.dismiss();
+            Toast.makeText(getActivity(), "Có lỗi xảy ra", Toast.LENGTH_SHORT).show();
+        }
     }
 
     AdapterView.OnItemClickListener lvFriendClick = new AdapterView.OnItemClickListener() {

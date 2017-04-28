@@ -13,6 +13,7 @@ import com.example.nam.minisn.Activity.ChatActivity;
 import com.example.nam.minisn.Activity.RequestFriendActivity;
 import com.example.nam.minisn.R;
 import com.example.nam.minisn.Util.Const;
+import com.example.nam.minisn.Util.SQLiteDataController;
 import com.example.nam.minisn.Util.SharedPrefManager;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -22,6 +23,7 @@ import org.json.JSONObject;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private RemoteViews mContentView;
+    private SQLiteDataController database = new SQLiteDataController(getApplicationContext());
     public MyFirebaseMessagingService() {
     }
 
@@ -66,6 +68,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             String usernameSend = jsonObject.getString(Const.USERNAME_SEND);
             String message = json.getString(Const.MESSAGE);
             String nameConversation = jsonObject.getString(Const.NAME_CONVERSATION);
+            int use_id = SharedPrefManager.getInstance(getApplicationContext()).getInt(Const.ID);
+            int idSend = jsonObject.getInt(Const.ID_USERNAME);
+            database.openDataBase();
+            if(!database.isExistConversation(idConversation)){
+                database.addConversation(idConversation,nameConversation,message,use_id,Const.TYPE_NEW_MESSAGE);
+            }
+                database.saveMessage(message,idConversation,idSend);
             if (idConversation == SharedPrefManager.getInstance(getApplicationContext()).getInt(Const.CONVERSATION_ID)) {
                 Log.d(Const.TAG, "message: " + message);
                 displayMessageOnScreen(getApplicationContext(), message);

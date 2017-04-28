@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimary">#64B5F6</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="colorGreen">#2196F3</color>
@@ -27,4 +27,7 @@
     <color name="color_background_chat">#DFD8C8</color>
     <color name="color_button_cancel">#f6f7f9</color>
     <color name="color_name_conversation">#006f6c</color>
+    <color name="color_tab">#8cccf3</color>
+    <color name="color_tab_select">#ffffff</color>
+    <color name="colorFAB">#64B5F6</color>
 </resources>

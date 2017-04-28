@@ -157,8 +157,10 @@ public class ChatActivity extends AppCompatActivity {
                                 data.remove(data.size()-1);
                                 adapter.notifyDataSetChanged();
                             }
-                            else
+                            else{
                                 Log.d(Const.TAG,"ok");
+
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                             Toast.makeText(getApplicationContext(),"co loi xay ra",Toast.LENGTH_SHORT).show();
@@ -176,4 +178,6 @@ public class ChatActivity extends AppCompatActivity {
         jsObjRequest.setShouldCache(false);
         requestQueue.add(jsObjRequest);
     }
+
+
 }

@@ -16,6 +16,8 @@ import com.example.nam.minisn.Util.Const;
 
 import java.util.ArrayList;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 /**
  * Created by Nam on 2/21/2017.
  */
@@ -41,23 +43,19 @@ public class ListviewFriendAdapter extends ArrayAdapter<Friend> {
             LayoutInflater inflater = ((Activity)context).getLayoutInflater();
             row = inflater.inflate(layout,parent,false);
             holder = new Holder();
-            holder.ava = (ImageView)row.findViewById(R.id.lvFriend_avaFriend);
-            holder.namFriend =(TextView)row.findViewById(R.id.lvFriend_friendName);
+            holder.ava = (CircleImageView)row.findViewById(R.id.lv_friend_avata);
+            holder.namFriend =(TextView)row.findViewById(R.id.lv_friend_nameFriend);
             row.setTag(holder);
         }else
             holder = (Holder)row.getTag();
 
         Friend temp = data.get(position);
-        int gender = temp.getGender();
-        int ava = (gender == Const.GENDER_UNKNOW) ? R.drawable.people_24 :
-                ((gender == Const.GENDER_MAN)? R.drawable.man_24:R.drawable.woman_24 );
-        holder.ava.setImageResource(ava);
         holder.namFriend.setText(temp.getUsername());
         return row;
     }
 
     public static  class Holder{
-        ImageView ava;
+        CircleImageView ava;
         TextView namFriend;
     }
 }

@@ -1,20 +1,27 @@
 package com.example.nam.minisn.ItemListview;
 
+import java.io.Serializable;
+
 /**
  * Created by Nam on 2/21/2017.
  */
 
-public class Friend {
+public class Friend implements Serializable{
 
     private int id;
-    private String username;
-    private String displayName;
+    private String username = new String();
+    private String displayName = new String();
     private int gender;
 
     public Friend(String username, String displayName, int gender) {
         this.username = username;
         this.displayName = displayName;
         this.gender = gender;
+    }
+    public Friend(int id,String username, String displayName) {
+        this.username = username;
+        this.displayName = displayName;
+        this.id=id;
     }
     public Friend(String username, String displayName, int gender,int id) {
         this.username = username;

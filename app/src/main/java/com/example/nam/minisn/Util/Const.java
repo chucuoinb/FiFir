@@ -1,6 +1,12 @@
 package com.example.nam.minisn.Util;
 
+import android.content.Context;
+import android.database.Cursor;
 import android.util.Log;
+
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by Nam on 2/19/2017.
@@ -36,6 +42,7 @@ public class Const {
     public static final String DISPLAY_NAME = "displayname";
     public static final String TOKEN = "token";
     public static final String USERNAME = "username";
+    public static final String ID_USERNAME = "id_username";
     //URL
     public static final String URL = "http://www.namlv.hol.es/ver1/";
     public static final String URL_LOGIN = URL + "user/login.php";
@@ -122,9 +129,19 @@ public class Const {
     public static final String CONVERSATION_COL3 = "last_message";
     public static final String CONVERSATION_COL4 = "time_last_message";
     public static final String CONVERSATION_COL5 = "use_id";
+    public static final String  CONVERSATION_COL6= "is_new_message";
+
+    public static final int TYPE_NEW_MESSAGE = 1;
+    public static final int TYPE_DONT_NEW_MESSAGE = 0;
     //method
     public static final void log(String message){
         Log.d(Const.TAG,message);
+    }
+    public static String getTimeNow(){
+        String pattern = "yyyy/MM/dd, HH:mm:ss";
+        SimpleDateFormat dateFormat = new SimpleDateFormat(pattern);
+        return dateFormat.format(new Date());
+
     }
 
 }
