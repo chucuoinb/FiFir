@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MiniSN</string>
+    <string name="app_name">Fifir</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -42,4 +42,10 @@
     <!--item_listview_request_friend-->
     <string name="accept">Chấp nhận</string>
     <string name="cancel">Xóa yêu cầu</string>
+
+    <!--time-->
+    <string name="now_time">Vừa xong</string>
+    <string name="time2"> phút trước</string>
+    <string name="time3"> tiếng trước</string>
+    <string name="time4"> ngày trước</string>
 </resources>

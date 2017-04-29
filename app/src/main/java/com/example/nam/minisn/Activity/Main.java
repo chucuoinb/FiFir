@@ -60,7 +60,7 @@ public class Main extends AppCompatActivity implements View.OnClickListener{
         mViewPager = (ViewPager) findViewById(R.id.main_viewPager);
         mSectionsPagerAdapter = new TabsAdapter(getSupportFragmentManager(), bundle);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-        mViewPager.setOffscreenPageLimit(2);
+//        mViewPager.setOffscreenPageLimit(2);
         tabLayout.setupWithViewPager(mViewPager);
         tabLayout.setOnTabSelectedListener(changeTab);
         tabLayout.getTabAt(0).setIcon(iconTabs[0]);

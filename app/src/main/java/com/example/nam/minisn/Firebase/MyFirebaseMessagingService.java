@@ -23,7 +23,8 @@ import org.json.JSONObject;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private RemoteViews mContentView;
-    private SQLiteDataController database = new SQLiteDataController(getApplicationContext());
+
+
     public MyFirebaseMessagingService() {
     }
 
@@ -49,7 +50,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     receiveMessage(jsonObject);
                     break;
                 case Const.TYPE_REQUEST_FRIEND:
-                    Log.d(Const.TAG,"request friend");
+                    Log.d(Const.TAG, "request friend");
                     solveRequestFriend();
                     break;
                 case Const.TYPE_RESPONSE_FRIEND:
@@ -70,18 +71,22 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             String nameConversation = jsonObject.getString(Const.NAME_CONVERSATION);
             int use_id = SharedPrefManager.getInstance(getApplicationContext()).getInt(Const.ID);
             int idSend = jsonObject.getInt(Const.ID_USERNAME);
+            SQLiteDataController database = new SQLiteDataController(getApplicationContext());
             database.openDataBase();
-            if(!database.isExistConversation(idConversation)){
-                database.addConversation(idConversation,nameConversation,message,use_id,Const.TYPE_NEW_MESSAGE);
+            if (!database.isExistConversation(idConversation)) {
+                Log.d(Const.TAG,"");
+                database.addConversation(idConversation, nameConversation, message, use_id, Const.TYPE_NEW_MESSAGE);
             }
-                database.saveMessage(message,idConversation,idSend);
+            Log.d(Const.TAG,"new message db");
+            database.saveMessage(message, idConversation, idSend);
+            database.close();
             if (idConversation == SharedPrefManager.getInstance(getApplicationContext()).getInt(Const.CONVERSATION_ID)) {
                 Log.d(Const.TAG, "message: " + message);
                 displayMessageOnScreen(getApplicationContext(), message);
             } else {
                 Bundle bundle = new Bundle();
                 bundle.putString(Const.MESSAGE, message);
-                bundle.putString(Const.NAME_CONVERSATION,nameConversation);
+                bundle.putString(Const.NAME_CONVERSATION, nameConversation);
                 bundle.putString(Const.USERNAME_SEND, usernameSend);
                 bundle.putInt(Const.CONVERSATION_ID, idConversation);
                 pushNotifyMessage(bundle);
@@ -108,10 +113,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         String title = getResources().getString(R.string.notify_title_message);
         String content = getResources().getString(R.string.notify_content_message);
         Intent intentNotify = new Intent(getApplicationContext(), ChatActivity.class);
-        intentNotify.putExtra(Const.PACKAGE,bundle);
-        intentNotify.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        NotificationManager manager = (NotificationManager)getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-        PendingIntent pending = PendingIntent.getActivity(getApplicationContext(),0,intentNotify,0);
+        intentNotify.putExtra(Const.PACKAGE, bundle);
+        intentNotify.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        NotificationManager manager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        PendingIntent pending = PendingIntent.getActivity(getApplicationContext(), 0, intentNotify, 0);
         NotificationCompat.Builder notification = new NotificationCompat.Builder(getApplicationContext()).
                 setContentTitle(title).
                 setContentText(content).
@@ -122,14 +127,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     }
 
-    public void solveRequestFriend(){
+    public void solveRequestFriend() {
         int icon = R.drawable.icon_notify;
         String title = getResources().getString(R.string.notify_title_message);
         String content = getResources().getString(R.string.notify_content_message);
         Intent intentNotify = new Intent(getApplicationContext(), RequestFriendActivity.class);
-        intentNotify.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        NotificationManager manager = (NotificationManager)getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-        PendingIntent pending = PendingIntent.getActivity(getApplicationContext(),0,intentNotify,0);
+        intentNotify.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        NotificationManager manager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        PendingIntent pending = PendingIntent.getActivity(getApplicationContext(), 0, intentNotify, 0);
         NotificationCompat.Builder notification = new NotificationCompat.Builder(getApplicationContext()).
                 setContentTitle(title).
                 setContentText(content).

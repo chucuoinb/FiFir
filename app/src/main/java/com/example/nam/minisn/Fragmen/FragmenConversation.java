@@ -33,7 +33,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by Nam on 2/21/2017.
@@ -70,7 +72,6 @@ public class FragmenConversation extends Fragment {
         rootView = inflater.inflate(R.layout.layout_tab_conversation, container, false);
         bundle = getArguments();
 //        data = (ArrayList<Conversation>) bundle.getSerializable(Const.DB_CONVERSATION);
-        Log.d(Const.TAG,"size:"+String.valueOf(data.size()));
         use_id = SharedPrefManager.getInstance(getActivity()).getInt(Const.ID);
         token = SharedPrefManager.getInstance(getActivity()).getString(Const.TOKEN);
         init();
@@ -88,41 +89,37 @@ public class FragmenConversation extends Fragment {
 
     public void getListConversation() {
         SQLiteDataController db = new SQLiteDataController(getActivity());
-        try {
-            db.isCreatedDatabase();
+//            db.isCreatedDatabase();
             db.openDataBase();
             String sql = Const.SELECT +
-                    Const.CONVERSATION_COL1 +
-                    "," +
-                    Const.CONVERSATION_COL2 +
-                    "," +
-                    Const.CONVERSATION_COL6 +
+                    " * " +
                     Const.FROM +
                     Const.DB_CONVERSATION +
                     Const.WHERE +
                     Const.CONVERSATION_COL5 +
                     "= '" +
                     use_id +
-                    "'";
+                    "'" +
+                    Const.ORDER_BY +
+                    Const.CONVERSATION_COL4+
+                    Const.DESC;
             Cursor cursor = db.getDatabase().rawQuery(sql, null);
-            Log.d(Const.TAG, "conversatinon:"+String.valueOf(cursor.getCount()));
             while (cursor.moveToNext()) {
                 int idConversation = cursor.getInt(cursor.getColumnIndex(Const.CONVERSATION_COL2));
                 String nameConversation = cursor.getString(cursor.getColumnIndex(Const.CONVERSATION_COL1));
+                String lastMessage = cursor.getString(3);
+                String time = new String();
+                if (cursor.getLong(4) > 0)
+                    time = getStringTime(cursor.getLong(4));
+                Log.d(Const.TAG, "time: " + time);
                 boolean isNew = cursor.getInt(cursor.getColumnIndex(Const.CONVERSATION_COL6)) == 1;
-                Conversation conversation = new Conversation(nameConversation, idConversation);
-                conversation.setNew(isNew);
+                Conversation conversation = new Conversation(idConversation, nameConversation, lastMessage, time, isNew);
+//                conversation.setNew(isNew);
                 data.add(conversation);
-            }
+        }
             db.getDatabase().close();
             adapter.notifyDataSetChanged();
             progressDialog.dismiss();
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.d(Const.TAG, e.getMessage());
-            progressDialog.dismiss();
-            Toast.makeText(getActivity(), "Có lỗi xảy ra", Toast.LENGTH_SHORT).show();
-        }
     }
 
     public AdapterView.OnItemClickListener itemLvConversationCkick = new AdapterView.OnItemClickListener() {
@@ -137,5 +134,24 @@ public class FragmenConversation extends Fragment {
         }
     };
 
+    public String getStringTime(long time) {
+//        String result = new String();
+        long nowTime = System.currentTimeMillis()/1000;
+        long temp = nowTime - time;
+        if (temp < 60)
+            return getResources().getString(R.string.now_time);
+        else if (temp >= 60 && temp < 60 * 60)
+            return String.valueOf(temp / 60) + " "+getResources().getString(R.string.time2);
+        else if (temp >= 60 * 60 && temp < 60 * 60 * 24)
+            return String.valueOf(temp / (60 * 60)) + " "+getResources().getString(R.string.time3);
+        else if (temp >= 60 * 60 * 24 && temp < 60 * 60 * 24 * 7)
+            return String.valueOf(temp / (60 * 60 * 24)) +" "+ getResources().getString(R.string.time4);
+        else {
+            String pattern = "dd/MM/yyyy";
+            SimpleDateFormat dateFormat = new SimpleDateFormat(pattern);
+            return dateFormat.format(new Date(time*1000));
+        }
+
+    }
 
 }

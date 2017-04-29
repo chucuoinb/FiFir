@@ -54,8 +54,10 @@ public class ListviewConversationAdapter extends ArrayAdapter<Conversation> {
             holder = (Holder) row.getTag();
         Conversation temp = data.get(position);
         holder.nameConversation.setText(temp.getNameConservation());
+        holder.lastMessage.setText(temp.getLastMessage());
+        holder.time.setText(temp.getTime());
         if (temp.isNew())
-            holder.iconNew.setVisibility(View.INVISIBLE);
+            holder.iconNew.setVisibility(View.VISIBLE);
         else
             holder.iconNew.setVisibility(View.INVISIBLE);
         return row;

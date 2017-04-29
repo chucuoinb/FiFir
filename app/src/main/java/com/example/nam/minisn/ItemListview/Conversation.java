@@ -7,11 +7,32 @@ import java.util.ArrayList;
  * Created by Nam on 2/21/2017.
  */
 
-public class Conversation implements Serializable{
+public class Conversation{
     private int id;
     private String nameConservation;
     private String avatar;
+
+
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+    private String lastMessage;
+    private String time;
     private boolean isNew;
+
+    public Conversation(int id, String nameConservation, String lastMessage, String time,boolean isNew) {
+        this.id = id;
+        this.nameConservation = nameConservation;
+        this.lastMessage = lastMessage;
+        this.time = time;
+        this.isNew = isNew;
+    }
 
     public String getAvatar() {
         return avatar;
@@ -58,5 +79,12 @@ public class Conversation implements Serializable{
 
     public void setId(int id) {
         this.id = id;
+    }
+    public String getLastMessage() {
+        return lastMessage;
+    }
+
+    public void setLastMessage(String lastMessage) {
+        this.lastMessage = lastMessage;
     }
 }

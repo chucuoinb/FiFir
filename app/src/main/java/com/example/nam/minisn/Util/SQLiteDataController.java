@@ -172,9 +172,10 @@ public class SQLiteDataController extends SQLiteOpenHelper {
     }
 
     public void saveMessage(String message, int idConversation, int idSend) {
-        String time = Const.getTimeNow();
-
+//        String time = Const.getTimeNow();
+        long time = System.currentTimeMillis()/1000;
         String sql = Const.INSERT +
+
                 Const.DB_DATA_CONVERSATION +
                 " (" +
                 Const.DATA_CONVERSATION_COL1 +
@@ -195,7 +196,9 @@ public class SQLiteDataController extends SQLiteOpenHelper {
                 "','" +
                 time +
                 "')";
+        Log.d(Const.TAG,sql);
         database.execSQL(sql);
+        updateConversation(message,time,idConversation);
     }
 
     public boolean isExistConversation(int idConversation) {
@@ -216,7 +219,8 @@ public class SQLiteDataController extends SQLiteOpenHelper {
     }
 
     public void addConversation(int idConversation, String nameConversation, String lastMessage, int use_id, int is_new_message) {
-        String time = Const.getTimeNow();
+//        String time = Const.getTimeNow();
+        long time = System.currentTimeMillis()/1000;
         String sql = Const.INSERT +
                 Const.DB_CONVERSATION +
                 " (" +
@@ -295,6 +299,7 @@ public class SQLiteDataController extends SQLiteOpenHelper {
                 "','" +
                 gender +
                 "')";
+
         database.execSQL(sql);
     }
 
@@ -317,5 +322,37 @@ public class SQLiteDataController extends SQLiteOpenHelper {
                 use_id +
                 "')";
         database.execSQL(sql);
+    }
+
+    public void updateConversation(String lastMessage,long time,int idConversation){
+        int use_id = SharedPrefManager.getInstance(mContext).getInt(Const.ID);
+        String sql = Const.UPDATE +
+                    Const.DB_CONVERSATION+
+                Const.SET+
+                Const.CONVERSATION_COL3+
+                "='"+
+                lastMessage+
+                "',"+
+                Const.CONVERSATION_COL4+
+                "='"+
+                time+
+                "',"+
+                Const.CONVERSATION_COL6+
+                "='"+
+                Const.TYPE_NEW_MESSAGE+
+                "'"+
+                Const.WHERE+
+                Const.CONVERSATION_COL2+
+                "='"+
+                idConversation+
+                "'"+
+                Const.AND+
+                Const.CONVERSATION_COL5+
+                "='"+
+                use_id+
+                "'";
+        Log.d(Const.TAG,sql);
+        database.execSQL(sql);
+
     }
 }

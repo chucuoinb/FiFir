@@ -15,7 +15,7 @@ import java.util.Date;
 public class Const {
     //Const string
 
-    public static final String DISPLAY_MESSAGE_ACTION= "display_action";
+    public static final String DISPLAY_MESSAGE_ACTION = "display_action";
 
     public static final String FAIL = "fail";
     public static final String GENDER = "gender";
@@ -49,8 +49,8 @@ public class Const {
     public static final String URL_GET_LIST_CONVERSATION = URL + "conversation/get_list_conversation.php";
     public static final String URL_GET_LIST_FRIEND = URL + "friend/get_list_friend.php";
     public static final String URL_UPLOAD_AVATAR = URL + "user/upload_avatar.php";
-    public static final String URL_DOWNLOAD_AVATAR = URL+ "user/download_avatar.php";
-    public static final String URL_SEND_MESSAGE = URL +"conversation/send_message.php";
+    public static final String URL_DOWNLOAD_AVATAR = URL + "user/download_avatar.php";
+    public static final String URL_SEND_MESSAGE = URL + "conversation/send_message.php";
     public static final String URL_GET_REQUEST_FRIEND = URL + "friend/get_request_friend.php?";
 
     //Share preferen
@@ -61,21 +61,21 @@ public class Const {
     public static final String IS_LOGIN = "login";
 
     //Code responce
-    public static final int REQUEST_CODE_REGISTER =100;
-    public static final int CODE_OK =  101;
-    public static final int CODE_FAIL =  102;
-    public static final int CODE_EMAIL_EXIST =  103;
-    public static final int CODE_USER_EXIST =  104;
-    public static final int CODE_INVALID =  105;
-    public static final int CODE_USER_NOT_EXIST =  106;
+    public static final int REQUEST_CODE_REGISTER = 100;
+    public static final int CODE_OK = 101;
+    public static final int CODE_FAIL = 102;
+    public static final int CODE_EMAIL_EXIST = 103;
+    public static final int CODE_USER_EXIST = 104;
+    public static final int CODE_INVALID = 105;
+    public static final int CODE_USER_NOT_EXIST = 106;
 
     //Gender
     public static final int GENDER_UNKNOW = 300;
     public static final int GENDER_MAN = 301;
-    public static final int GENDER_WOMAN =302;
+    public static final int GENDER_WOMAN = 302;
 
     //Message
-    public  static final int MESSAGE_SEND =1;
+    public static final int MESSAGE_SEND = 1;
     public static final int MESSAGE_RECEIVE = 0;
 
     //Type Json receive FCM
@@ -99,11 +99,16 @@ public class Const {
     public static final String SET = " set ";
     public static final String VALUES = " values ";
     public static final String INSERT = "insert into ";
+    public static final String AND = " and ";
+    public static final String ORDER_BY = " order by ";
+    public static final String ASC = " asc ";
+    public static final String DESC = " desc ";
+//    public static final String OR = " or ";
 
 
-    public static final String SAVE_COL2 ="save_username";
-    public static final String SAVE_COL0 ="id";
-    public static final String SAVE_COL1 ="save_id";
+    public static final String SAVE_COL2 = "save_username";
+    public static final String SAVE_COL0 = "id";
+    public static final String SAVE_COL1 = "save_id";
 
     public static final String USERS_COL0 = "use_id";
     public static final String USERS_COL1 = "use_username";
@@ -129,19 +134,27 @@ public class Const {
     public static final String CONVERSATION_COL3 = "last_message";
     public static final String CONVERSATION_COL4 = "time_last_message";
     public static final String CONVERSATION_COL5 = "use_id";
-    public static final String  CONVERSATION_COL6= "is_new_message";
+    public static final String CONVERSATION_COL6 = "is_new_message";
 
     public static final int TYPE_NEW_MESSAGE = 1;
     public static final int TYPE_DONT_NEW_MESSAGE = 0;
-    //method
-    public static final void log(String message){
-        Log.d(Const.TAG,message);
-    }
-    public static String getTimeNow(){
-        String pattern = "yyyy/MM/dd, HH:mm:ss";
-        SimpleDateFormat dateFormat = new SimpleDateFormat(pattern);
-        return dateFormat.format(new Date());
 
+    //method
+    public static final void log(String message) {
+        Log.d(Const.TAG, message);
     }
+
+//    public String getTimeNow(long time) {
+////        String pattern = "yyyy/MM/dd, HH:mm:ss";
+////        SimpleDateFormat dateFormat = new SimpleDateFormat(pattern);
+////        return dateFormat.format(new Date());
+//        String result = new String();
+//        long nowTime = System.currentTimeMillis();
+//        if(nowTime - time < 60){
+//            result = getRes
+//        }
+//
+//        return result;
+//    }
 
 }
