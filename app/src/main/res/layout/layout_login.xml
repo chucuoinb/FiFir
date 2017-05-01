@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:fillViewport="true">
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:fillViewport="true">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="56dp"
         android:background="#FAFAFA"
+        android:orientation="vertical"
         android:paddingLeft="24dp"
-        android:paddingRight="24dp">
+        android:paddingRight="24dp"
+        android:paddingTop="56dp">
 
 
         <!-- Username Label -->
@@ -19,13 +19,16 @@
             android:id="@+id/login_usernameWrapper"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp">
-            <EditText android:id="@+id/login_ed_user"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp">
+
+            <EditText
+                android:id="@+id/login_ed_user"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/login_username"
-                android:text="admin"/>
+                android:backgroundTint="@color/colorPrimary"
+                android:textCursorDrawable="@color/colorPrimary"
+                android:hint="@string/login_username"/>
         </android.support.design.widget.TextInputLayout>
 
         <!-- Password Label -->
@@ -33,47 +36,56 @@
             android:id="@+id/login_passwordWrapper"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp">
-            <EditText android:id="@+id/login_ed_password"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp">
+
+            <EditText
+                android:id="@+id/login_ed_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPassword"
+                android:backgroundTint="@color/colorPrimary"
+                android:textCursorDrawable="@color/colorPrimary"
                 android:hint="@string/login_password"
-                android:text="1111"/>
+                android:inputType="textPassword"/>
         </android.support.design.widget.TextInputLayout>
 
         <!-- Save check box-->
         <CheckBox
             android:id="@+id/login_cb_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="@string/login_saveaccount"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:buttonTint="@color/colorPrimary"
+            android:checked="true"/>
+
         <CheckBox
             android:id="@+id/login_cb_keeplogin"
-            android:text="@string/login_keeplogin"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:text="@string/login_keeplogin"
+            android:buttonTint="@color/colorPrimary"
+            android:checked="true"/>
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/login_btn_login"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:gravity="center"
-            android:background="@drawable/custom_button"
-            android:textColor="#FFFFFF"
             android:layout_marginBottom="24dp"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/custom_button"
+            android:gravity="center"
             android:padding="12dp"
-            android:text="@string/login_login"/>
+            android:text="@string/login_login"
+            android:textColor="#FFFFFF"/>
 
-        <TextView android:id="@+id/login_tv_register"
+        <TextView
+            android:id="@+id/login_tv_register"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
-            android:textColor="@color/colorGreen"
-            android:text="@string/login_create"
             android:gravity="center"
+            android:text="@string/login_create"
+            android:textColor="@color/colorGreen"
             android:textSize="16sp"/>
 
     </LinearLayout>

@@ -17,12 +17,10 @@ public class MyFirebaseInstanceIdService extends FirebaseInstanceIdService {
     public void onTokenRefresh() {
 
         super.onTokenRefresh();
-        Log.d(Const.TAG,"da vao service");
         //Getting registration token
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
 
         //Displaying token on logcat
-        Log.d(Const.TAG, "Refreshed token: " + refreshedToken);
 
         //calling the method store token and passing token
         storeToken(refreshedToken);
@@ -31,6 +29,5 @@ public class MyFirebaseInstanceIdService extends FirebaseInstanceIdService {
     private void storeToken(String token) {
         //we will save the token in sharedpreferences later
         SharedPrefManager.getInstance(getApplicationContext()).savePreferences(Const.FCM_TOKEN,token);
-        Log.d(Const.TAG, "storeToken: "+SharedPrefManager.getInstance(getApplicationContext()).getString(Const.FCM_TOKEN));
     }
 }

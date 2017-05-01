@@ -66,7 +66,6 @@ public class ChatActivity extends AppCompatActivity {
 
                 data.add(new Chat(Const.MESSAGE_RECEIVE,newMessage,Const.GENDER_WOMAN));
                 adapter.notifyDataSetChanged();
-                Log.d(Const.TAG, newMessage);
             }
         };
         btnBack = (ImageView)findViewById(R.id.chat_btn_back);
@@ -74,13 +73,11 @@ public class ChatActivity extends AppCompatActivity {
         intent = getIntent();
         bundle = intent.getBundleExtra(Const.PACKAGE);
         String newMessage = bundle.getString(Const.MESSAGE,"");
-        Log.d(Const.TAG,newMessage);
         if(!"".equals(newMessage))
             data.add(new Chat(Const.MESSAGE_RECEIVE,newMessage,Const.GENDER_WOMAN));
         token = SharedPrefManager.getInstance(getApplicationContext()).getString(Const.FCM_TOKEN);
         nameConversation = bundle.getString(Const.NAME_CONVERSATION);
         idConversation = bundle.getInt(Const.CONVERSATION_ID);
-        Log.d(Const.TAG, String.valueOf(idConversation));
         tvNameConversation = (TextView)findViewById(R.id.chat_tv_nameFriend);
         edInputMessage = (EditText)findViewById(R.id.chat_ed_inputMessage);
         btSend = (Button)findViewById(R.id.chat_bt_Send);
@@ -110,11 +107,11 @@ public class ChatActivity extends AppCompatActivity {
             message =edInputMessage.getText().toString();
             int lengthMessage = message.length();
             if(lengthMessage>0){
-                btSend.setBackgroundResource(R.drawable.button_send_message_1);
+                btSend.setBackgroundResource(R.drawable.button_send_message_2);
                 btSend.setEnabled(true);
             }
             else {
-                btSend.setBackgroundResource(R.drawable.button_send_message_2);
+                btSend.setBackgroundResource(R.drawable.button_send_message_1);
                 btSend.setEnabled(false);
             }
         }

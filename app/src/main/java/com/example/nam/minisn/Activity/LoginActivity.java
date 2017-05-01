@@ -22,6 +22,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.nam.minisn.ItemListview.Friend;
 import com.example.nam.minisn.R;
 import com.example.nam.minisn.UseVoley.CustomRequest;
 import com.example.nam.minisn.Util.Const;
@@ -129,6 +130,7 @@ public class LoginActivity extends AppCompatActivity {
                                     database.saveAccount(use_id,username);
                                     saveListFriend(token);
                                     saveListConversation(token);
+                                    getListRequestFriend(token);
                                 }
                                 database.close();
                                 progressDialog.dismiss();
@@ -228,21 +230,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-//    private boolean checkLogged(int id) {
-//        SQLiteDataController sql = new SQLiteDataController(getBaseContext());
-//        try {
-//            sql.isCreatedDatabase();
-//            sql.openDataBase();
-//            Cursor cursor = sql.getDatabase().rawQuery(Const.SELECT + "*" + Const.FROM + Const.DB_USERS_SAVE + Const.WHERE +
-//                    Const.SAVE_COL1 + " = '" + id + "'", null);
-//            Log.d(Const.TAG,String.valueOf(cursor.getCount()>0));
-//            return cursor.getCount() > 0;
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            Log.d(Const.TAG, e.getMessage());
-//            return false;
-//        }
-//    }
+//
 
     public void saveListConversation(String token) {
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
@@ -290,38 +278,10 @@ public class LoginActivity extends AppCompatActivity {
         progressDialog.dismiss();
     }
 
-//    private void insertConversation(int id, String name) {
-//        SQLiteDataController db = new SQLiteDataController(getBaseContext());
-//        try {
-//            db.isCreatedDatabase();
-//            db.openDataBase();
-//            String sql = Const.INSERT +
-//                    Const.DB_CONVERSATION +
-//                    " (" +
-//                    Const.CONVERSATION_COL1 +
-//                    "," +
-//                    Const.CONVERSATION_COL2 +
-//                    "," +
-//                    Const.CONVERSATION_COL5 +
-//                    ")" +
-//                    Const.VALUES +
-//                    "('" +
-//                    name +
-//                    "','" +
-//                    id +
-//                    "','" +
-//                    use_id +
-//                    "')";
-//            db.getDatabase().execSQL(sql);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            Log.d(Const.TAG, e.getMessage());
-//        }
-//    }
+//
 
 
     public void saveListFriend(String token) {
-//        final int use_id = id;
         RequestQueue request = Volley.newRequestQueue(getApplicationContext());
         JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.GET, Const.URL_GET_LIST_FRIEND + "/?" +
                 Const.TOKEN + "=" + token
@@ -331,17 +291,16 @@ public class LoginActivity extends AppCompatActivity {
                 try {
                     if (Const.CODE_OK == jsonObject.getInt(Const.CODE)) {
                         JSONArray listFriend = jsonObject.getJSONArray(Const.DATA);
+                            database.openDataBase();
                         for (int i = 0; i < listFriend.length(); i++) {
                             JSONObject obj = listFriend.getJSONObject(i);
                             String username = obj.getString(Const.USERNAME);
 //                            String displayName = obj.getString(Const.DISPLAY_NAME);
                             int gender = obj.getInt(Const.GENDER);
                             int fri_id = obj.getInt(Const.ID);
-//                            Log.d(Const.TAG,username+":"+displayName+":"+gender+":"+fri_id+":"+use_id);
-                            database.openDataBase();
                             database.insertListFriend(fri_id, username, use_id, gender);
-                            database.close();
                         }
+                            database.close();
                     } else
                         Toast.makeText(getApplicationContext(), "Co loi xay ra", Toast.LENGTH_SHORT).show();
                 } catch (JSONException e) {
@@ -361,62 +320,40 @@ public class LoginActivity extends AppCompatActivity {
         progressDialog.dismiss();
     }
 
-//    public void insertListFriend(int fri_id, String fri_username, int id, int gender) {
-////        Log.d(Const.TAG, fri_username + ":" + gender + ":" + fri_id + ":" + use_id);
-//        SQLiteDataController db = new SQLiteDataController(LoginActivity.this);
-//        try {
-//            db.isCreatedDatabase();
-//            db.openDataBase();
-//            String sql = Const.INSERT +
-//                    Const.DB_FRIEND +
-//                    " (" +
-//                    Const.FRIENDS_COL1 +
-//                    "," +
-//                    Const.FRIENDS_COL2 +
-//                    "," +
-//                    Const.FRIENDS_COL4 +
-//                    "," +
-//                    Const.FRIENDS_COL5 +
-//                    ")" +
-//                    Const.VALUES +
-//                    "('" +
-//                    fri_id +
-//                    "','" +
-//                    fri_username +
-//                    "','" +
-//                    id +
-//                    "','" +
-//                    gender +
-//                    "')";
-//            db.getDatabase().execSQL(sql);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            Log.d(Const.TAG, e.getMessage());
-//        }
-//    }
+    public void getListRequestFriend(String token){
+    RequestQueue request = Volley.newRequestQueue(getApplicationContext());
+    JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.GET, Const.URL_GET_REQUEST_FRIEND +
+            Const.TOKEN +"="+token
+            ,new Response.Listener<JSONObject>() {
+        @Override
+        public void onResponse(JSONObject jsonObject) {
+            try{
+                if (Const.CODE_OK == jsonObject.getInt(Const.CODE)){
+                    JSONArray data = jsonObject.getJSONArray(Const.DATA);
+                    database.openDataBase();
+                    for (int i = 0;i<data.length();i++){
+                        JSONObject request = data.getJSONObject(i);
+                        String username = request.getString(Const.USERNAME);
+                        int id = request.getInt(Const.ID);
+                        database.saveRequestFriend(use_id,username,id);
 
-//    public void saveAccount(int id,String username){
-//        SQLiteDataController db = new SQLiteDataController(getBaseContext());
-//        try {
-//            db.isCreatedDatabase();
-//            db.openDataBase();
-//            String sql = Const.INSERT +
-//                    Const.DB_USERS_SAVE +
-//                    " (" +
-//                    Const.SAVE_COL1 +
-//                    "," +
-//                    Const.SAVE_COL2 +
-//                    ")" +
-//                    Const.VALUES +
-//                    "('" +
-//                    id +
-//                    "','" +
-//                    username +
-//                    "')";
-//            db.getDatabase().execSQL(sql);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            Log.d(Const.TAG, e.getMessage());
-//        }
-//    }
+                    }
+                    database.close();
+                }else
+                    Toast.makeText(getApplicationContext(),"Co loi xay ra",Toast.LENGTH_SHORT).show();
+            }catch (JSONException e){
+                e.printStackTrace();
+                Log.d(Const.TAG,"JSON error: "+ e.getMessage());
+            }
+
+        }
+    },new Response.ErrorListener() {
+        @Override
+        public void onErrorResponse(VolleyError volleyError) {
+            Log.d(Const.TAG,"Request Error");
+        }
+    });
+
+        request.add(objectRequest);
+}
 }

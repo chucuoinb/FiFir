@@ -1,101 +1,175 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="@dimen/main_margin"
-        android:layout_marginRight="@dimen/main_margin"
-        android:background="@color/transparent"
+        android:background="@color/white"
         android:orientation="vertical">
-
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:orientation="horizontal"
-            android:paddingBottom="@dimen/main_margin"
-            android:paddingTop="@dimen/main_margin">
-            <RelativeLayout
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/main_margin"
+            android:layout_marginRight="@dimen/main_margin"
+            android:background="@color/transparent"
+            android:orientation="vertical">
+
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_weight="1">
-                <TextView
-                    android:id="@+id/lv_conversation_single"
-                    android:text="@string/conversatinon_single"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:id="@+id/tab_conversation_tab"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.5"
-                    android:gravity="center"
-                    android:textColor="@color/colorTextChoose"
-                    android:textSize="17dp"
-                    android:layout_centerVertical="true"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"/>
-                <ImageView
-                    android:visibility="invisible"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:id="@+id/single_new"
-                    android:src="@drawable/icon_new"
-                    android:layout_marginRight="57dp"
-                    android:layout_marginEnd="57dp"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentEnd="true"/>
-            </RelativeLayout>
+                    android:background="@color/white"
+                    android:orientation="horizontal"
+                    android:paddingTop="@dimen/main_margin">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_weight="1">
+
+                        <TextView
+                            android:id="@+id/lv_conversation_single"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerVertical="true"
+                            android:layout_weight="0.5"
+                            android:gravity="center"
+                            android:text="@string/conversatinon_single"
+                            android:textColor="@color/colorTextChoose"
+                            android:textSize="17dp"/>
+
+                        <ImageView
+                            android:id="@+id/single_new"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignParentTop="true"
+                            android:layout_marginEnd="57dp"
+                            android:layout_marginRight="57dp"
+                            android:src="@drawable/icon_new"
+                            android:visibility="invisible"/>
+                    </RelativeLayout>
 
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_weight="1">
-                <TextView
-                    android:id="@+id/lv_conversation_group"
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_weight="1">
+
+                        <TextView
+                            android:id="@+id/lv_conversation_group"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerVertical="true"
+                            android:layout_weight="0.5"
+                            android:gravity="center"
+                            android:text="@string/conversatinon_group"
+                            android:textColor="@color/colorText"
+                            android:textSize="17dp"/>
+
+                        <ImageView
+                            android:id="@+id/group_new"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignParentTop="true"
+                            android:layout_marginEnd="51dp"
+                            android:layout_marginRight="51dp"
+                            android:src="@drawable/icon_new"
+                            android:visibility="invisible"/>
+                    </RelativeLayout>
+                </LinearLayout>
+                <EditText
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.5"
-                    android:gravity="center"
-                    android:text="@string/conversatinon_group"
-                    android:textColor="@color/colorText"
-                    android:textSize="17dp"
-                    android:layout_centerVertical="true"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"/>
-                <ImageView
-                    android:visibility="invisible"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:id="@+id/group_new"
-                    android:src="@drawable/icon_new"
-                    android:layout_marginRight="51dp"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginEnd="51dp"/>
-            </RelativeLayout>
+                    android:layout_height="match_parent"
+                    android:id="@+id/search_conversation_input"
+                    android:hint="@string/input_conversation"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:textCursorDrawable="@color/colorPrimary"
+                    android:visibility="invisible"/>
+            </FrameLayout>
+
+            <include layout="@layout/space"></include>
+
+            <ListView
+                android:id="@+id/tab_Conversation_lv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/main_margin"
+                android:layout_weight="1"
+                android:divider="@color/transparent"
+                android:dividerHeight="5dp"
+                android:listSelector="@drawable/listview">
+            </ListView>
+
+
+            <!--android:backgroundTint="@color/colorGreen"-->
         </LinearLayout>
 
-        <include layout="@layout/space"></include>
-
-        <ListView
-            android:layout_marginTop="@dimen/main_margin"
-            android:id="@+id/tab_Conversation_lv"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:divider="@color/transparent"
-            android:dividerHeight="5dp"
-            android:listSelector="@drawable/listview">
-        </ListView>
-
-
-        <!--android:backgroundTint="@color/colorGreen"-->
     </LinearLayout>
-</LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/main_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:tint="@color/white"
+        app:backgroundTint="@color/colorPrimary"
+        app:srcCompat="@android:drawable/ic_input_add"
+        />
+
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                 xmlns:app="http://schemas.android.com/apk/res-auto"
+                 android:layout_width="match_parent"
+                 android:layout_height="match_parent">
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="@dimen/fab_margin"
+            android:src="@drawable/fab1"
+            android:visibility="invisible"
+            app:backgroundTint="@color/colorFAB"
+            app:fabSize="mini"/>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="@dimen/fab_margin"
+            android:src="@drawable/fab2"
+            android:visibility="invisible"
+            app:backgroundTint="@color/colorFAB"
+            app:fabSize="mini"/>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="@dimen/fab_margin"
+            android:src="@drawable/fab3"
+            android:visibility="invisible"
+            app:backgroundTint="@color/colorFAB"
+            app:fabSize="mini"/>
+    </FrameLayout>
+</android.support.design.widget.CoordinatorLayout>

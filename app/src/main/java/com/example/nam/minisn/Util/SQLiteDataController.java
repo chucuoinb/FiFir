@@ -8,6 +8,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.example.nam.minisn.Activity.LoginActivity;
+import com.example.nam.minisn.ItemListview.Conversation;
+import com.example.nam.minisn.ItemListview.Friend;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -15,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -24,7 +27,6 @@ import java.util.Date;
 public class SQLiteDataController extends SQLiteOpenHelper {
     public String DB_PATH = "//data//data//%s//databases//";
     private static String DB_NAME = "minisn.sqlite";
-
 
     private SQLiteDatabase database;
     private final Context mContext;
@@ -173,7 +175,7 @@ public class SQLiteDataController extends SQLiteOpenHelper {
 
     public void saveMessage(String message, int idConversation, int idSend) {
 //        String time = Const.getTimeNow();
-        long time = System.currentTimeMillis()/1000;
+        long time = System.currentTimeMillis() / 1000;
         String sql = Const.INSERT +
 
                 Const.DB_DATA_CONVERSATION +
@@ -196,9 +198,9 @@ public class SQLiteDataController extends SQLiteOpenHelper {
                 "','" +
                 time +
                 "')";
-        Log.d(Const.TAG,sql);
+        Log.d(Const.TAG, sql);
         database.execSQL(sql);
-        updateConversation(message,time,idConversation);
+        updateConversation(message, time, idConversation);
     }
 
     public boolean isExistConversation(int idConversation) {
@@ -220,7 +222,7 @@ public class SQLiteDataController extends SQLiteOpenHelper {
 
     public void addConversation(int idConversation, String nameConversation, String lastMessage, int use_id, int is_new_message) {
 //        String time = Const.getTimeNow();
-        long time = System.currentTimeMillis()/1000;
+        long time = System.currentTimeMillis() / 1000;
         String sql = Const.INSERT +
                 Const.DB_CONVERSATION +
                 " (" +
@@ -328,96 +330,184 @@ public class SQLiteDataController extends SQLiteOpenHelper {
         database.execSQL(sql);
     }
 
-    public void updateConversation(String lastMessage,long time,int idConversation){
+    public void updateConversation(String lastMessage, long time, int idConversation) {
         int use_id = SharedPrefManager.getInstance(mContext).getInt(Const.ID);
         String sql = Const.UPDATE +
-                    Const.DB_CONVERSATION+
-                Const.SET+
-                Const.CONVERSATION_COL3+
-                "='"+
-                lastMessage+
-                "',"+
-                Const.CONVERSATION_COL4+
-                "='"+
-                time+
-                "',"+
-                Const.CONVERSATION_COL6+
-                "='"+
-                Const.TYPE_NEW_MESSAGE+
-                "'"+
-                Const.WHERE+
-                Const.CONVERSATION_COL2+
-                "='"+
-                idConversation+
-                "'"+
-                Const.AND+
-                Const.CONVERSATION_COL5+
-                "='"+
-                use_id+
-                "'";
-        Log.d(Const.TAG,sql);
-        database.execSQL(sql);
-
-    }
-    public void setNewMessageConversation(int idConversation, int use_id){
-        String sql = Const.UPDATE+
-                Const.DB_CONVERSATION+
-                Const.SET+
-                Const.CONVERSATION_COL6+
-                "='"+
-                Const.TYPE_DONT_NEW_MESSAGE+
-                "'"+
-                Const.WHERE+
+                Const.DB_CONVERSATION +
+                Const.SET +
+                Const.CONVERSATION_COL3 +
+                "='" +
+                lastMessage +
+                "'," +
+                Const.CONVERSATION_COL4 +
+                "='" +
+                time +
+                "'," +
+                Const.CONVERSATION_COL6 +
+                "='" +
+                Const.TYPE_NEW_MESSAGE +
+                "'" +
+                Const.WHERE +
                 Const.CONVERSATION_COL2 +
-                "='"+
-                idConversation+
-                "'"+
-                Const.AND+
+                "='" +
+                idConversation +
+                "'" +
+                Const.AND +
                 Const.CONVERSATION_COL5 +
-                "='"+
-                use_id+
+                "='" +
+                use_id +
                 "'";
+        Log.d(Const.TAG, sql);
         database.execSQL(sql);
+
     }
-    public void addIdConversationIntoFriend(int use_id,int id_conversation, int fri_id){
-        String sql = Const.UPDATE+
-                Const.DB_FRIEND+
-                Const.SET+
-                Const.FRIENDS_COL6+
-                "='"+
-                id_conversation+
-                "'"+
-                Const.WHERE+
-                Const.FRIENDS_COL4+
-                "='"+
-                use_id+
-                "'"+
-                Const.AND+
-                Const.FRIENDS_COL3+
-                "='"+
-                fri_id+
+
+    public void setNewMessageConversation(int idConversation, int use_id) {
+        String sql = Const.UPDATE +
+                Const.DB_CONVERSATION +
+                Const.SET +
+                Const.CONVERSATION_COL6 +
+                "='" +
+                Const.TYPE_DONT_NEW_MESSAGE +
+                "'" +
+                Const.WHERE +
+                Const.CONVERSATION_COL2 +
+                "='" +
+                idConversation +
+                "'" +
+                Const.AND +
+                Const.CONVERSATION_COL5 +
+                "='" +
+                use_id +
                 "'";
         database.execSQL(sql);
     }
 
-    public void updateSizeConversation(int idConversation,int use_id,int size){
-        String sql = Const.UPDATE+
-                Const.DB_CONVERSATION+
-                Const.SET+
-                Const.CONVERSATION_COL7+
-                "='"+
-                size+
-                "'"+
-                Const.WHERE+
-                Const.CONVERSATION_COL5+
-                "='"+
-                use_id+
-                "'"+
-                Const.AND+
-                Const.CONVERSATION_COL2+
-                "='"+
-                idConversation+
+    public void addIdConversationIntoFriend(int use_id, int id_conversation, int fri_id) {
+        String sql = Const.UPDATE +
+                Const.DB_FRIEND +
+                Const.SET +
+                Const.FRIENDS_COL6 +
+                "='" +
+                id_conversation +
+                "'" +
+                Const.WHERE +
+                Const.FRIENDS_COL4 +
+                "='" +
+                use_id +
+                "'" +
+                Const.AND +
+                Const.FRIENDS_COL3 +
+                "='" +
+                fri_id +
                 "'";
         database.execSQL(sql);
+    }
+
+    public void updateSizeConversation(int idConversation, int use_id, int size) {
+        String sql = Const.UPDATE +
+                Const.DB_CONVERSATION +
+                Const.SET +
+                Const.CONVERSATION_COL7 +
+                "='" +
+                size +
+                "'" +
+                Const.WHERE +
+                Const.CONVERSATION_COL5 +
+                "='" +
+                use_id +
+                "'" +
+                Const.AND +
+                Const.CONVERSATION_COL2 +
+                "='" +
+                idConversation +
+                "'";
+        database.execSQL(sql);
+    }
+
+    public ArrayList<Conversation> searchConversation(String name, int useId) {
+        ArrayList<Conversation> data = new ArrayList<Conversation>();
+        String sql = Const.SELECT + " * " +
+                Const.FROM +
+                Const.DB_CONVERSATION +
+                Const.WHERE +
+                Const.CONVERSATION_COL1 +
+                Const.LIKE +
+                " '%" +
+                name +
+                "%'" +
+                Const.AND +
+                Const.CONVERSATION_COL5 +
+                "='" +
+                useId +
+                "'";
+        Cursor cursor = database.rawQuery(sql, null);
+        while (cursor.moveToNext()) {
+            int idConversation = cursor.getInt(2);
+            String nameConversation = cursor.getString(1);
+            String lastMessage = cursor.getString(3);
+            long time = cursor.getLong(4);
+            boolean isNew = cursor.getInt(6) == 1;
+            Conversation conversation = new Conversation(idConversation, nameConversation, lastMessage, time, isNew);
+            data.add(conversation);
+        }
+
+        return data;
+    }
+
+    public void saveRequestFriend(int useId, String username, int id) {
+        String sql = Const.INSERT +
+                Const.DB_REQUEST_FRIEND +
+                " (" +
+                Const.REQUEST_FRIEND_COL1 +
+                "," +
+                Const.REQUEST_FRIEND_COL2 +
+                "," +
+                Const.REQUEST_FRIEND_COL3 +
+                ")" +
+                Const.VALUES +
+                "('" +
+                id +
+                "','" +
+                username +
+                "','" +
+                useId +
+                "')";
+        database.execSQL(sql);
+    }
+
+    public ArrayList<Friend> getListRequestFriend(int useId) {
+        ArrayList<Friend> data = new ArrayList<>();
+        String sql = Const.SELECT +
+                " * " +
+                Const.FROM +
+                Const.DB_REQUEST_FRIEND +
+                Const.WHERE +
+                Const.REQUEST_FRIEND_COL3 +
+                "='" +
+                useId +
+                "'";
+        Cursor cursor = database.rawQuery(sql, null);
+        while (cursor.moveToNext()) {
+            int id = cursor.getInt(1);
+            String username = cursor.getString(2);
+            data.add(new Friend(id, username));
+        }
+        Log.d(Const.TAG, "request:" + String.valueOf(cursor.getCount()));
+        return data;
+    }
+
+    public int getCountRequestFriend(int useId){
+        String sql = Const.SELECT+
+                " * "+
+                Const.FROM+
+                Const.DB_REQUEST_FRIEND+
+                Const.WHERE+
+                Const.REQUEST_FRIEND_COL3+
+                "='"+
+                useId+
+                "'";
+        Cursor cursor = database.rawQuery(sql,null);
+        return cursor.getCount();
     }
 }

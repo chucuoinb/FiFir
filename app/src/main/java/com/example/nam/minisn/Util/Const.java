@@ -93,6 +93,9 @@ public class Const {
     public static final String DB_FRIEND = "friend";
     public static final String DB_USERS = "users";
     public static final String DB_USERS_SAVE = "users_save";
+    public static final String DB_REQUEST_FRIEND = "request_friend";
+
+
     public static final String SELECT = "select ";
     public static final String FROM = " from ";
     public static final String WHERE = " where ";
@@ -104,6 +107,7 @@ public class Const {
     public static final String ORDER_BY = " order by ";
     public static final String ASC = " asc ";
     public static final String DESC = " desc ";
+    public static final String LIKE = " like ";
 //    public static final String OR = " or ";
 
 
@@ -138,6 +142,11 @@ public class Const {
     public static final String CONVERSATION_COL5 = "use_id";
     public static final String CONVERSATION_COL6 = "is_new_message";
     public static final String CONVERSATION_COL7 = "size";
+
+    public static final String REQUEST_FRIEND_COL0 = "id";
+    public static final String REQUEST_FRIEND_COL1 = "id_request";
+    public static final String REQUEST_FRIEND_COL2 = "username_request";
+    public static final String REQUEST_FRIEND_COL3 = "use_id";
 
     public static final int TYPE_NEW_MESSAGE = 1;
     public static final int TYPE_DONT_NEW_MESSAGE = 0;

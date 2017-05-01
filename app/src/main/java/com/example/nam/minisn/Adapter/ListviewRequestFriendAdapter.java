@@ -49,9 +49,9 @@ public class ListviewRequestFriendAdapter extends ArrayAdapter<Friend> {
 
         Friend temp = data.get(position);
         int gender = temp.getGender();
-        int ava = (gender == Const.GENDER_UNKNOW) ? R.drawable.people_24 :
-                ((gender == Const.GENDER_MAN)? R.drawable.man_24:R.drawable.woman_24 );
-        holder.ava.setImageResource(ava);
+//        int ava = (gender == Const.GENDER_UNKNOW) ? R.drawable.people_24 :
+//                ((gender == Const.GENDER_MAN)? R.drawable.man_24:R.drawable.woman_24 );
+//        holder.ava.setImageResource(ava);
         holder.namFriend.setText(temp.getUsername());
         return row;
     }

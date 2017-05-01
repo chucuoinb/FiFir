@@ -9,8 +9,8 @@ import java.io.Serializable;
 public class Friend implements Serializable{
 
     private int id;
-    private String username = new String();
-    private String displayName = new String();
+    private String username ;
+    private String displayName;
     private int gender;
 
     public Friend(String username, String displayName, int gender) {
@@ -21,6 +21,10 @@ public class Friend implements Serializable{
     public Friend(int id,String username, String displayName) {
         this.username = username;
         this.displayName = displayName;
+        this.id=id;
+    }
+    public Friend(int id,String username) {
+        this.username = username;
         this.id=id;
     }
     public Friend(String username, String displayName, int gender,int id) {

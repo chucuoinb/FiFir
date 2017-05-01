@@ -1,48 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    android:background="@drawable/back_ground_chat">
+    android:fitsSystemWindows="true">
 
-    <android.support.design.widget.AppBarLayout
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:theme="@style/AppTheme.AppBarOverlay">
-
-
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/chat_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-             >
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <ImageView
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
-                        android:id="@+id/chat_btn_back"
-                        android:src="@drawable/btn_back"
-                        android:layout_gravity="center_vertical"/>
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/chat_tv_nameFriend"
-                        android:layout_marginLeft="10dp"
-                        android:textStyle="bold"
-                        android:textSize="@dimen/text_status"
-                        android:text="aaa"/>
-                </LinearLayout>
-
-        </android.support.v7.widget.Toolbar>
-
-    </android.support.design.widget.AppBarLayout>
+    <include layout="@layout/toolbar"></include>
 
 
     <LinearLayout
@@ -95,13 +58,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:backgroundTint="@color/colorPrimary"
                 android:hint="@string/chat_input_message"/>
 
             <Button
                 android:id="@+id/chat_bt_Send"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:background="@drawable/button_send_message_2"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/button_send_message_1"
                 android:enabled="false"/>
         </LinearLayout>
     </LinearLayout>

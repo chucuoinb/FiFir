@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:fitsSystemWindows="true">
+    <include layout="@layout/toolbar"></include>
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/search_conversation_input"
+        android:hint="@string/input_conversation"
+        android:layout_margin="@dimen/main_margin"
+        android:backgroundTint="@color/colorPrimary"
+        android:visibility="invisible"/>
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/search_conversation_lv"
+        android:layout_margin="@dimen/main_margin"
+        android:layout_marginTop="0dp"
+        android:divider="@color/transparent"
+        android:dividerHeight="5dp">
+
+    </ListView>
+</LinearLayout>

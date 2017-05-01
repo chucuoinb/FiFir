@@ -3,8 +3,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="50pt"
-    android:background="@drawable/background_request_friend"
+    android:background="@drawable/listview_default"
     android:orientation="vertical">
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -13,12 +14,12 @@
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/request_friend_avatar"
             android:layout_width="40pt"
             android:layout_height="match_parent"
-        android:background="@drawable/avatar"
-            android:src="@drawable/woman_24"
+            android:background="@drawable/avatar"
+            android:src="@drawable/test"
             />
 
         <TextView
@@ -26,10 +27,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:paddingLeft="2pt"
             android:text="aaa"
             android:textColor="@color/black"
-            android:textSize="15pt"
-            android:paddingLeft="2pt"/>
+            android:textSize="15pt"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -47,18 +48,18 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_margin="2pt"
                     android:layout_weight="1"
                     android:text="@string/accept"
-                    android:textSize="8pt"
 
-                    android:layout_margin="2pt"
-                    android:textColor="@color/white"/>
+                    android:textColor="@color/white"
+                    android:textSize="8pt"/>
 
                 <ImageView
                     android:layout_width="10pt"
                     android:layout_height="10pt"
-                    android:src="@drawable/accept"
-                    android:layout_marginRight="2pt"/>
+                    android:layout_marginRight="2pt"
+                    android:src="@drawable/accept"/>
 
 
             </LinearLayout>
@@ -73,9 +74,9 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_margin="2pt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_margin="2pt"
                     android:layout_weight="1"
                     android:text="@string/cancel"
                     android:textSize="8pt"/>
@@ -83,11 +84,12 @@
                 <ImageView
                     android:layout_width="10pt"
                     android:layout_height="10pt"
-                    android:src="@drawable/cancel"
-                    android:layout_marginRight="2pt"/>
+                    android:layout_marginRight="2pt"
+                    android:src="@drawable/cancel"/>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="2dp"

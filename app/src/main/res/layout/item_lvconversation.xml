@@ -16,9 +16,9 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_gravity="center_vertical"
-            android:orientation="vertical"
             android:layout_marginLeft="@dimen/main_margin"
-            android:layout_marginRight="@dimen/main_margin">
+            android:layout_marginRight="@dimen/main_margin"
+            android:orientation="vertical">
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/lv_conversation_avata"
@@ -40,7 +40,8 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingTop="@dimen/main_margin">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -58,7 +59,12 @@
                     android:textColor="@color/color_name_conversation"
                     android:textSize="25dp"/>
 
-
+                <CheckBox
+                    android:id="@+id/lv_conversation_check"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="@color/colorPrimary"
+                    android:visibility="invisible"/>
             </LinearLayout>
 
             <LinearLayout
