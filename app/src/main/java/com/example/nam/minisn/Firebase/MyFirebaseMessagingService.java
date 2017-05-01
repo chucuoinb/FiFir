@@ -8,7 +8,14 @@ import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.RemoteViews;
+import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.nam.minisn.Activity.ChatActivity;
 import com.example.nam.minisn.Activity.RequestFriendActivity;
 import com.example.nam.minisn.R;
@@ -18,18 +25,21 @@ import com.example.nam.minisn.Util.SharedPrefManager;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private RemoteViews mContentView;
-
+    private int idSend, use_id;
+    private SQLiteDataController database ;
 
     public MyFirebaseMessagingService() {
     }
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
+        database = new SQLiteDataController(getApplicationContext());
         if (remoteMessage.getData().size() > 0) {
             try {
                 JSONObject json = new JSONObject(remoteMessage.getData().toString());
@@ -50,7 +60,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     receiveMessage(jsonObject);
                     break;
                 case Const.TYPE_REQUEST_FRIEND:
-                    Log.d(Const.TAG, "request friend");
                     solveRequestFriend();
                     break;
                 case Const.TYPE_RESPONSE_FRIEND:
@@ -58,7 +67,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             }
         } catch (JSONException e) {
             e.printStackTrace();
-            Log.d(Const.TAG, "k co json2");
         }
     }
 
@@ -69,19 +77,17 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             String usernameSend = jsonObject.getString(Const.USERNAME_SEND);
             String message = json.getString(Const.MESSAGE);
             String nameConversation = jsonObject.getString(Const.NAME_CONVERSATION);
-            int use_id = SharedPrefManager.getInstance(getApplicationContext()).getInt(Const.ID);
-            int idSend = jsonObject.getInt(Const.ID_USERNAME);
-            SQLiteDataController database = new SQLiteDataController(getApplicationContext());
+            use_id = SharedPrefManager.getInstance(getApplicationContext()).getInt(Const.ID);
+            idSend = jsonObject.getInt(Const.ID_USERNAME);
+
             database.openDataBase();
             if (!database.isExistConversation(idConversation)) {
-                Log.d(Const.TAG,"");
                 database.addConversation(idConversation, nameConversation, message, use_id, Const.TYPE_NEW_MESSAGE);
+                getSizeConversation(idConversation);
             }
-            Log.d(Const.TAG,"new message db");
             database.saveMessage(message, idConversation, idSend);
             database.close();
             if (idConversation == SharedPrefManager.getInstance(getApplicationContext()).getInt(Const.CONVERSATION_ID)) {
-                Log.d(Const.TAG, "message: " + message);
                 displayMessageOnScreen(getApplicationContext(), message);
             } else {
                 Bundle bundle = new Bundle();
@@ -142,5 +148,37 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 setContentIntent(pending).
                 setAutoCancel(true);
         manager.notify(Const.ID_NOTIFICATION, notification.build());
+    }
+
+    public void getSizeConversation(final int idConversation) {
+        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+        JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.GET, Const.URL_GET_SIZE_CONVERSATION + "/?" +
+                Const.CONVERSATION_ID + "=" + idConversation
+                , new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+                try {
+                    if (jsonObject.getInt(Const.CODE) == Const.CODE_OK) {
+                        int size = jsonObject.getInt(Const.DATA);
+                        database.updateSizeConversation(idConversation, use_id, size);
+                        if (size == 2) {
+                            database.addIdConversationIntoFriend(use_id, idConversation, idSend);
+                        }
+                    } else
+                        Toast.makeText(getApplicationContext(), "Co loi xay ra", Toast.LENGTH_SHORT).show();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Log.d(Const.TAG, "JSON error: " + e.getMessage());
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                Log.d(Const.TAG, "Request Error");
+            }
+        });
+
+        requestQueue.add(objectRequest);
     }
 }

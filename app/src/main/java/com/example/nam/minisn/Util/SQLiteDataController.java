@@ -303,7 +303,7 @@ public class SQLiteDataController extends SQLiteOpenHelper {
         database.execSQL(sql);
     }
 
-    public void insertConversation(int id, String name, int use_id) {
+    public void insertConversation(int id, String name, int use_id, int size) {
         String sql = Const.INSERT +
                 Const.DB_CONVERSATION +
                 " (" +
@@ -312,6 +312,8 @@ public class SQLiteDataController extends SQLiteOpenHelper {
                 Const.CONVERSATION_COL2 +
                 "," +
                 Const.CONVERSATION_COL5 +
+                "," +
+                Const.CONVERSATION_COL7 +
                 ")" +
                 Const.VALUES +
                 "('" +
@@ -320,6 +322,8 @@ public class SQLiteDataController extends SQLiteOpenHelper {
                 id +
                 "','" +
                 use_id +
+                "','" +
+                size +
                 "')";
         database.execSQL(sql);
     }
@@ -354,5 +358,66 @@ public class SQLiteDataController extends SQLiteOpenHelper {
         Log.d(Const.TAG,sql);
         database.execSQL(sql);
 
+    }
+    public void setNewMessageConversation(int idConversation, int use_id){
+        String sql = Const.UPDATE+
+                Const.DB_CONVERSATION+
+                Const.SET+
+                Const.CONVERSATION_COL6+
+                "='"+
+                Const.TYPE_DONT_NEW_MESSAGE+
+                "'"+
+                Const.WHERE+
+                Const.CONVERSATION_COL2 +
+                "='"+
+                idConversation+
+                "'"+
+                Const.AND+
+                Const.CONVERSATION_COL5 +
+                "='"+
+                use_id+
+                "'";
+        database.execSQL(sql);
+    }
+    public void addIdConversationIntoFriend(int use_id,int id_conversation, int fri_id){
+        String sql = Const.UPDATE+
+                Const.DB_FRIEND+
+                Const.SET+
+                Const.FRIENDS_COL6+
+                "='"+
+                id_conversation+
+                "'"+
+                Const.WHERE+
+                Const.FRIENDS_COL4+
+                "='"+
+                use_id+
+                "'"+
+                Const.AND+
+                Const.FRIENDS_COL3+
+                "='"+
+                fri_id+
+                "'";
+        database.execSQL(sql);
+    }
+
+    public void updateSizeConversation(int idConversation,int use_id,int size){
+        String sql = Const.UPDATE+
+                Const.DB_CONVERSATION+
+                Const.SET+
+                Const.CONVERSATION_COL7+
+                "='"+
+                size+
+                "'"+
+                Const.WHERE+
+                Const.CONVERSATION_COL5+
+                "='"+
+                use_id+
+                "'"+
+                Const.AND+
+                Const.CONVERSATION_COL2+
+                "='"+
+                idConversation+
+                "'";
+        database.execSQL(sql);
     }
 }

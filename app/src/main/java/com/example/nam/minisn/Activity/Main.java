@@ -173,14 +173,23 @@ public class Main extends AppCompatActivity implements View.OnClickListener{
                 }
                 break;
             case R.id.fab_3:
-                Intent intent = new Intent(getApplicationContext(),RequestFriendActivity.class);
-                startActivity(intent);
+//                Intent intent = new Intent(getApplicationContext(),RequestFriendActivity.class);
+//                startActivity(intent);
                 break;
             case R.id.fab_2:
                 Toast.makeText(Main.this, "fab2", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.fab_1:
-                Toast.makeText(Main.this, "fab1", Toast.LENGTH_SHORT).show();
+
+                Toast.makeText(Main.this, String.valueOf(tabLayout.getSelectedTabPosition()), Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
+
+    public void fab1Click(){
+        switch (tabLayout.getSelectedTabPosition()){
+            case 0:
+
                 break;
         }
     }

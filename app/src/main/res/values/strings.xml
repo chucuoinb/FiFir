@@ -48,4 +48,8 @@
     <string name="time2"> phút trước</string>
     <string name="time3"> tiếng trước</string>
     <string name="time4"> ngày trước</string>
+
+    <!--conversation-->
+    <string name="conversatinon_single">BẠN</string>
+    <string name="conversatinon_group">NHÓM</string>
 </resources>

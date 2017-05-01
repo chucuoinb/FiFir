@@ -52,6 +52,7 @@ public class Const {
     public static final String URL_DOWNLOAD_AVATAR = URL + "user/download_avatar.php";
     public static final String URL_SEND_MESSAGE = URL + "conversation/send_message.php";
     public static final String URL_GET_REQUEST_FRIEND = URL + "friend/get_request_friend.php?";
+    public static final String URL_GET_SIZE_CONVERSATION = URL + "conversation/get_size_conversation.php";
 
     //Share preferen
     public static final String FCM_TOKEN = "fcm_token";
@@ -121,6 +122,7 @@ public class Const {
     public static final String FRIENDS_COL3 = "fri_display";
     public static final String FRIENDS_COL4 = "use_id";
     public static final String FRIENDS_COL5 = "fri_gender";
+    public static final String FRIENDS_COL6 = "id_conversation";
 
     public static final String DATA_CONVERSATION_COL0 = "id";
     public static final String DATA_CONVERSATION_COL1 = "id_conversation";
@@ -135,9 +137,13 @@ public class Const {
     public static final String CONVERSATION_COL4 = "time_last_message";
     public static final String CONVERSATION_COL5 = "use_id";
     public static final String CONVERSATION_COL6 = "is_new_message";
+    public static final String CONVERSATION_COL7 = "size";
 
     public static final int TYPE_NEW_MESSAGE = 1;
     public static final int TYPE_DONT_NEW_MESSAGE = 0;
+
+    public static final int CONVERSATION_TYPE_SINGLE = 0;
+    public static final int CONVERSATION_TYPE_GROUP = 1;
 
     //method
     public static final void log(String message) {

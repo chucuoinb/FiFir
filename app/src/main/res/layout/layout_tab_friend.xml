@@ -2,14 +2,22 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:paddingRight="@dimen/main_margin"
+    android:paddingLeft="@dimen/main_margin">
+
     <ListView
         android:id="@+id/tab_Friend_lvFriend"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"></ListView>
+        android:divider="@color/transparent"
+        android:dividerHeight="5dp"
+        android:layout_weight="1">
 
+    </ListView>
 
 
 </LinearLayout>

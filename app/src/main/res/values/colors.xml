@@ -30,4 +30,6 @@
     <color name="color_tab">#8cccf3</color>
     <color name="color_tab_select">#ffffff</color>
     <color name="colorFAB">#64B5F6</color>
+    <color name="colorText">#83888b</color>
+    <color name="colorTextChoose">#00a4fb</color>
 </resources>

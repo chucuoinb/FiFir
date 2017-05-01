@@ -60,9 +60,10 @@
             android:divider="@android:color/transparent"
             android:dividerHeight="@dimen/dividerLvChat"
             android:stackFromBottom="true"
-            android:transcriptMode="alwaysScroll"></ListView>
+            android:transcriptMode="alwaysScroll">
 
-        <include layout="@layout/space"></include>
+        </ListView>
+
 
         <RelativeLayout
             android:layout_width="match_parent"

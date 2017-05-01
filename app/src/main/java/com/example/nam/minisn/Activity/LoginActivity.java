@@ -254,14 +254,21 @@ public class LoginActivity extends AppCompatActivity {
                 try {
                     if (jsonObject.getInt(Const.CODE) == Const.CODE_OK) {
                         JSONArray listConversation = jsonObject.getJSONArray(Const.DATA);
+//                        JSONArray
                         int leght = listConversation.length();
-                        Log.d(Const.TAG,"leght:"+String.valueOf(leght));
                         for (int i = 0; i < leght; i++) {
                             JSONObject object = listConversation.getJSONObject(i);
                             int idConversation = object.getInt(Const.ID);
                             String nameConversation = object.getString(Const.NAME_CONVERSATION);
                             database.openDataBase();
-                            database.insertConversation(idConversation, nameConversation,use_id);
+                            JSONArray listUser = object.getJSONArray(Const.LIST_USER);
+                            database.insertConversation(idConversation, nameConversation,use_id,listUser.length());
+                            if (listUser.length() ==2){
+                                int fri_id = listUser.getJSONObject(0).getInt(Const.ID);
+                                if ( fri_id == use_id)
+                                    fri_id = listUser.getJSONObject(1).getInt(Const.ID);
+                                database.addIdConversationIntoFriend(use_id,idConversation,fri_id);
+                            }
                             database.close();
                         }
                     } else

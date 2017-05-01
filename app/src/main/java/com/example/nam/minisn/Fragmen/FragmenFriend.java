@@ -19,6 +19,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.nam.minisn.Activity.Main;
 import com.example.nam.minisn.Adapter.ListviewFriendAdapter;
 import com.example.nam.minisn.ItemListview.Conversation;
 import com.example.nam.minisn.ItemListview.Friend;
@@ -60,7 +61,7 @@ public class FragmenFriend extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         progressDialog = new ProgressDialog(getActivity(), R.style.AppTheme_Dialog);
-        progressDialog.setIndeterminate(true);
+//        progressDialog.setIndeterminate(true);
         progressDialog.setMessage("Loading");
         progressDialog.show();
         rootView = inflater.inflate(R.layout.layout_tab_friend,container,false);
@@ -76,7 +77,16 @@ public class FragmenFriend extends Fragment {
 
         adapter = new ListviewFriendAdapter(getActivity(),R.layout.item_lvfriend,friends);
         lvFriend.setAdapter(adapter);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        int index = Main.tabLayout.getSelectedTabPosition();
+        Log.d(Const.TAG,"indexTab: "+String.valueOf(index));
+        friends.clear();
         getListFriend();
+        adapter.notifyDataSetChanged();
     }
 
     public void getListFriend(){
@@ -100,7 +110,6 @@ public class FragmenFriend extends Fragment {
                     use_id +
                     "'";
             Cursor cursor = db.getDatabase().rawQuery(sql, null);
-            Log.d(Const.TAG, "friend:"+String.valueOf(cursor.getCount()));
             while (cursor.moveToNext()) {
                 int fri_id= cursor.getInt(cursor.getColumnIndex(Const.FRIENDS_COL1));
                 String fri_username = cursor.getString(cursor.getColumnIndex(Const.FRIENDS_COL2));

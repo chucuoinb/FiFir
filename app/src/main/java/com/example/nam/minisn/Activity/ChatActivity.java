@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,6 +45,7 @@ public class ChatActivity extends AppCompatActivity {
     private String token;
     private String nameConversation;
     private TextView tvNameConversation;
+    private ImageView btnBack;
     private EditText edInputMessage;
     private String message;
     private int idConversation;
@@ -67,7 +69,7 @@ public class ChatActivity extends AppCompatActivity {
                 Log.d(Const.TAG, newMessage);
             }
         };
-
+        btnBack = (ImageView)findViewById(R.id.chat_btn_back);
         registerReceiver(receiverMessage,new IntentFilter(Const.DISPLAY_MESSAGE_ACTION));
         intent = getIntent();
         bundle = intent.getBundleExtra(Const.PACKAGE);
@@ -89,6 +91,12 @@ public class ChatActivity extends AppCompatActivity {
         adapter = new ListviewChatAdapter(ChatActivity.this,R.id.layoutChat,data);
         lvChat.setAdapter(adapter);
         btSend.setOnClickListener(btSendClick);
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     public TextWatcher changeMessage = new TextWatcher() {
