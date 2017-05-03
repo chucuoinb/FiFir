@@ -149,6 +149,7 @@ public class ChatActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         SharedPrefManager.getInstance(getApplicationContext()).savePreferences(Const.CONVERSATION_ID,0);
+        unregisterReceiver(receiverMessage);
     }
     public void sendMessage(HashMap params){
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());

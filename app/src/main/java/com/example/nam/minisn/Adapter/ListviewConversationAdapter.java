@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -21,6 +22,8 @@ import com.example.nam.minisn.ItemListview.Friend;
 import com.example.nam.minisn.ItemListview.Conversation;
 import com.example.nam.minisn.R;
 import com.example.nam.minisn.Util.Const;
+import com.example.nam.minisn.Util.SQLiteDataController;
+import com.example.nam.minisn.Util.SharedPrefManager;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -36,17 +39,22 @@ public class ListviewConversationAdapter extends ArrayAdapter<Conversation> {
     private Context context;
     private int layout;
     private ArrayList<Conversation> data = null;
+    private SQLiteDataController database;
+    private int useId;
 
     public ListviewConversationAdapter(Context context, int layout, ArrayList<Conversation> data) {
         super(context, layout, data);
         this.context = context;
         this.layout = layout;
         this.data = data;
+        database = new SQLiteDataController(context);
+        database.openDataBase();
+        useId = SharedPrefManager.getInstance(context).getInt(Const.ID);
     }
 
     @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         View row = convertView;
         Holder holder = null;
         if (row == null) {
@@ -65,28 +73,24 @@ public class ListviewConversationAdapter extends ArrayAdapter<Conversation> {
         Conversation temp = data.get(position);
         if (temp.isShowCheckBox()) {
             holder.check.setVisibility(View.VISIBLE);
-            if (temp.isChoose())
+            if (temp.getTypeChoose() == Const.CONVERSATION_TYPE_CHOOSE)
                 holder.check.setChecked(true);
             else
                 holder.check.setChecked(false);
         } else {
             holder.check.setVisibility(View.INVISIBLE);
         }
-        if (!FragmenConversation.isSearch || FragmenConversation.search.length()==0)
+        if (!FragmenConversation.isSearch || FragmenConversation.search.length() == 0)
             holder.nameConversation.setText(temp.getNameConservation());
-        else
-            {
+        else {
             String name = temp.getNameConservation();
             int start = name.indexOf(FragmenConversation.search);
-                int end = start+FragmenConversation.search.length();
-//                String str1 = name.substring(0,index);
-//                String str2 = FragmenConversation.search;
-//                String str3 = name.substring(index+str2.length());
-                Spannable spannable = new SpannableString(name);
+            int end = start + FragmenConversation.search.length();
+            Spannable spannable = new SpannableString(name);
 
-                spannable.setSpan(new ForegroundColorSpan(Color.RED),start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            spannable.setSpan(new ForegroundColorSpan(Color.RED), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-                holder.nameConversation.setText(spannable, TextView.BufferType.SPANNABLE);
+            holder.nameConversation.setText(spannable, TextView.BufferType.SPANNABLE);
         }
         holder.lastMessage.setText(temp.getLastMessage());
         if (temp.getTime() > 0)
@@ -95,6 +99,24 @@ public class ListviewConversationAdapter extends ArrayAdapter<Conversation> {
             holder.iconNew.setVisibility(View.VISIBLE);
         else
             holder.iconNew.setVisibility(View.INVISIBLE);
+//        holder.check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                Log.d(Const.TAG,String.valueOf(isChecked) + position);
+//                if (isChecked)
+//                FragmenConversation.data.get(position).setChoose(isChecked);
+//            }
+//        });
+        holder.check.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int choose = (FragmenConversation.data.get(position).getTypeChoose()==Const.CONVERSATION_TYPE_CHOOSE)?
+                            Const.CONVERSATION_TYPE_NO_CHOOSE:Const.CONVERSATION_TYPE_CHOOSE;
+                FragmenConversation.data.get(position).setTypeChoose(choose);
+                database.updateChoose(useId,FragmenConversation.data.get(position).getId(),choose);
+                FragmenConversation.tvCount.setText(String.valueOf(database.getCountChoose()));
+            }
+        });
         return row;
     }
 
@@ -126,4 +148,5 @@ public class ListviewConversationAdapter extends ArrayAdapter<Conversation> {
         TextView time;
         CheckBox check;
     }
+
 }

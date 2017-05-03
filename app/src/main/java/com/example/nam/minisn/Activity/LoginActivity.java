@@ -108,6 +108,7 @@ public class LoginActivity extends AppCompatActivity {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
+                        Log.d(Const.TAG,"here");
                         try {
                             if (response.getInt(Const.CODE) != Const.CODE_OK) {
                                 CheckCode(response.getInt(Const.CODE));
@@ -149,7 +150,7 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         setEnableEdit(true);
-                        Log.d(Const.TAG, "dang nhap that bai");
+                        Log.d(Const.TAG, "dang nhap that bai:"+error.getMessage());
                         progressDialog.dismiss();
                     }
                 });

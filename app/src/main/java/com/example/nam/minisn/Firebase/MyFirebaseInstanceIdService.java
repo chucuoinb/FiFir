@@ -28,6 +28,7 @@ public class MyFirebaseInstanceIdService extends FirebaseInstanceIdService {
 
     private void storeToken(String token) {
         //we will save the token in sharedpreferences later
+        Log.d(Const.TAG,"token:"+token);
         SharedPrefManager.getInstance(getApplicationContext()).savePreferences(Const.FCM_TOKEN,token);
     }
 }

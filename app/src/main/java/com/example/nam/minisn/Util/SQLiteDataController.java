@@ -198,7 +198,6 @@ public class SQLiteDataController extends SQLiteOpenHelper {
                 "','" +
                 time +
                 "')";
-        Log.d(Const.TAG, sql);
         database.execSQL(sql);
         updateConversation(message, time, idConversation);
     }
@@ -422,7 +421,9 @@ public class SQLiteDataController extends SQLiteOpenHelper {
                 "='" +
                 idConversation +
                 "'";
-        database.execSQL(sql);
+//        Log.d(Const.TAG, "size:" + String.valueOf(isExistConversation(idConversation)));
+        if (isExistConversation(idConversation))
+            database.execSQL(sql);
     }
 
     public ArrayList<Conversation> searchConversation(String name, int useId) {
@@ -440,7 +441,10 @@ public class SQLiteDataController extends SQLiteOpenHelper {
                 Const.CONVERSATION_COL5 +
                 "='" +
                 useId +
-                "'";
+                "'" +
+                Const.ORDER_BY+
+                Const.CONVERSATION_COL1+
+                Const.ASC;
         Cursor cursor = database.rawQuery(sql, null);
         while (cursor.moveToNext()) {
             int idConversation = cursor.getInt(2);
@@ -448,7 +452,7 @@ public class SQLiteDataController extends SQLiteOpenHelper {
             String lastMessage = cursor.getString(3);
             long time = cursor.getLong(4);
             boolean isNew = cursor.getInt(6) == 1;
-            Conversation conversation = new Conversation(idConversation, nameConversation, lastMessage, time, isNew);
+            Conversation conversation = new Conversation(idConversation, nameConversation, lastMessage, time, isNew,Const.CONVERSATION_TYPE_NO_CHOOSE);
             data.add(conversation);
         }
 
@@ -497,15 +501,78 @@ public class SQLiteDataController extends SQLiteOpenHelper {
         return data;
     }
 
-    public int getCountRequestFriend(int useId){
-        String sql = Const.SELECT+
-                " * "+
-                Const.FROM+
-                Const.DB_REQUEST_FRIEND+
+    public int getCountRequestFriend(int useId) {
+        String sql = Const.SELECT +
+                " * " +
+                Const.FROM +
+                Const.DB_REQUEST_FRIEND +
+                Const.WHERE +
+                Const.REQUEST_FRIEND_COL3 +
+                "='" +
+                useId +
+                "'";
+        Cursor cursor = database.rawQuery(sql, null);
+        return cursor.getCount();
+    }
+
+    public int getSizeConversation(int conversationId) {
+        int size = 0;
+        String sql = Const.SELECT +
+                Const.CONVERSATION_COL7 +
+                Const.FROM +
+                Const.DB_CONVERSATION +
+                Const.WHERE +
+                Const.CONVERSATION_COL2 +
+                "='" +
+                conversationId +
+                "'";
+        Cursor cursor = database.rawQuery(sql, null);
+//        size = cursor.getInt(0);
+        cursor.moveToFirst();
+        Log.d(Const.TAG, "count:" + String.valueOf(cursor.getInt(0)));
+        return size;
+    }
+
+    public void updateChoose(int useId,int idConversation,int choose){
+        String sql = Const.UPDATE+
+                    Const.DB_CONVERSATION+
+                Const.SET+
+                Const.CONVERSATION_COL8+
+                "='"+
+                choose+
+                "'"+
                 Const.WHERE+
-                Const.REQUEST_FRIEND_COL3+
+                Const.CONVERSATION_COL2+
+                "='"+
+                idConversation+
+                "'"+
+                Const.AND+
+                Const.CONVERSATION_COL5+
                 "='"+
                 useId+
+                "'";
+        database.execSQL(sql);
+    }
+    public void setAllChoose(int choose){
+        String sql = Const.UPDATE+
+                    Const.DB_CONVERSATION+
+                    Const.SET+
+                    Const.CONVERSATION_COL8+
+                "='"+
+                choose+
+                "'";
+        database.execSQL(sql);
+    }
+
+    public int getCountChoose(){
+        String sql = Const.SELECT+
+                    Const.CONVERSATION_COL8+
+                Const.FROM+
+                Const.DB_CONVERSATION+
+                Const.WHERE+
+                Const.CONVERSATION_COL8+
+                "='"+
+                Const.CONVERSATION_TYPE_CHOOSE+
                 "'";
         Cursor cursor = database.rawQuery(sql,null);
         return cursor.getCount();

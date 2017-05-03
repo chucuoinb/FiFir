@@ -31,8 +31,8 @@ import org.json.JSONObject;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private RemoteViews mContentView;
-    private int idSend, use_id;
-    private SQLiteDataController database ;
+    private int idSend, use_id, idConversation;
+    private SQLiteDataController database;
 
     public MyFirebaseMessagingService() {
     }
@@ -73,7 +73,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public void receiveMessage(JSONObject json) {
         try {
             JSONObject jsonObject = json.getJSONObject(Const.DATA);
-            int idConversation = jsonObject.getInt(Const.CONVERSATION_ID);
+            idConversation = jsonObject.getInt(Const.CONVERSATION_ID);
             String usernameSend = jsonObject.getString(Const.USERNAME_SEND);
             String message = json.getString(Const.MESSAGE);
             String nameConversation = jsonObject.getString(Const.NAME_CONVERSATION);
@@ -83,10 +83,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             database.openDataBase();
             if (!database.isExistConversation(idConversation)) {
                 database.addConversation(idConversation, nameConversation, message, use_id, Const.TYPE_NEW_MESSAGE);
-                getSizeConversation(idConversation);
+//                while (!database.isExistConversation(idConversation)) ;
             }
+                getSizeConversation();
             database.saveMessage(message, idConversation, idSend);
-            database.close();
+//            database.close();
             if (idConversation == SharedPrefManager.getInstance(getApplicationContext()).getInt(Const.CONVERSATION_ID)) {
                 displayMessageOnScreen(getApplicationContext(), message);
             } else {
@@ -150,9 +151,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         manager.notify(Const.ID_NOTIFICATION, notification.build());
     }
 
-    public void getSizeConversation(final int idConversation) {
+    public void getSizeConversation() {
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-        JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.GET, Const.URL_GET_SIZE_CONVERSATION + "/?" +
+        JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.GET, Const.URL_GET_SIZE_CONVERSATION + "?" +
                 Const.CONVERSATION_ID + "=" + idConversation
                 , new Response.Listener<JSONObject>() {
             @Override
@@ -160,10 +161,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 try {
                     if (jsonObject.getInt(Const.CODE) == Const.CODE_OK) {
                         int size = jsonObject.getInt(Const.DATA);
+                        database.openDataBase();
                         database.updateSizeConversation(idConversation, use_id, size);
-                        if (size == 2) {
-                            database.addIdConversationIntoFriend(use_id, idConversation, idSend);
-                        }
+//                        database.close();
+//                        if (size == 2) {
+//                            database.addIdConversationIntoFriend(use_id, idConversation, idSend);
+//                        }
                     } else
                         Toast.makeText(getApplicationContext(), "Co loi xay ra", Toast.LENGTH_SHORT).show();
                 } catch (JSONException e) {

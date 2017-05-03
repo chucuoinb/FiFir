@@ -44,7 +44,7 @@ public class Const {
     public static final String USERNAME = "username";
     public static final String ID_USERNAME = "id_username";
     //URL
-    public static final String URL = "http://www.namlv.hol.es/ver1/";
+    public static final String URL = "http://www.namlv-hust.96.lt/ver1/";
     public static final String URL_LOGIN = URL + "user/login.php";
     public static final String URL_GET_LIST_CONVERSATION = URL + "conversation/get_list_conversation.php";
     public static final String URL_GET_LIST_FRIEND = URL + "friend/get_list_friend.php";
@@ -142,6 +142,7 @@ public class Const {
     public static final String CONVERSATION_COL5 = "use_id";
     public static final String CONVERSATION_COL6 = "is_new_message";
     public static final String CONVERSATION_COL7 = "size";
+    public static final String CONVERSATION_COL8 = "choose";
 
     public static final String REQUEST_FRIEND_COL0 = "id";
     public static final String REQUEST_FRIEND_COL1 = "id_request";
@@ -153,6 +154,9 @@ public class Const {
 
     public static final int CONVERSATION_TYPE_SINGLE = 0;
     public static final int CONVERSATION_TYPE_GROUP = 1;
+    public static final int CONVERSATION_TYPE_CHOOSE = 1;
+    public static final int CONVERSATION_TYPE_NO_CHOOSE = 0;
+
 
     //method
     public static final void log(String message) {

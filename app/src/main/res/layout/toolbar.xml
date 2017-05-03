@@ -23,13 +23,21 @@
                 android:src="@drawable/btn_back"
                 android:layout_gravity="center_vertical"/>
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/chat_tv_nameFriend"
                 android:layout_marginLeft="10dp"
+                android:layout_weight="1"
                 android:textStyle="bold"
                 android:textSize="@dimen/text_status"
                 android:text="aaa"/>
+            <ImageView
+                android:layout_marginRight="@dimen/main_margin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/btn_delete"
+                android:src="@drawable/fab3"
+                android:visibility="invisible"/>
         </LinearLayout>
 
     </android.support.v7.widget.Toolbar>

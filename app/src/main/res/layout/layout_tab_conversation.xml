@@ -3,12 +3,43 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
+    <LinearLayout
+        android:layout_marginRight="@dimen/fab_margin"
+        android:layout_marginLeft="@dimen/main_margin"
+        android:layout_gravity="top|left"
+        android:id="@+id/conversation_delete"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/main_margin"
+        android:visibility="invisible">
+        <TextView
+            android:id="@+id/conversation_bt_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/delete"
+            android:textSize="17dp"/>
 
+        <TextView
+            android:id="@+id/conversation_count_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/fab3"
+            android:text="0"
+            android:textSize="17dp"/>
+        <CheckBox
+            android:id="@+id/conversation_cb_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/all"
+            android:buttonTint="@color/colorPrimary"/>
+    </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
         android:orientation="vertical">
 
         <LinearLayout
@@ -20,6 +51,7 @@
             android:orientation="vertical">
 
             <FrameLayout
+                android:id="@+id/frame"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -27,7 +59,6 @@
                     android:id="@+id/tab_conversation_tab"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/white"
                     android:orientation="horizontal"
                     android:paddingTop="@dimen/main_margin">
 

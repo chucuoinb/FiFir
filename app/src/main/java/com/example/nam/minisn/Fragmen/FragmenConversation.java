@@ -8,23 +8,22 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.nam.minisn.Activity.ChatActivity;
-import com.example.nam.minisn.Activity.Main;
 import com.example.nam.minisn.Adapter.ListviewConversationAdapter;
 import com.example.nam.minisn.ItemListview.Conversation;
 import com.example.nam.minisn.R;
@@ -32,19 +31,20 @@ import com.example.nam.minisn.Util.Const;
 import com.example.nam.minisn.Util.SQLiteDataController;
 import com.example.nam.minisn.Util.SharedPrefManager;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 /**
  * Created by Nam on 2/21/2017.
  */
 
 public class FragmenConversation extends Fragment implements View.OnClickListener {
+    private static final String SHOW_DELETE = "s_delete";
+    private static final String SHOW_SEARCH = "s_search";
+    private static final int TYPE_SHOW = 1;
     private View rootView;
     private ListView lvConversation;
-    private ArrayList<Conversation> data = new ArrayList<>();
-    private ArrayList<Conversation> dataClone = new ArrayList<>();
+    public static ArrayList<Conversation> data = new ArrayList<>();
+    public static ArrayList<Conversation> dataClone = new ArrayList<>();
     private ArrayList<Conversation> dataSingle = new ArrayList<>();
     private ArrayList<Conversation> dataGroup = new ArrayList<>();
     private Bundle bundle;
@@ -59,10 +59,18 @@ public class FragmenConversation extends Fragment implements View.OnClickListene
     private FloatingActionButton fabMain, fabConversation, fabFriend, fabRequestFriend;
     private Animation show_fab1, hide_fab1, show_fab2, hide_fab2, show_fab3, hide_fab3;
     private boolean isOpenSubMenu = false;
-    private LinearLayout conversationTab,space;
+    private LinearLayout conversationTab, space;
     private EditText inputSearch;
+    private ImageView btnDelete;
     public static String search;
     public static boolean isSearch = false;
+    private LinearLayout layoutDelete;
+    private TextView tvDelete;
+    public static TextView tvCount;
+    private CheckBox checkAll;
+    private FrameLayout frame;
+    private boolean isShowDelete = false;
+
     public FragmenConversation() {
 
     }
@@ -91,8 +99,14 @@ public class FragmenConversation extends Fragment implements View.OnClickListene
     }
 
     public void init() {
-        inputSearch = (EditText)rootView.findViewById(R.id.search_conversation_input);
-        space = (LinearLayout)rootView.findViewById(R.id.space);
+        frame = (FrameLayout) rootView.findViewById(R.id.frame);
+        checkAll = (CheckBox) rootView.findViewById(R.id.conversation_cb_all);
+        tvCount = (TextView) rootView.findViewById(R.id.conversation_count_delete);
+        tvDelete = (TextView) rootView.findViewById(R.id.conversation_bt_delete);
+        layoutDelete = (LinearLayout) rootView.findViewById(R.id.conversation_delete);
+        btnDelete = (ImageView) rootView.findViewById(R.id.btn_delete);
+        inputSearch = (EditText) rootView.findViewById(R.id.search_conversation_input);
+        space = (LinearLayout) rootView.findViewById(R.id.space);
         fabMain = (FloatingActionButton) rootView.findViewById(R.id.main_fab);
         fabConversation = (FloatingActionButton) rootView.findViewById(R.id.fab_1);
         fabFriend = (FloatingActionButton) rootView.findViewById(R.id.fab_2);
@@ -102,6 +116,8 @@ public class FragmenConversation extends Fragment implements View.OnClickListene
         groupNew = (ImageView) rootView.findViewById(R.id.group_new);
         single = (TextView) rootView.findViewById(R.id.lv_conversation_single);
         group = (TextView) rootView.findViewById(R.id.lv_conversation_group);
+
+
         single.setOnClickListener(singleClick);
         group.setOnClickListener(groupClick);
         fabConversation.setOnClickListener(this);
@@ -116,38 +132,37 @@ public class FragmenConversation extends Fragment implements View.OnClickListene
         lvConversation.setOnItemClickListener(itemLvConversationCkick);
         inputSearch.addTextChangedListener(changeInput);
         search = new String();
+
+        checkAll.setOnCheckedChangeListener(chanCheckAll);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
+        database.openDataBase();
         setConversationSelect(Const.CONVERSATION_TYPE_SINGLE);
         data.clear();
         dataSingle.clear();
         dataGroup.clear();
         getListConversation();
+        if (isShowDelete){
+            for (int i = 0; i < data.size(); i++) {
+                data.get(i).setShowCheckBox(true);
+            }
+        }
         adapter.notifyDataSetChanged();
     }
 
-//    @Override
-//    public void onPause() {
-//        super.onPause();
-//    }
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
 //
-//    @Override
-//    public void onStop() {
-//        super.onStop();
-//        if (isOpenSubMenu) {
-//            isOpenSubMenu = false;
-//            hideSubMenu();
-//        }
-//    }
 
     public void getListConversation() {
 //        SQLiteDataController db = new SQLiteDataController(getActivity());
 //            database.isCreatedDatabase();
-        database.openDataBase();
+//        database.openDataBase();
         String sql = Const.SELECT +
                 " * " +
                 Const.FROM +
@@ -159,7 +174,9 @@ public class FragmenConversation extends Fragment implements View.OnClickListene
                 "'" +
                 Const.ORDER_BY +
                 Const.CONVERSATION_COL4 +
-                Const.DESC;
+                ","+
+                Const.CONVERSATION_COL1+
+                Const.ASC;
         Cursor cursor = database.getDatabase().rawQuery(sql, null);
         while (cursor.moveToNext()) {
             int idConversation = cursor.getInt(cursor.getColumnIndex(Const.CONVERSATION_COL2));
@@ -169,7 +186,8 @@ public class FragmenConversation extends Fragment implements View.OnClickListene
             if (cursor.getLong(4) > 0)
                 time = cursor.getLong(4);
             boolean isNew = cursor.getInt(cursor.getColumnIndex(Const.CONVERSATION_COL6)) == 1;
-            Conversation conversation = new Conversation(idConversation, nameConversation, lastMessage, time, isNew);
+            int typeChoose = cursor.getInt(cursor.getColumnIndex(Const.CONVERSATION_COL8));
+            Conversation conversation = new Conversation(idConversation, nameConversation, lastMessage, time, isNew,typeChoose);
             int size = cursor.getInt(7);
             if (size > 2) {
                 if (conversation.isNew())
@@ -186,9 +204,12 @@ public class FragmenConversation extends Fragment implements View.OnClickListene
             }
             dataClone.add(conversation);
         }
-        database.close();
+//        database.close();
 //        data = new ArrayList<>(dataSingle);
-        data.addAll(dataSingle);
+        if (isSearch)
+            data.addAll(dataClone);
+        else
+            data.addAll(dataSingle);
         adapter.notifyDataSetChanged();
         progressDialog.dismiss();
     }
@@ -199,9 +220,9 @@ public class FragmenConversation extends Fragment implements View.OnClickListene
             intent = new Intent(getActivity(), ChatActivity.class);
             Conversation item = data.get(position);
             if (item.isNew()) {
-                database.openDataBase();
+//                database.openDataBase();
                 database.setNewMessageConversation(item.getId(), use_id);
-                database.close();
+//                database.close();
                 item.setNew(false);
 //                adapter.notifyDataSetChanged();
             }
@@ -300,21 +321,52 @@ public class FragmenConversation extends Fragment implements View.OnClickListene
                 }
                 break;
             case R.id.fab_3:
+                if (isOpenSubMenu) {
+                    hideSubMenu();
+                    isOpenSubMenu = false;
+                }
+                showDelete();
                 break;
             case R.id.fab_2:
-                conversationTab.setVisibility(View.INVISIBLE);
+//                conversationTab.setVisibility(View.INVISIBLE);
                 break;
             case R.id.fab_1:
-                this.isSearch = true;
-                conversationTab.setVisibility(View.INVISIBLE);
-                space.setVisibility(View.INVISIBLE);
-                inputSearch.setVisibility(View.VISIBLE);
-                data.clear();
-                data.addAll(dataClone);
-                adapter.notifyDataSetChanged();
+                if (isOpenSubMenu) {
+                    hideSubMenu();
+                    isOpenSubMenu = false;
+                }
+                showSearch();
                 break;
         }
     }
+
+    public void showSearch(){
+        this.isSearch = true;
+        conversationTab.setVisibility(View.INVISIBLE);
+        space.setVisibility(View.INVISIBLE);
+        inputSearch.setVisibility(View.VISIBLE);
+        data.clear();
+        data.addAll(dataClone);
+        adapter.notifyDataSetChanged();
+    }
+
+    public void showDelete(){
+        if (!isShowDelete) {
+            isShowDelete = true;
+            showSearch();
+            for (int i = 0; i < data.size(); i++) {
+                data.get(i).setShowCheckBox(true);
+            }
+            layoutDelete.setVisibility(View.VISIBLE);
+            adapter.notifyDataSetChanged();
+            LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) frame.getLayoutParams();
+            layoutParams.topMargin += 100;
+            frame.setLayoutParams(layoutParams);
+        }
+    }
+
+
+
     public TextWatcher changeInput = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -323,17 +375,56 @@ public class FragmenConversation extends Fragment implements View.OnClickListene
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            database.openDataBase();
+//            database.openDataBase();
             String name = inputSearch.getText().toString();
             FragmenConversation.search = name;
             data.clear();
-            data.addAll(database.searchConversation(name,use_id));
+            ArrayList<Conversation> temp = new ArrayList<>();
+
+            temp.addAll(database.searchConversation(name, use_id));
+            for (int i =0;i<temp.size();i++){
+                int id = temp.get(i).getId();
+                for( int j=0;j<dataClone.size();j ++){
+                    if (dataClone.get(j).getId() == id)
+                        data.add(dataClone.get(j));
+                }
+            }
             adapter.notifyDataSetChanged();
-            database.close();
+//            database.close();
         }
 
         @Override
         public void afterTextChanged(Editable s) {
         }
     };
+
+    public CompoundButton.OnCheckedChangeListener chanCheckAll = new CompoundButton.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            int choose = isChecked?Const.CONVERSATION_TYPE_CHOOSE:Const.CONVERSATION_TYPE_NO_CHOOSE;
+            for (int i = 0; i < data.size(); i++) {
+                data.get(i).setTypeChoose(choose);
+            }
+            database.setAllChoose(choose);
+            tvCount.setText(String.valueOf(database.getCountChoose()));
+            adapter.notifyDataSetChanged();
+        }
+    };
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        int showDelete = isShowDelete?this.TYPE_SHOW:0;
+        int showSearch = isSearch?this.TYPE_SHOW:0;
+        SharedPrefManager.getInstance(getActivity()).savePreferences(this.SHOW_DELETE,showDelete);
+        SharedPrefManager.getInstance(getActivity()).savePreferences(this.SHOW_SEARCH,showSearch);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        database.setAllChoose(Const.CONVERSATION_TYPE_NO_CHOOSE);
+        database.close();
+    }
+
 }

@@ -1,8 +1,5 @@
 package com.example.nam.minisn.ItemListview;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-
 /**
  * Created by Nam on 2/21/2017.
  */
@@ -15,20 +12,23 @@ public class Conversation{
     private long time;
     private boolean isNew;
     private boolean isShowCheckBox;
-    private boolean isChoose;
+
+
+
+    private int typeChoose;
 
 
 
     public Conversation() {
     }
-    public Conversation(int id, String nameConservation, String lastMessage, long time,boolean isNew) {
+    public Conversation(int id, String nameConservation, String lastMessage, long time,boolean isNew ,int typeChoose) {
         this.id = id;
         this.nameConservation = nameConservation;
         this.lastMessage = lastMessage;
         this.time = time;
         this.isNew = isNew;
         this.isShowCheckBox = false;
-        this.isChoose = false;
+        this.typeChoose = typeChoose;
     }
     public Conversation(String nameConservation,int id){
         this.nameConservation=nameConservation;
@@ -80,13 +80,6 @@ public class Conversation{
         isShowCheckBox = showCheckBox;
     }
 
-    public boolean isChoose() {
-        return isChoose;
-    }
-
-    public void setChoose(boolean choose) {
-        isChoose = choose;
-    }
 
 
 
@@ -103,5 +96,12 @@ public class Conversation{
 
     public void setLastMessage(String lastMessage) {
         this.lastMessage = lastMessage;
+    }
+    public int getTypeChoose() {
+        return typeChoose;
+    }
+
+    public void setTypeChoose(int typeChoose) {
+        this.typeChoose = typeChoose;
     }
 }
