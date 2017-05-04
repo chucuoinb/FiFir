@@ -86,7 +86,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 //                while (!database.isExistConversation(idConversation)) ;
             }
                 getSizeConversation();
-            database.saveMessage(message, idConversation, idSend);
+            database.saveMessage(message, idConversation, idSend,use_id);
 //            database.close();
             if (idConversation == SharedPrefManager.getInstance(getApplicationContext()).getInt(Const.CONVERSATION_ID)) {
                 displayMessageOnScreen(getApplicationContext(), message);

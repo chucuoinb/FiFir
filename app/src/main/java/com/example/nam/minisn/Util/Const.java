@@ -101,6 +101,7 @@ public class Const {
     public static final String WHERE = " where ";
     public static final String UPDATE = "update ";
     public static final String SET = " set ";
+    public static final String DELETE = "delete ";
     public static final String VALUES = " values ";
     public static final String INSERT = "insert into ";
     public static final String AND = " and ";
@@ -133,6 +134,7 @@ public class Const {
     public static final String DATA_CONVERSATION_COL2 = "id_send";
     public static final String DATA_CONVERSATION_COL3 = "message";
     public static final String DATA_CONVERSATION_COL4 = "time";
+    public static final String DATA_CONVERSATION_COL5 = "use_id";
 
     public static final String CONVERSATION_COL0 = "id";
     public static final String CONVERSATION_COL1 = "name_conversation";
@@ -143,6 +145,7 @@ public class Const {
     public static final String CONVERSATION_COL6 = "is_new_message";
     public static final String CONVERSATION_COL7 = "size";
     public static final String CONVERSATION_COL8 = "choose";
+    public static final String CONVERSATION_COL9 = "active";
 
     public static final String REQUEST_FRIEND_COL0 = "id";
     public static final String REQUEST_FRIEND_COL1 = "id_request";
@@ -151,6 +154,11 @@ public class Const {
 
     public static final int TYPE_NEW_MESSAGE = 1;
     public static final int TYPE_DONT_NEW_MESSAGE = 0;
+
+    public static final int TYPE_DONT_ACTIVE = 0;
+    public static final int TYPE_ACTIVE = 1;
+
+
 
     public static final int CONVERSATION_TYPE_SINGLE = 0;
     public static final int CONVERSATION_TYPE_GROUP = 1;

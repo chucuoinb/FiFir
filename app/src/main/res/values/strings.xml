@@ -53,6 +53,7 @@
     <string name="conversatinon_single">BẠN</string>
     <string name="conversatinon_group">NHÓM</string>
     <string name="delete">Xóa</string>
+    <string name="deleting">Đang Xóa</string>
     <string name="all">Tất cả</string>
 
     <string name="input_conversation">Nhập tên cuộc hội thoại</string>

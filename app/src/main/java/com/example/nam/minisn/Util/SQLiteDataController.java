@@ -173,7 +173,7 @@ public class SQLiteDataController extends SQLiteOpenHelper {
         this.database = database;
     }
 
-    public void saveMessage(String message, int idConversation, int idSend) {
+    public void saveMessage(String message, int idConversation, int idSend,int useID) {
 //        String time = Const.getTimeNow();
         long time = System.currentTimeMillis() / 1000;
         String sql = Const.INSERT +
@@ -187,6 +187,8 @@ public class SQLiteDataController extends SQLiteOpenHelper {
                 Const.DATA_CONVERSATION_COL3 +
                 "," +
                 Const.DATA_CONVERSATION_COL4 +
+                "," +
+                Const.DATA_CONVERSATION_COL5 +
                 ")" +
                 Const.VALUES +
                 "('" +
@@ -197,6 +199,8 @@ public class SQLiteDataController extends SQLiteOpenHelper {
                 message +
                 "','" +
                 time +
+                "','" +
+                useID +
                 "')";
         database.execSQL(sql);
         updateConversation(message, time, idConversation);
@@ -576,5 +580,85 @@ public class SQLiteDataController extends SQLiteOpenHelper {
                 "'";
         Cursor cursor = database.rawQuery(sql,null);
         return cursor.getCount();
+    }
+
+    public void setActive(int active,int idConversation,int useId){
+        String sql = Const.UPDATE+
+                Const.DB_CONVERSATION+
+                Const.SET+
+                Const.CONVERSATION_COL8+
+                "='"+
+                active+
+                "'"+
+                Const.WHERE+
+                Const.CONVERSATION_COL2+
+                "='"+
+                idConversation+
+                "'"+
+                Const.AND+
+                Const.CONVERSATION_COL5+
+                "='"+
+                useId+
+                "'";
+        database.execSQL(sql);
+    }
+
+    public void deleteMessageInConversation(int idConversation,int useId){
+        String sql = Const.DELETE+
+                    Const.FROM+
+                Const.DB_DATA_CONVERSATION+
+                Const.WHERE+
+                Const.DATA_CONVERSATION_COL1+
+                "='"+
+                idConversation+
+                "'"+
+                Const.AND+
+                Const.DATA_CONVERSATION_COL5+
+                "='"+
+                useId+
+                "'";
+        database.execSQL(sql);
+        updateConversation("",0,idConversation);
+        updateActiveConversation(idConversation,useId,Const.TYPE_DONT_ACTIVE);
+        setNewMessageConversation(idConversation,useId);
+    }
+
+    public void updateActiveConversation(int idConversation,int useId,int active){
+        String sql = Const.UPDATE+
+                    Const.DB_CONVERSATION+
+                Const.SET+
+                Const.CONVERSATION_COL9+
+                "='"+
+                active+
+                "'"+
+                Const.WHERE+
+                Const.CONVERSATION_COL2+
+                "='"+
+                idConversation+
+                "'"+
+                Const.AND+
+                Const.CONVERSATION_COL5+
+                "='"+
+                useId+
+                "'";
+        database.execSQL(sql);
+    }
+
+    public ArrayList<Integer> getListIdDelete(){
+        ArrayList<Integer> data = new ArrayList<>();
+        String sql = Const.SELECT+
+                Const.CONVERSATION_COL2+
+                Const.FROM+
+                Const.DB_CONVERSATION+
+                Const.WHERE+
+                Const.CONVERSATION_COL8+
+                "='"+
+                Const.CONVERSATION_TYPE_CHOOSE+
+                "'";
+        Cursor cursor = database.rawQuery(sql,null);
+        while (cursor.moveToNext()){
+            data.add(cursor.getInt(cursor.getColumnIndex(Const.CONVERSATION_COL2)));
+        }
+        return data;
     }
 }

@@ -116,8 +116,8 @@ public class FragmenFriend extends Fragment implements View.OnClickListener{
     @Override
     public void onPause() {
         super.onPause();
-        isOpenSubMenu = false;
-        hideSubMenu();
+//        isOpenSubMenu = false;
+//        hideSubMenu();
     }
 
     public void getListFriend(){

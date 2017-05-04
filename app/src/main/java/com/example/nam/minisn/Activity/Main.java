@@ -27,7 +27,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 public class Main extends AppCompatActivity {
-//    private boolean isOpenSubMenu = false;
+    //    private boolean isOpenSubMenu = false;
     private TabsAdapter mSectionsPagerAdapter;
     private Intent intent;
     private Bundle bundle;
@@ -36,11 +36,12 @@ public class Main extends AppCompatActivity {
             R.drawable.tabstatus,
     };
 
-//    private FloatingActionButton fabMain,fabConversation,fabFriend,fabRequestFriend;
+    //    private FloatingActionButton fabMain,fabConversation,fabFriend,fabRequestFriend;
 //    private Animation show_fab1, hide_fab1,show_fab2, hide_fab2,show_fab3, hide_fab3;
     private ViewPager mViewPager;
     public static TabLayout tabLayout;
     private ArrayList<Conversation> data = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,45 +66,56 @@ public class Main extends AppCompatActivity {
         tabLayout.setupWithViewPager(mViewPager);
         tabLayout.setOnTabSelectedListener(changeTab);
         tabLayout.getTabAt(0).setIcon(iconTabs[0]);
-        tabLayout.getTabAt(0).getIcon().setColorFilter(getResources().getColor(R.color.color_tab_select),PorterDuff.Mode.SRC_IN);
+        tabLayout.getTabAt(0).getIcon().setColorFilter(getResources().getColor(R.color.color_tab_select), PorterDuff.Mode.SRC_IN);
         for (int i = 1; i < 2; i++) {
             tabLayout.getTabAt(i).setIcon(iconTabs[i]);
-            tabLayout.getTabAt(i).getIcon().setColorFilter(getResources().getColor(R.color.color_tab),PorterDuff.Mode.SRC_IN);
+            tabLayout.getTabAt(i).getIcon().setColorFilter(getResources().getColor(R.color.color_tab), PorterDuff.Mode.SRC_IN);
         }
 //        animation();
     }
 
     @Override
     public void onBackPressed() {
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setTitle("Đóng ứng dụng?");
-        alertDialogBuilder
-                .setMessage("Click Yes để đóng ứng dụng!")
-                .setCancelable(false)
-                .setPositiveButton("Yes",
-                        new DialogInterface.OnClickListener() {
+        if (FragmenConversation.isShowDelete) {
+            FragmenConversation.hideDelete();
+
+        } else {
+            if (FragmenConversation.isSearch) {
+                FragmenConversation.hideSearch();
+
+            } else {
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+                alertDialogBuilder.setTitle("Đóng ứng dụng?");
+                alertDialogBuilder
+                        .setMessage("Click Yes để đóng ứng dụng!")
+                        .setCancelable(false)
+                        .setPositiveButton("Yes",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        moveTaskToBack(true);
+                                        android.os.Process.killProcess(android.os.Process.myPid());
+                                        System.exit(1);
+                                    }
+                                })
+
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                moveTaskToBack(true);
-                                android.os.Process.killProcess(android.os.Process.myPid());
-                                System.exit(1);
+
+                                dialog.cancel();
                             }
-                        })
+                        });
 
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                alertDialog.show();
 
-                        dialog.cancel();
-                    }
-                });
-
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
+            }
+        }
     }
 
     TabLayout.OnTabSelectedListener changeTab = new TabLayout.OnTabSelectedListener() {
         @Override
         public void onTabSelected(TabLayout.Tab tab) {
-            tab.getIcon().setColorFilter(getResources().getColor(R.color.color_tab_select),PorterDuff.Mode.SRC_IN);
+            tab.getIcon().setColorFilter(getResources().getColor(R.color.color_tab_select), PorterDuff.Mode.SRC_IN);
         }
 
         @Override
