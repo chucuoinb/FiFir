@@ -58,4 +58,7 @@
 
     <string name="input_conversation">Nhập tên cuộc hội thoại</string>
     <string name="request_friend">Lời mời kết bạn</string>
+
+    <!--friend-->
+    <string name="friend_input_search">Nhập tên bạn bè</string>
 </resources>

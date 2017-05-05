@@ -1,11 +1,9 @@
 package com.example.nam.minisn.Fragmen;
 
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -16,10 +14,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -28,7 +24,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -70,18 +65,19 @@ public class FragmenConversation extends Fragment implements View.OnClickListene
     private boolean isOpenSubMenu = false;
     private static LinearLayout conversationTab, space;
     private static EditText inputSearch;
-    private ImageView btnDelete;
     public static String search;
     public static boolean isSearch = false;
     private static LinearLayout layoutDelete;
     private TextView tvDelete;
     public static TextView tvCount;
-    private CheckBox checkAll;
+
+    public static CheckBox getCheckAll() {
+        return checkAll;
+    }
+
+    private static CheckBox checkAll;
     private static FrameLayout frame;
     public static boolean isShowDelete = false;
-    private Dialog deleteDialog;
-    private ProgressBar progressBar;
-    private TextView tvProgressDelete, tvMaxDelete;
 
     public FragmenConversation() {
 
@@ -111,19 +107,12 @@ public class FragmenConversation extends Fragment implements View.OnClickListene
     }
 
     public void init() {
-//        deleteDialog = new Dialog(getActivity());
-//        deleteDialog.setContentView(R.layout.progress_delete_dialog);
-//        progressBar = (ProgressBar) deleteDialog.findViewById(R.id.progress_bar);
-//        tvProgressDelete = (TextView) deleteDialog.findViewById(R.id.progress_delete);
-//        tvMaxDelete = (TextView) deleteDialog.findViewById(R.id.progress_max);
-//        deleteDialog.setCancelable(false);
-//        deleteDialog.setCanceledOnTouchOutside(false);
+//        set id
         frame = (FrameLayout) rootView.findViewById(R.id.frame);
         checkAll = (CheckBox) rootView.findViewById(R.id.conversation_cb_all);
         tvCount = (TextView) rootView.findViewById(R.id.conversation_count_delete);
         tvDelete = (TextView) rootView.findViewById(R.id.conversation_bt_delete);
         layoutDelete = (LinearLayout) rootView.findViewById(R.id.conversation_delete);
-        btnDelete = (ImageView) rootView.findViewById(R.id.btn_delete);
         inputSearch = (EditText) rootView.findViewById(R.id.search_conversation_input);
         space = (LinearLayout) rootView.findViewById(R.id.space);
         fabMain = (FloatingActionButton) rootView.findViewById(R.id.main_fab);
@@ -135,36 +124,43 @@ public class FragmenConversation extends Fragment implements View.OnClickListene
         groupNew = (ImageView) rootView.findViewById(R.id.group_new);
         single = (TextView) rootView.findViewById(R.id.lv_conversation_single);
         group = (TextView) rootView.findViewById(R.id.lv_conversation_group);
+        lvConversation = (ListView) rootView.findViewById(R.id.tab_Conversation_lv);
+
+        database = new SQLiteDataController(getActivity());
+
+        adapter = new ListviewConversationAdapter(getActivity(), R.layout.item_lvconversation, data);
+        lvConversation.setAdapter(adapter);
 
 
-        single.setOnClickListener(singleClick);
-        group.setOnClickListener(groupClick);
+        search = new String();
+
+        setListener();
+    }
+
+    public void setListener(){
+        tvDelete.setOnClickListener(this);
+        single.setOnClickListener(this);
+        group.setOnClickListener(this);
         fabConversation.setOnClickListener(this);
         fabMain.setOnClickListener(this);
         fabFriend.setOnClickListener(this);
         fabRequestFriend.setOnClickListener(this);
-        database = new SQLiteDataController(getActivity());
-        lvConversation = (ListView) rootView.findViewById(R.id.tab_Conversation_lv);
 
-        adapter = new ListviewConversationAdapter(getActivity(), R.layout.item_lvconversation, data);
-        lvConversation.setAdapter(adapter);
-        lvConversation.setOnItemClickListener(itemLvConversationCkick);
+        lvConversation.setOnItemClickListener(itemLvConversationClick);
+        lvConversation.setOnItemLongClickListener(itemLvConversationLongClick);
+
+        checkAll.setOnClickListener(this);
+
         inputSearch.addTextChangedListener(changeInput);
-        search = new String();
-
-        checkAll.setOnCheckedChangeListener(chanCheckAll);
-        tvDelete.setOnClickListener(deleteClick);
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        Log.d(Const.TAG,"resume");
         database.openDataBase();
         setConversationSelect(Const.CONVERSATION_TYPE_SINGLE);
-        dataClone.clear();
-        data.clear();
-        dataSingle.clear();
-        dataGroup.clear();
+        clearData();
         getListConversation(isShowDelete);
         if (isShowDelete) {
             for (int i = 0; i < data.size(); i++) {
@@ -241,7 +237,7 @@ public class FragmenConversation extends Fragment implements View.OnClickListene
         progressDialog.dismiss();
     }
 
-    public AdapterView.OnItemClickListener itemLvConversationCkick = new AdapterView.OnItemClickListener() {
+    public AdapterView.OnItemClickListener itemLvConversationClick = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             intent = new Intent(getActivity(), ChatActivity.class);
@@ -260,24 +256,33 @@ public class FragmenConversation extends Fragment implements View.OnClickListene
         }
     };
 
-    public View.OnClickListener singleClick = new View.OnClickListener() {
+    public AdapterView.OnItemLongClickListener itemLvConversationLongClick = new AdapterView.OnItemLongClickListener() {
         @Override
-        public void onClick(View v) {
+        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+            database.updateChooseConversation(use_id,data.get(position).getId(),Const.TYPE_CHOOSE);
+            showDelete();
+            clearData();
+            getListConversation(isShowDelete);
+            return false;
+        }
+    };
+
+    public void singleClick() {
+
             setConversationSelect(Const.CONVERSATION_TYPE_SINGLE);
             data.clear();
             data.addAll(dataSingle);
             adapter.notifyDataSetChanged();
         }
-    };
-    public View.OnClickListener groupClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
+
+    public void groupClick () {
+
             setConversationSelect(Const.CONVERSATION_TYPE_GROUP);
             data.clear();
             data.addAll(dataGroup);
             adapter.notifyDataSetChanged();
         }
-    };
+
 
     private void setConversationSelect(int choose) {
         if (choose == Const.CONVERSATION_TYPE_SINGLE) {
@@ -335,37 +340,6 @@ public class FragmenConversation extends Fragment implements View.OnClickListene
         fab.setClickable(false);
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.main_fab:
-                if (isOpenSubMenu) {
-                    hideSubMenu();
-                    isOpenSubMenu = false;
-                } else {
-                    showSubMenu();
-                    isOpenSubMenu = true;
-                }
-                break;
-            case R.id.fab_3:
-                if (isOpenSubMenu) {
-                    hideSubMenu();
-                    isOpenSubMenu = false;
-                }
-                showDelete();
-                break;
-            case R.id.fab_2:
-//                conversationTab.setVisibility(View.INVISIBLE);
-                break;
-            case R.id.fab_1:
-                if (isOpenSubMenu) {
-                    hideSubMenu();
-                    isOpenSubMenu = false;
-                }
-                showSearch();
-                break;
-        }
-    }
 
     public void showSearch() {
         this.isSearch = true;
@@ -442,7 +416,15 @@ public class FragmenConversation extends Fragment implements View.OnClickListene
                 }
             }
             adapter.notifyDataSetChanged();
-//            database.close();
+            int countChoose = 0;
+            for(int i = 0;i<data.size();i++){
+                if (data.get(i).getTypeChoose() == Const.TYPE_CHOOSE)
+                    countChoose++;
+            }
+            if (countChoose == data.size())
+                checkAll.setChecked(true);
+            else
+                checkAll.setChecked(false);
         }
 
         @Override
@@ -450,47 +432,45 @@ public class FragmenConversation extends Fragment implements View.OnClickListene
         }
     };
 
-    public CompoundButton.OnCheckedChangeListener chanCheckAll = new CompoundButton.OnCheckedChangeListener() {
-        @Override
-        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            int choose = isChecked ? Const.CONVERSATION_TYPE_CHOOSE : Const.CONVERSATION_TYPE_NO_CHOOSE;
+    public void changeCheckAll() {
+            int choose = checkAll.isChecked() ? Const.TYPE_CHOOSE : Const.TYPE_NO_CHOOSE;
             for (int i = 0; i < data.size(); i++) {
                 data.get(i).setTypeChoose(choose);
+            database.updateChooseConversation(use_id,data.get(i).getId(),choose);
             }
-            database.setAllChoose(choose);
-            tvCount.setText(String.valueOf(database.getCountChoose()));
+            tvCount.setText(String.valueOf(database.getCountChooseConversation()));
             adapter.notifyDataSetChanged();
         }
-    };
 
     @Override
     public void onStop() {
         super.onStop();
-        int showDelete = isShowDelete ? this.TYPE_SHOW : 0;
-        int showSearch = isSearch ? this.TYPE_SHOW : 0;
-        SharedPrefManager.getInstance(getActivity()).savePreferences(this.SHOW_DELETE, showDelete);
-        SharedPrefManager.getInstance(getActivity()).savePreferences(this.SHOW_SEARCH, showSearch);
+        if (isOpenSubMenu){
+            hideSubMenu();
+            isOpenSubMenu = !isOpenSubMenu;
+        }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        database.setAllChoose(Const.CONVERSATION_TYPE_NO_CHOOSE);
+        database.setAllChooseConversation(Const.TYPE_NO_CHOOSE);
         database.close();
     }
 
-    public View.OnClickListener deleteClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
+    public void deleteClick() {
+        if (database.getCountChooseConversation() > 0) {
+
+
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
             alertDialogBuilder.setTitle("Xóa " + tvCount.getText().toString() + " mục?");
             alertDialogBuilder
-                    .setMessage("Click Yes để xóa!")
+                    .setMessage("Click Yes để xóa?")
                     .setCancelable(false)
                     .setPositiveButton("Yes",
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
-                                    int count = database.getCountChoose();
+                                    int count = database.getCountChooseConversation();
                                     progressDialog.setMessage("Đang xóa. Vui lòng đợi");
                                     progressDialog.show();
                                     ArrayList<Integer> listId = database.getListIdDelete();
@@ -503,7 +483,7 @@ public class FragmenConversation extends Fragment implements View.OnClickListene
                                     dataGroup.clear();
                                     hideDelete();
                                     getListConversation(isShowDelete);
-                                    tvCount.setText(String.valueOf(database.getCountChoose()));
+                                    tvCount.setText(String.valueOf(database.getCountChooseConversation()));
                                     progressDialog.dismiss();
                                     Toast.makeText(getActivity(), "Đã xóa " + String.valueOf(count) + " mục", Toast.LENGTH_SHORT).show();
                                 }
@@ -518,8 +498,73 @@ public class FragmenConversation extends Fragment implements View.OnClickListene
 
             AlertDialog alertDialog = alertDialogBuilder.create();
             alertDialog.show();
-//
+        }else {
+            final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+            alertDialogBuilder
+                    .setMessage("Bạn chưa chọn mục nào")
+                    .setCancelable(false)
+                    .setPositiveButton("Yes",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                }
+                            });
+
+            AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
         }
-    };
+    }
+
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.main_fab:
+                if (isOpenSubMenu) {
+                    hideSubMenu();
+                    isOpenSubMenu = false;
+                } else {
+                    showSubMenu();
+                    isOpenSubMenu = true;
+                }
+                break;
+            case R.id.fab_3:
+                if (isOpenSubMenu) {
+                    hideSubMenu();
+                    isOpenSubMenu = false;
+                }
+                showDelete();
+                break;
+            case R.id.fab_2:
+//                conversationTab.setVisibility(View.INVISIBLE);
+                break;
+            case R.id.fab_1:
+                if (isOpenSubMenu) {
+                    hideSubMenu();
+                    isOpenSubMenu = false;
+                }
+                showSearch();
+                break;
+            case R.id.conversation_bt_delete:
+                deleteClick();
+                break;
+            case R.id.lv_conversation_group:
+                groupClick();
+                break;
+            case R.id.lv_conversation_single:
+                singleClick();
+                break;
+            case R.id.conversation_cb_all:
+                changeCheckAll();
+                break;
+        }
+    }
+
+    public void clearData(){
+        data.clear();
+        dataSingle.clear();
+        dataGroup.clear();
+        dataClone.clear();
+    }
 
 }

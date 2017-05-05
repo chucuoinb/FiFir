@@ -40,7 +40,11 @@
                     android:textColor="@color/color_name_conversation"
                     android:textSize="25dp"/>
 
-
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/friend_cb_delete"
+                    android:buttonTint="@color/colorPrimary"/>
     </LinearLayout>
 
 </LinearLayout>

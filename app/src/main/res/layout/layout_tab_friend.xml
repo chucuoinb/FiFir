@@ -3,90 +3,148 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-
-<LinearLayout
-    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    android:orientation="vertical"
-    android:paddingLeft="@dimen/main_margin"
-    android:paddingRight="@dimen/main_margin">
+    android:background="@color/white">
 
     <LinearLayout
+        android:id="@+id/friend_delete"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/friend_request"
-        android:layout_marginTop="@dimen/main_margin"
-        android:orientation="horizontal">
+        android:layout_gravity="top|left"
+        android:layout_marginLeft="@dimen/main_margin"
+        android:layout_marginRight="@dimen/fab_margin"
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/main_margin"
+        android:visibility="invisible">
 
-        <RelativeLayout
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:background="@drawable/avatar">
-
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:gravity="center"
-                android:src="@drawable/icon_request_friend"
-                android:layout_centerVertical="true"
-                android:layout_centerHorizontal="true"/>
-            <LinearLayout
-                android:id="@+id/friend_newRequest"
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:orientation="vertical"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:background="@drawable/new_request"
-                android:gravity="center"
-                android:visibility="invisible">
-            <TextView
-                android:id="@+id/friend_newRequest_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="1"
-                android:textColor="@color/white"
-                android:textSize="10dp"/>
-            </LinearLayout>
-        </RelativeLayout>
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/request_friend"
-            android:gravity="center_vertical"
+            android:id="@+id/friend_bt_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginLeft="@dimen/main_margin"/>
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:src="@drawable/ic_next"
-            android:layout_gravity="center_vertical"/>
-    </LinearLayout>
+            android:text="@string/delete"
+            android:textSize="17dp"/>
 
+        <TextView
+            android:id="@+id/friend_count_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/fab3"
+            android:text="0"
+            android:textSize="17dp"/>
+
+        <CheckBox
+            android:id="@+id/friend_cb_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:buttonTint="@color/colorPrimary"
+            android:text="@string/all"/>
+    </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/colorText"
-        android:layout_marginTop="2dp">
+        android:layout_height="match_parent"
+
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/main_margin"
+        android:paddingRight="@dimen/main_margin">
+
+        <FrameLayout
+            android:id="@+id/friend_frame"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:visibility="visible"
+                android:id="@+id/friend_request"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="@dimen/main_margin"
+                android:paddingTop="@dimen/main_margin">
+
+                <RelativeLayout
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:background="@drawable/avatar">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:gravity="center"
+                        android:src="@drawable/icon_request_friend"/>
+
+                    <LinearLayout
+                        android:id="@+id/friend_newRequest"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentTop="true"
+                        android:background="@drawable/new_request"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:visibility="invisible">
+
+                        <TextView
+                            android:id="@+id/friend_newRequest_count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=""
+                            android:textColor="@color/white"
+                            android:textSize="10dp"/>
+                    </LinearLayout>
+                </RelativeLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="@dimen/main_margin"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:text="@string/request_friend"/>
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_next"/>
+            </LinearLayout>
+            <EditText
+                android:id="@+id/search_friend_input"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:backgroundTint="@color/colorPrimary"
+                android:hint="@string/friend_input_search"
+                android:textCursorDrawable="@color/colorPrimary"
+                android:visibility="invisible"/>
+        </FrameLayout>
+
+        <LinearLayout
+            android:id="@+id/tab_Friend_space"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="2dp"
+            android:background="@color/colorText"
+            android:orientation="vertical">
+
+        </LinearLayout>
+
+        <ListView
+            android:id="@+id/tab_Friend_lvFriend"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/main_margin"
+            android:layout_weight="1"
+            android:divider="@color/transparent"
+            android:dividerHeight="5dp">
+
+        </ListView>
+
 
     </LinearLayout>
-    <ListView
-        android:id="@+id/tab_Friend_lvFriend"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/main_margin"
-        android:layout_weight="1"
-        android:divider="@color/transparent"
-        android:dividerHeight="5dp">
 
-    </ListView>
-
-
-</LinearLayout>
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/main_fab"
         android:layout_width="wrap_content"

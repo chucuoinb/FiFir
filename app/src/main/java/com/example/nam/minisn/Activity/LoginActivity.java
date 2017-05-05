@@ -51,12 +51,27 @@ public class LoginActivity extends AppCompatActivity {
     private ProgressDialog progressDialog;
     private int use_id;
     private SQLiteDataController database;
+    private boolean isLoadedConversation = false;
+    private boolean isLoadedFriend = false;
+    private boolean isLoadedRequest = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_login);
         init();
         listener();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        database.openDataBase();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        database.close();
     }
 
     public void init() {
@@ -126,17 +141,14 @@ public class LoginActivity extends AppCompatActivity {
                                 SharedPrefManager.getInstance(getApplicationContext()).savePreferences(Const.IS_LOGIN, Const.LOGIN);
                                 intentLogin.putExtra(Const.PACKAGE, bundle);
                                 setEnableEdit(true);
-                                database.openDataBase();
+
                                 if (!database.checkLogged(use_id)) {
                                     database.saveAccount(use_id,username);
-                                    saveListFriend(token);
                                     saveListConversation(token);
                                     getListRequestFriend(token);
+                                    saveListFriend(token);
                                 }
-                                database.close();
-                                progressDialog.dismiss();
-                                Toast.makeText(LoginActivity.this, getResources().getString(R.string.login_success), Toast.LENGTH_SHORT).show();
-                                startActivity(intentLogin);
+
                             }
 
                         } catch (JSONException e) {
@@ -258,7 +270,6 @@ public class LoginActivity extends AppCompatActivity {
                                     fri_id = listUser.getJSONObject(1).getInt(Const.ID);
                                 database.addIdConversationIntoFriend(use_id,idConversation,fri_id);
                             }
-                            database.close();
                         }
                     } else
                         Toast.makeText(getApplicationContext(), "Co loi xay ra", Toast.LENGTH_SHORT).show();
@@ -266,6 +277,7 @@ public class LoginActivity extends AppCompatActivity {
                     e.printStackTrace();
                     Log.d(Const.TAG, "JSON error: " + e.getMessage());
                 }
+                isLoadedConversation = true;
 
             }
         }, new Response.ErrorListener() {
@@ -276,7 +288,6 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         requestQueue.add(objectRequest);
-        progressDialog.dismiss();
     }
 
 //
@@ -292,22 +303,25 @@ public class LoginActivity extends AppCompatActivity {
                 try {
                     if (Const.CODE_OK == jsonObject.getInt(Const.CODE)) {
                         JSONArray listFriend = jsonObject.getJSONArray(Const.DATA);
-                            database.openDataBase();
                         for (int i = 0; i < listFriend.length(); i++) {
                             JSONObject obj = listFriend.getJSONObject(i);
                             String username = obj.getString(Const.USERNAME);
 //                            String displayName = obj.getString(Const.DISPLAY_NAME);
                             int gender = obj.getInt(Const.GENDER);
                             int fri_id = obj.getInt(Const.ID);
-                            database.insertListFriend(fri_id, username, use_id, gender);
+                            int id = obj.getInt(Const.ID_FRIEND);
+                            database.insertListFriend(fri_id, username, use_id, gender,id);
                         }
-                            database.close();
+                        progressDialog.dismiss();
+                        Toast.makeText(LoginActivity.this, getResources().getString(R.string.login_success), Toast.LENGTH_SHORT).show();
+                        startActivity(intentLogin);
                     } else
                         Toast.makeText(getApplicationContext(), "Co loi xay ra", Toast.LENGTH_SHORT).show();
                 } catch (JSONException e) {
                     e.printStackTrace();
                     Log.d(Const.TAG, "JSON error: " + e.getMessage());
                 }
+                isLoadedFriend = true;
 
             }
         }, new Response.ErrorListener() {
@@ -339,13 +353,13 @@ public class LoginActivity extends AppCompatActivity {
                         database.saveRequestFriend(use_id,username,id);
 
                     }
-                    database.close();
                 }else
                     Toast.makeText(getApplicationContext(),"Co loi xay ra",Toast.LENGTH_SHORT).show();
             }catch (JSONException e){
                 e.printStackTrace();
                 Log.d(Const.TAG,"JSON error: "+ e.getMessage());
             }
+            isLoadedRequest = true;
 
         }
     },new Response.ErrorListener() {

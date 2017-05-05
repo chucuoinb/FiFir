@@ -43,6 +43,7 @@ public class Const {
     public static final String TOKEN = "token";
     public static final String USERNAME = "username";
     public static final String ID_USERNAME = "id_username";
+    public static final String ID_FRIEND = "id_friend";
     //URL
     public static final String URL = "http://www.namlv-hust.96.lt/ver1/";
     public static final String URL_LOGIN = URL + "user/login.php";
@@ -128,6 +129,7 @@ public class Const {
     public static final String FRIENDS_COL4 = "use_id";
     public static final String FRIENDS_COL5 = "fri_gender";
     public static final String FRIENDS_COL6 = "id_conversation";
+    public static final String FRIENDS_COL7 = "choose";
 
     public static final String DATA_CONVERSATION_COL0 = "id";
     public static final String DATA_CONVERSATION_COL1 = "id_conversation";
@@ -162,9 +164,12 @@ public class Const {
 
     public static final int CONVERSATION_TYPE_SINGLE = 0;
     public static final int CONVERSATION_TYPE_GROUP = 1;
-    public static final int CONVERSATION_TYPE_CHOOSE = 1;
-    public static final int CONVERSATION_TYPE_NO_CHOOSE = 0;
+    public static final int TYPE_CHOOSE = 1;
+    public static final int TYPE_NO_CHOOSE = 0;
 
+
+    public static final int TAB_CONVERSATION = 0;
+    public static final int TAB_FRIENDS = 1;
 
     //method
     public static final void log(String message) {

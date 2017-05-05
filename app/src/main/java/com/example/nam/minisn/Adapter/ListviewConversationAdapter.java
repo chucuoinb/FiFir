@@ -7,18 +7,15 @@ import android.support.annotation.NonNull;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.nam.minisn.Fragmen.FragmenConversation;
-import com.example.nam.minisn.ItemListview.Friend;
 import com.example.nam.minisn.ItemListview.Conversation;
 import com.example.nam.minisn.R;
 import com.example.nam.minisn.Util.Const;
@@ -73,7 +70,7 @@ public class ListviewConversationAdapter extends ArrayAdapter<Conversation> {
         Conversation temp = data.get(position);
         if (temp.isShowCheckBox()) {
             holder.check.setVisibility(View.VISIBLE);
-            if (temp.getTypeChoose() == Const.CONVERSATION_TYPE_CHOOSE)
+            if (temp.getTypeChoose() == Const.TYPE_CHOOSE)
                 holder.check.setChecked(true);
             else
                 holder.check.setChecked(false);
@@ -95,26 +92,29 @@ public class ListviewConversationAdapter extends ArrayAdapter<Conversation> {
         holder.lastMessage.setText(temp.getLastMessage());
         if (temp.getTime() > 0)
             holder.time.setText(getStringTime(temp.getTime()));
+        else
+            holder.time.setText("");
         if (temp.isNew())
             holder.iconNew.setVisibility(View.VISIBLE);
         else
             holder.iconNew.setVisibility(View.INVISIBLE);
-//        holder.check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                Log.d(Const.TAG,String.valueOf(isChecked) + position);
-//                if (isChecked)
-//                FragmenConversation.data.get(position).setChoose(isChecked);
-//            }
-//        });
         holder.check.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int choose = (FragmenConversation.data.get(position).getTypeChoose()==Const.CONVERSATION_TYPE_CHOOSE)?
-                            Const.CONVERSATION_TYPE_NO_CHOOSE:Const.CONVERSATION_TYPE_CHOOSE;
+                int choose = (FragmenConversation.data.get(position).getTypeChoose()==Const.TYPE_CHOOSE)?
+                            Const.TYPE_NO_CHOOSE :Const.TYPE_CHOOSE;
                 FragmenConversation.data.get(position).setTypeChoose(choose);
-                database.updateChoose(useId,FragmenConversation.data.get(position).getId(),choose);
-                FragmenConversation.tvCount.setText(String.valueOf(database.getCountChoose()));
+                database.updateChooseConversation(useId,FragmenConversation.data.get(position).getId(),choose);
+                FragmenConversation.tvCount.setText(String.valueOf(database.getCountChooseConversation()));
+                int countChoose = 0;
+                for(int i = 0;i<FragmenConversation.data.size();i++){
+                    if (FragmenConversation.data.get(i).getTypeChoose() == Const.TYPE_CHOOSE)
+                        countChoose++;
+                }
+                if (countChoose == FragmenConversation.data.size())
+                    FragmenConversation.getCheckAll().setChecked(true);
+                else
+                    FragmenConversation.getCheckAll().setChecked(false);
             }
         });
         return row;

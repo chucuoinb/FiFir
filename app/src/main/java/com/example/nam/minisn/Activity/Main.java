@@ -9,6 +9,7 @@ import android.support.v4.view.ViewPager;
 
 import com.example.nam.minisn.Adapter.TabsAdapter;
 import com.example.nam.minisn.Fragmen.FragmenConversation;
+import com.example.nam.minisn.Fragmen.FragmenFriend;
 import com.example.nam.minisn.ItemListview.Conversation;
 import com.example.nam.minisn.R;
 import com.example.nam.minisn.Util.Const;
@@ -24,6 +25,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 public class Main extends AppCompatActivity {
@@ -35,9 +37,6 @@ public class Main extends AppCompatActivity {
             R.drawable.tabfriend,
             R.drawable.tabstatus,
     };
-
-    //    private FloatingActionButton fabMain,fabConversation,fabFriend,fabRequestFriend;
-//    private Animation show_fab1, hide_fab1,show_fab2, hide_fab2,show_fab3, hide_fab3;
     private ViewPager mViewPager;
     public static TabLayout tabLayout;
     private ArrayList<Conversation> data = new ArrayList<>();
@@ -76,38 +75,28 @@ public class Main extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (FragmenConversation.isShowDelete) {
-            FragmenConversation.hideDelete();
-
-        } else {
-            if (FragmenConversation.isSearch) {
-                FragmenConversation.hideSearch();
+        if (tabLayout.getSelectedTabPosition() == Const.TAB_CONVERSATION) {
+            if (FragmenConversation.isShowDelete) {
+                FragmenConversation.hideDelete();
 
             } else {
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-                alertDialogBuilder.setTitle("Đóng ứng dụng?");
-                alertDialogBuilder
-                        .setMessage("Click Yes để đóng ứng dụng!")
-                        .setCancelable(false)
-                        .setPositiveButton("Yes",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        moveTaskToBack(true);
-                                        android.os.Process.killProcess(android.os.Process.myPid());
-                                        System.exit(1);
-                                    }
-                                })
+                if (FragmenConversation.isSearch) {
+                    FragmenConversation.hideSearch();
 
-                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
+                } else
+                    showAlertIsCloseApp();
+            }
+        }
+        else if(tabLayout.getSelectedTabPosition() == Const.TAB_FRIENDS){
+            if (FragmenFriend.isDelete()) {
+                FragmenFriend.hideDelete();
 
-                                dialog.cancel();
-                            }
-                        });
+            } else {
+                if (FragmenFriend.isSearch()) {
+                    FragmenFriend.hideSearch();
 
-                AlertDialog alertDialog = alertDialogBuilder.create();
-                alertDialog.show();
-
+                } else
+                    showAlertIsCloseApp();
             }
         }
     }
@@ -129,85 +118,31 @@ public class Main extends AppCompatActivity {
         }
     };
 
-//    public void animation(){
-//        show_fab1 = AnimationUtils.loadAnimation(getApplication(),R.anim.fab1_show);
-//        hide_fab1 = AnimationUtils.loadAnimation(getApplication(),R.anim.fab1_hide);
-//        show_fab2 = AnimationUtils.loadAnimation(getApplication(),R.anim.fab2_show);
-//        hide_fab2 = AnimationUtils.loadAnimation(getApplication(),R.anim.fab2_hide);
-//        show_fab3 = AnimationUtils.loadAnimation(getApplication(),R.anim.fab3_show);
-//        hide_fab3 = AnimationUtils.loadAnimation(getApplication(),R.anim.fab3_hide);
-//
-//
-////        hideFab();
-//    }
-//
-//    public void showSubMenu(){
-//        fabMain.startAnimation(AnimationUtils.loadAnimation(getApplication(),R.anim.rotate_forward));
-//        showEachFab(fabConversation,show_fab1,(float)1.7,(float)0.25);
-//        showEachFab(fabFriend,show_fab2,(float) 1.5,(float) 1.5);
-//        showEachFab(fabRequestFriend,show_fab3,(float)0.25,(float)1.7);
-//    }
-//    public void hideSubMenu(){
-//        fabMain.startAnimation(AnimationUtils.loadAnimation(getApplication(),R.anim.rotate_backward));
-//        hideEachFab(fabConversation,hide_fab1,(float)1.7,(float)0.25);
-//        hideEachFab(fabFriend,hide_fab2,(float) 1.5,(float) 1.5);
-//        hideEachFab(fabRequestFriend,hide_fab3,(float)0.25,(float)1.7);
-//    }
-//    public void showEachFab(FloatingActionButton fab, Animation anim, float x, float y){
-//        fab.startAnimation(anim);
-//        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams)fab.getLayoutParams();
-//        layoutParams.rightMargin += (int) (fab.getWidth() * x);
-//        layoutParams.bottomMargin += (int) (fab.getHeight() * y);
-//        fab.setLayoutParams(layoutParams);
-//        fab.setVisibility(View.VISIBLE);
-//        fab.setClickable(true);
-//    }
-//    public void hideEachFab(FloatingActionButton fab, Animation anim,float x, float y){
-//        fab.startAnimation(anim);
-//        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) fab.getLayoutParams();
-//        layoutParams.rightMargin -= (int) (fab.getWidth() * x);
-//        layoutParams.bottomMargin -= (int) (fab.getHeight() * y);
-//        fab.setLayoutParams(layoutParams);
-//        fab.setVisibility(View.INVISIBLE);
-//        fab.setClickable(false);
-//    }
-//
-//    @Override
-//    public void onClick(View v) {
-//        switch (v.getId()){
-//            case R.id.main_fab:
-//                if (isOpenSubMenu){
-//                    hideSubMenu();
-//                    isOpenSubMenu = false;
-//                }
-//                else{
-//                    showSubMenu();
-//                    isOpenSubMenu = true;
-//                }
-//                break;
-//            case R.id.fab_3:
-////                Intent intent = new Intent(getApplicationContext(),RequestFriendActivity.class);
-////                startActivity(intent);
-//                break;
-//            case R.id.fab_2:
-//                FragmenConversation.conversationTab.setVisibility(View.INVISIBLE);
-//                break;
-//            case R.id.fab_1:
-//                fab1Click();
-////                Toast.makeText(Main.this, String.valueOf(tabLayout.getSelectedTabPosition()), Toast.LENGTH_SHORT).show();
-//                break;
-//        }
-//    }
-//
-//    public void fab1Click(){
-//        switch (tabLayout.getSelectedTabPosition()){
-//            case 0:
-//                searchConversation();
-//                break;
-//        }
-//    }
-//    public void searchConversation(){
-//        Intent intent = new Intent(Main.this,SearchConversation.class);
-//        startActivity(intent);
-//    }
+    public void showAlertIsCloseApp() {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setTitle("Đóng ứng dụng?");
+        alertDialogBuilder
+                .setMessage("Click Yes để đóng ứng dụng!")
+                .setCancelable(false)
+                .setPositiveButton("Yes",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                moveTaskToBack(true);
+                                android.os.Process.killProcess(android.os.Process.myPid());
+                                System.exit(1);
+                            }
+                        })
+
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                        dialog.cancel();
+                    }
+                });
+
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+
+    }
+
 }

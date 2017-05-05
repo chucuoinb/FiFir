@@ -5,16 +5,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white">
+
     <LinearLayout
-        android:layout_marginRight="@dimen/fab_margin"
-        android:layout_marginLeft="@dimen/main_margin"
-        android:layout_gravity="top|left"
         android:id="@+id/conversation_delete"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="top|left"
+        android:layout_marginLeft="@dimen/main_margin"
+        android:layout_marginRight="@dimen/fab_margin"
         android:orientation="horizontal"
         android:paddingTop="@dimen/main_margin"
         android:visibility="invisible">
+
         <TextView
             android:id="@+id/conversation_bt_delete"
             android:layout_width="wrap_content"
@@ -30,13 +32,15 @@
             android:src="@drawable/fab3"
             android:text="0"
             android:textSize="17dp"/>
+
         <CheckBox
             android:id="@+id/conversation_cb_all"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/all"
-            android:buttonTint="@color/colorPrimary"/>
+            android:buttonTint="@color/colorPrimary"
+            android:text="@string/all"/>
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -125,12 +129,13 @@
                             android:visibility="invisible"/>
                     </RelativeLayout>
                 </LinearLayout>
+
                 <EditText
+                    android:id="@+id/search_conversation_input"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:id="@+id/search_conversation_input"
-                    android:hint="@string/input_conversation"
                     android:backgroundTint="@color/colorPrimary"
+                    android:hint="@string/input_conversation"
                     android:textCursorDrawable="@color/colorPrimary"
                     android:visibility="invisible"/>
             </FrameLayout>
@@ -165,10 +170,11 @@
         app:srcCompat="@android:drawable/ic_input_add"
         />
 
-    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                 xmlns:app="http://schemas.android.com/apk/res-auto"
-                 android:layout_width="match_parent"
-                 android:layout_height="match_parent">
+    <FrameLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab_1"

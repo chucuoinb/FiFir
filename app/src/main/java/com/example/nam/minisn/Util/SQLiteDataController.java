@@ -7,18 +7,17 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.example.nam.minisn.Activity.LoginActivity;
+import com.example.nam.minisn.Fragmen.FragmenFriend;
 import com.example.nam.minisn.ItemListview.Conversation;
 import com.example.nam.minisn.ItemListview.Friend;
+import com.example.nam.minisn.ItemListview.ItemDeleteFriend;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 /**
  * Created by Nam on 4/20/2017.
@@ -281,11 +280,14 @@ public class SQLiteDataController extends SQLiteOpenHelper {
         database.execSQL(sql);
     }
 
-    public void insertListFriend(int fri_id, String fri_username, int id, int gender) {
+    public void insertListFriend(int fri_id, String fri_username, int useId, int gender,int id) {
+        Log.d(Const.TAG,"insert list friend");
 //        Log.d(Const.TAG, fri_username + ":" + gender + ":" + fri_id + ":" + use_id);
         String sql = Const.INSERT +
                 Const.DB_FRIEND +
                 " (" +
+                Const.FRIENDS_COL0 +
+                "," +
                 Const.FRIENDS_COL1 +
                 "," +
                 Const.FRIENDS_COL2 +
@@ -296,19 +298,22 @@ public class SQLiteDataController extends SQLiteOpenHelper {
                 ")" +
                 Const.VALUES +
                 "('" +
+                id +
+                "','" +
                 fri_id +
                 "','" +
                 fri_username +
                 "','" +
-                id +
+                useId +
                 "','" +
                 gender +
                 "')";
-
+        Log.d(Const.TAG,"error: "+sql);
         database.execSQL(sql);
     }
 
     public void insertConversation(int id, String name, int use_id, int size) {
+        Log.d(Const.TAG,"insert conversation");
         String sql = Const.INSERT +
                 Const.DB_CONVERSATION +
                 " (" +
@@ -456,7 +461,7 @@ public class SQLiteDataController extends SQLiteOpenHelper {
             String lastMessage = cursor.getString(3);
             long time = cursor.getLong(4);
             boolean isNew = cursor.getInt(6) == 1;
-            Conversation conversation = new Conversation(idConversation, nameConversation, lastMessage, time, isNew,Const.CONVERSATION_TYPE_NO_CHOOSE);
+            Conversation conversation = new Conversation(idConversation, nameConversation, lastMessage, time, isNew,Const.TYPE_NO_CHOOSE);
             data.add(conversation);
         }
 
@@ -464,6 +469,7 @@ public class SQLiteDataController extends SQLiteOpenHelper {
     }
 
     public void saveRequestFriend(int useId, String username, int id) {
+        Log.d(Const.TAG,"save request friend");
         String sql = Const.INSERT +
                 Const.DB_REQUEST_FRIEND +
                 " (" +
@@ -537,7 +543,7 @@ public class SQLiteDataController extends SQLiteOpenHelper {
         return size;
     }
 
-    public void updateChoose(int useId,int idConversation,int choose){
+    public void updateChooseConversation(int useId, int idConversation, int choose){
         String sql = Const.UPDATE+
                     Const.DB_CONVERSATION+
                 Const.SET+
@@ -557,7 +563,29 @@ public class SQLiteDataController extends SQLiteOpenHelper {
                 "'";
         database.execSQL(sql);
     }
-    public void setAllChoose(int choose){
+
+    public void updateChooseFriend(int useId, int idFriend, int choose){
+        String sql = Const.UPDATE+
+                Const.DB_FRIEND+
+                Const.SET+
+                Const.FRIENDS_COL7+
+                "='"+
+                choose+
+                "'"+
+                Const.WHERE+
+                Const.FRIENDS_COL1+
+                "='"+
+                idFriend+
+                "'"+
+                Const.AND+
+                Const.FRIENDS_COL4+
+                "='"+
+                useId+
+                "'";
+        database.execSQL(sql);
+    }
+
+    public void setAllChooseConversation(int choose){
         String sql = Const.UPDATE+
                     Const.DB_CONVERSATION+
                     Const.SET+
@@ -568,7 +596,18 @@ public class SQLiteDataController extends SQLiteOpenHelper {
         database.execSQL(sql);
     }
 
-    public int getCountChoose(){
+    public void setAllChooseFriend(int choose){
+        String sql = Const.UPDATE+
+                Const.DB_FRIEND+
+                Const.SET+
+                Const.FRIENDS_COL7+
+                "='"+
+                choose+
+                "'";
+        database.execSQL(sql);
+    }
+
+    public int getCountChooseConversation(){
         String sql = Const.SELECT+
                     Const.CONVERSATION_COL8+
                 Const.FROM+
@@ -576,7 +615,26 @@ public class SQLiteDataController extends SQLiteOpenHelper {
                 Const.WHERE+
                 Const.CONVERSATION_COL8+
                 "='"+
-                Const.CONVERSATION_TYPE_CHOOSE+
+                Const.TYPE_CHOOSE +
+                "'"+
+                Const.AND+
+                Const.CONVERSATION_COL9+
+                "='"+
+                Const.TYPE_ACTIVE+
+                "'";
+        Cursor cursor = database.rawQuery(sql,null);
+        return cursor.getCount();
+    }
+
+    public int getCountChooseFriend(){
+        String sql = Const.SELECT+
+                Const.FRIENDS_COL7+
+                Const.FROM+
+                Const.DB_FRIEND+
+                Const.WHERE+
+                Const.FRIENDS_COL7+
+                "='"+
+                Const.TYPE_CHOOSE +
                 "'";
         Cursor cursor = database.rawQuery(sql,null);
         return cursor.getCount();
@@ -653,12 +711,46 @@ public class SQLiteDataController extends SQLiteOpenHelper {
                 Const.WHERE+
                 Const.CONVERSATION_COL8+
                 "='"+
-                Const.CONVERSATION_TYPE_CHOOSE+
+                Const.TYPE_CHOOSE +
                 "'";
         Cursor cursor = database.rawQuery(sql,null);
         while (cursor.moveToNext()){
             data.add(cursor.getInt(cursor.getColumnIndex(Const.CONVERSATION_COL2)));
         }
+        return data;
+    }
+
+    public ArrayList<ItemDeleteFriend> searchFriends(String name, int useId) {
+        ArrayList<ItemDeleteFriend> data = new ArrayList<>();
+        String sql = Const.SELECT + " * " +
+                Const.FROM +
+                Const.DB_FRIEND +
+                Const.WHERE +
+                Const.FRIENDS_COL2 +
+                Const.LIKE +
+                " '%" +
+                name +
+                "%'" +
+                Const.AND +
+                Const.FRIENDS_COL4 +
+                "='" +
+                useId +
+                "'" +
+                Const.ORDER_BY+
+                Const.FRIENDS_COL2+
+                Const.ASC;
+        Log.d(Const.TAG,"fri:"+String.valueOf(sql));
+        Cursor cursor = database.rawQuery(sql, null);
+        while (cursor.moveToNext()) {
+            int idFriend = cursor.getInt(1);
+            String nameFriend = cursor.getString(2);
+            int gender = cursor.getInt(5);
+            String displayName = cursor.getString(3);
+            int choose = cursor.getInt(7);
+            Friend friend = new Friend(idFriend,nameFriend,displayName);
+            data.add(new ItemDeleteFriend(friend, FragmenFriend.isDelete(),choose));
+        }
+
         return data;
     }
 }
