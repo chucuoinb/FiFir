@@ -27,6 +27,7 @@ import com.example.nam.minisn.ItemListview.Chat;
 import com.example.nam.minisn.R;
 import com.example.nam.minisn.UseVoley.CustomRequest;
 import com.example.nam.minisn.Util.Const;
+import com.example.nam.minisn.Util.SQLiteDataController;
 import com.example.nam.minisn.Util.SharedPrefManager;
 
 import org.json.JSONException;
@@ -49,7 +50,9 @@ public class ChatActivity extends AppCompatActivity {
     private EditText edInputMessage;
     private String message;
     private int idConversation;
+    private int useId;
     private BroadcastReceiver receiverMessage;
+    private SQLiteDataController database;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -57,8 +60,56 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.layout_chat);
         init();
     }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        adapter.notifyDataSetChanged();
+        SharedPrefManager.getInstance(getApplicationContext()).savePreferences(Const.CONVERSATION_ID,idConversation);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        database.close();
+        SharedPrefManager.getInstance(getApplicationContext()).savePreferences(Const.CONVERSATION_ID,0);
+    }
+
 
     public void init(){
+        tvNameConversation = (TextView)findViewById(R.id.chat_tv_nameFriend);
+        edInputMessage = (EditText)findViewById(R.id.chat_ed_inputMessage);
+        btSend = (Button)findViewById(R.id.chat_bt_Send);
+        lvChat = (ListView)findViewById(R.id.chat_lv_Chat);
+        btnBack = (ImageView)findViewById(R.id.chat_btn_back);
+
+        adapter = new ListviewChatAdapter(ChatActivity.this,R.id.layoutChat,data);
+        startDatabase();
+        setInfoConversation();
+        setListener();
+        getListData();
+    }
+
+    public void startDatabase(){
+        database= new SQLiteDataController(getApplicationContext());
+        database.openDataBase();
+    }
+
+    public void getListData(){
+        data.clear();
+        data.addAll(database.getDataConversation(idConversation,useId,0));
+    }
+
+    public void setListener(){
+        lvChat.setAdapter(adapter);
+        btSend.setOnClickListener(btSendClick);
+        edInputMessage.addTextChangedListener(changeMessage);
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
         receiverMessage = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -68,8 +119,11 @@ public class ChatActivity extends AppCompatActivity {
                 adapter.notifyDataSetChanged();
             }
         };
-        btnBack = (ImageView)findViewById(R.id.chat_btn_back);
         registerReceiver(receiverMessage,new IntentFilter(Const.DISPLAY_MESSAGE_ACTION));
+    }
+
+    public void setInfoConversation(){
+        useId = SharedPrefManager.getInstance(getApplicationContext()).getInt(Const.ID);
         intent = getIntent();
         bundle = intent.getBundleExtra(Const.PACKAGE);
         String newMessage = bundle.getString(Const.MESSAGE,"");
@@ -78,22 +132,9 @@ public class ChatActivity extends AppCompatActivity {
         token = SharedPrefManager.getInstance(getApplicationContext()).getString(Const.FCM_TOKEN);
         nameConversation = bundle.getString(Const.NAME_CONVERSATION);
         idConversation = bundle.getInt(Const.CONVERSATION_ID);
-        tvNameConversation = (TextView)findViewById(R.id.chat_tv_nameFriend);
-        edInputMessage = (EditText)findViewById(R.id.chat_ed_inputMessage);
-        btSend = (Button)findViewById(R.id.chat_bt_Send);
-        lvChat = (ListView)findViewById(R.id.chat_lv_Chat);
+
 
         tvNameConversation.setText(nameConversation);
-        edInputMessage.addTextChangedListener(changeMessage);
-        adapter = new ListviewChatAdapter(ChatActivity.this,R.id.layoutChat,data);
-        lvChat.setAdapter(adapter);
-        btSend.setOnClickListener(btSendClick);
-        btnBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
     }
 
     public TextWatcher changeMessage = new TextWatcher() {
@@ -139,19 +180,8 @@ public class ChatActivity extends AppCompatActivity {
         }
     };
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        SharedPrefManager.getInstance(getApplicationContext()).savePreferences(Const.CONVERSATION_ID,idConversation);
-    }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        SharedPrefManager.getInstance(getApplicationContext()).savePreferences(Const.CONVERSATION_ID,0);
-        unregisterReceiver(receiverMessage);
-    }
-    public void sendMessage(HashMap params){
+    public void sendMessage(HashMap<String,String> params){
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, Const.URL_SEND_MESSAGE, params,
                 new Response.Listener<JSONObject>() {

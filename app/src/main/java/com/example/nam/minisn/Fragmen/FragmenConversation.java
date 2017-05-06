@@ -157,7 +157,6 @@ public class FragmenConversation extends Fragment implements View.OnClickListene
     @Override
     public void onResume() {
         super.onResume();
-        Log.d(Const.TAG,"resume");
         database.openDataBase();
         setConversationSelect(Const.CONVERSATION_TYPE_SINGLE);
         clearData();

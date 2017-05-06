@@ -13,7 +13,7 @@
     <dimen name="text_status">15dp</dimen>
     <dimen name="text_friend">25dp</dimen>
     <dimen name="ava">50dp</dimen>
-    <dimen name="dividerLvChat">10dp</dimen>
+    <dimen name="dividerLvChat">5dp</dimen>
     <dimen name="margin">35dp</dimen>
     <dimen name="padingEdittext">8dp</dimen>
     <dimen name="checkButton">30dp</dimen>

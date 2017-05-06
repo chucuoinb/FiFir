@@ -15,6 +15,7 @@ import java.util.Date;
 public class Const {
     //Const string
 
+    public static final int NUMBER_PAGE_CONVERSATION = 30;
     public static final String DISPLAY_MESSAGE_ACTION = "display_action";
 
     public static final String FAIL = "fail";
@@ -46,6 +47,7 @@ public class Const {
     public static final String ID_FRIEND = "id_friend";
     //URL
     public static final String URL = "http://www.namlv-hust.96.lt/ver1/";
+//    public static final String URL = "http://namlv.hol.es/ver1/";
     public static final String URL_LOGIN = URL + "user/login.php";
     public static final String URL_GET_LIST_CONVERSATION = URL + "conversation/get_list_conversation.php";
     public static final String URL_GET_LIST_FRIEND = URL + "friend/get_list_friend.php";
@@ -96,7 +98,7 @@ public class Const {
     public static final String DB_USERS_SAVE = "users_save";
     public static final String DB_REQUEST_FRIEND = "request_friend";
 
-
+//    Key Sql
     public static final String SELECT = "select ";
     public static final String FROM = " from ";
     public static final String WHERE = " where ";
@@ -110,6 +112,7 @@ public class Const {
     public static final String ASC = " asc ";
     public static final String DESC = " desc ";
     public static final String LIKE = " like ";
+    public static final String LIMIT= " limit ";
 //    public static final String OR = " or ";
 
 
