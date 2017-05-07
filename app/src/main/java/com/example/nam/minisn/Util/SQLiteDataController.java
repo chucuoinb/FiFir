@@ -401,7 +401,7 @@ public class SQLiteDataController extends SQLiteOpenHelper {
                 use_id +
                 "'" +
                 Const.AND +
-                Const.FRIENDS_COL3 +
+                Const.FRIENDS_COL1 +
                 "='" +
                 fri_id +
                 "'";
@@ -748,6 +748,10 @@ public class SQLiteDataController extends SQLiteOpenHelper {
     public ArrayList<Chat> getDataConversation(int idConversation, int useId, int start) {
         ArrayList<Chat> data = new ArrayList<>();
         int end = start + Const.NUMBER_PAGE_CONVERSATION;
+//        int size = getSizeDataConversation(idConversation, useId);
+//        Log.d(Const.TAG,"size: "+size);
+//        if (end > size)
+//            end = size;
         String sql = Const.SELECT +
                 " * " +
                 Const.FROM +
@@ -764,19 +768,23 @@ public class SQLiteDataController extends SQLiteOpenHelper {
                 "'" +
                 Const.ORDER_BY +
                 Const.DATA_CONVERSATION_COL4 +
-                Const.ASC +
+                Const.DESC +
                 Const.LIMIT +
                 start +
                 "," +
                 end;
         Cursor cursor = database.rawQuery(sql, null);
-        while (cursor.moveToNext()) {
-            String message = cursor.getString(3);
-            int friId = cursor.getInt(2);
-            int gender = getGenderFriend(friId);
-            int typeMessage = friId == useId ? Const.MESSAGE_SEND : Const.MESSAGE_RECEIVE;
-            Chat chat = new Chat(typeMessage, message, gender);
-            data.add(chat);
+        if (cursor.getCount() > 0) {
+
+            cursor.moveToLast();
+            do {
+                String message = cursor.getString(3);
+                int friId = cursor.getInt(2);
+                int gender = getGenderFriend(friId);
+                int typeMessage = friId == useId ? Const.MESSAGE_SEND : Const.MESSAGE_RECEIVE;
+                Chat chat = new Chat(typeMessage, message, gender);
+                data.add(chat);
+            } while (cursor.moveToPrevious());
         }
         return data;
     }
@@ -786,7 +794,7 @@ public class SQLiteDataController extends SQLiteOpenHelper {
                 Const.FRIENDS_COL5 +
                 Const.FROM +
                 Const.DB_FRIEND +
-                Const.WHERE+
+                Const.WHERE +
                 Const.FRIENDS_COL1 +
                 "='" +
                 friId +
@@ -794,5 +802,70 @@ public class SQLiteDataController extends SQLiteOpenHelper {
         Cursor cursor = database.rawQuery(sql, null);
         cursor.moveToFirst();
         return cursor.getInt(cursor.getColumnIndex(Const.FRIENDS_COL5));
+    }
+
+    public int getSizeDataConversation(int idConversation, int useId) {
+        String sql = Const.SELECT +
+                "*" +
+                Const.FROM +
+                Const.DB_DATA_CONVERSATION +
+                Const.WHERE +
+                Const.DATA_CONVERSATION_COL2 +
+                "='" +
+                idConversation +
+                "'" +
+                Const.AND +
+                Const.DATA_CONVERSATION_COL5 +
+                "='" +
+                useId +
+                "'";
+        return database.rawQuery(sql, null).getCount();
+    }
+
+    public int getConversationFriend(int idFriend, int useId) {
+        String sql = Const.SELECT +
+                Const.FRIENDS_COL6 +
+                Const.FROM +
+                Const.DB_FRIEND +
+                Const.WHERE +
+                Const.FRIENDS_COL1 +
+                "='" +
+                idFriend +
+                "'" +
+                Const.AND +
+                Const.FRIENDS_COL4 +
+                "='" +
+                useId +
+                "'";
+        Cursor cursor = database.rawQuery(sql, null);
+        cursor.moveToFirst();
+
+        return cursor.getInt(0);
+    }
+
+    public String getNameConversation(int idConversation, int useId) {
+        String sql = Const.SELECT +
+                Const.CONVERSATION_COL1 +
+                Const.FROM +
+                Const.DB_CONVERSATION +
+                Const.WHERE +
+                Const.CONVERSATION_COL2 +
+                "='" +
+                idConversation +
+                "'" +
+                Const.AND +
+                Const.CONVERSATION_COL5 +
+                "='" +
+                useId +
+                "'";
+        Cursor cursor = database.rawQuery(sql,null);
+        cursor.moveToFirst();
+        String name = cursor.getString(0);
+        return name;
+    }
+    public void deleteRequest(){
+        String sql = "delete from "+
+                Const.DB_REQUEST_FRIEND;
+        database.execSQL(sql);
     }
 }

@@ -54,6 +54,7 @@ public class LoginActivity extends AppCompatActivity {
     private boolean isLoadedConversation = false;
     private boolean isLoadedFriend = false;
     private boolean isLoadedRequest = false;
+    private String token;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -123,13 +124,12 @@ public class LoginActivity extends AppCompatActivity {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Log.d(Const.TAG,"here");
                         try {
                             if (response.getInt(Const.CODE) != Const.CODE_OK) {
                                 CheckCode(response.getInt(Const.CODE));
                             } else {
                                 JSONObject newObject = response.getJSONObject(Const.DATA);
-                                String token = newObject.getString(Const.TOKEN);
+                                token = newObject.getString(Const.TOKEN);
                                 use_id = newObject.getInt(Const.ID);
                                 String username = newObject.getString(Const.USERNAME);
                                 Bundle bundle = new Bundle();
@@ -144,9 +144,9 @@ public class LoginActivity extends AppCompatActivity {
 
                                 if (!database.checkLogged(use_id)) {
                                     database.saveAccount(use_id,username);
-                                    saveListConversation(token);
-                                    getListRequestFriend(token);
-                                    saveListFriend(token);
+                                    saveListFriend();
+
+
                                 }
 
                             }
@@ -261,7 +261,6 @@ public class LoginActivity extends AppCompatActivity {
                             JSONObject object = listConversation.getJSONObject(i);
                             int idConversation = object.getInt(Const.ID);
                             String nameConversation = object.getString(Const.NAME_CONVERSATION);
-                            database.openDataBase();
                             JSONArray listUser = object.getJSONArray(Const.LIST_USER);
                             database.insertConversation(idConversation, nameConversation,use_id,listUser.length());
                             if (listUser.length() ==2){
@@ -271,6 +270,7 @@ public class LoginActivity extends AppCompatActivity {
                                 database.addIdConversationIntoFriend(use_id,idConversation,fri_id);
                             }
                         }
+                        getListRequestFriend();
                     } else
                         Toast.makeText(getApplicationContext(), "Co loi xay ra", Toast.LENGTH_SHORT).show();
                 } catch (JSONException e) {
@@ -293,7 +293,7 @@ public class LoginActivity extends AppCompatActivity {
 //
 
 
-    public void saveListFriend(String token) {
+    public void saveListFriend() {
         RequestQueue request = Volley.newRequestQueue(getApplicationContext());
         JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.GET, Const.URL_GET_LIST_FRIEND + "/?" +
                 Const.TOKEN + "=" + token
@@ -312,9 +312,8 @@ public class LoginActivity extends AppCompatActivity {
                             int id = obj.getInt(Const.ID_FRIEND);
                             database.insertListFriend(fri_id, username, use_id, gender,id);
                         }
-                        progressDialog.dismiss();
-                        Toast.makeText(LoginActivity.this, getResources().getString(R.string.login_success), Toast.LENGTH_SHORT).show();
-                        startActivity(intentLogin);
+                        saveListConversation(token);
+
                     } else
                         Toast.makeText(getApplicationContext(), "Co loi xay ra", Toast.LENGTH_SHORT).show();
                 } catch (JSONException e) {
@@ -335,7 +334,7 @@ public class LoginActivity extends AppCompatActivity {
         progressDialog.dismiss();
     }
 
-    public void getListRequestFriend(String token){
+    public void getListRequestFriend(){
     RequestQueue request = Volley.newRequestQueue(getApplicationContext());
     JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.GET, Const.URL_GET_REQUEST_FRIEND +
             Const.TOKEN +"="+token
@@ -345,7 +344,6 @@ public class LoginActivity extends AppCompatActivity {
             try{
                 if (Const.CODE_OK == jsonObject.getInt(Const.CODE)){
                     JSONArray data = jsonObject.getJSONArray(Const.DATA);
-                    database.openDataBase();
                     for (int i = 0;i<data.length();i++){
                         JSONObject request = data.getJSONObject(i);
                         String username = request.getString(Const.USERNAME);
@@ -353,6 +351,9 @@ public class LoginActivity extends AppCompatActivity {
                         database.saveRequestFriend(use_id,username,id);
 
                     }
+                    progressDialog.dismiss();
+                    Toast.makeText(LoginActivity.this, getResources().getString(R.string.login_success), Toast.LENGTH_SHORT).show();
+                    startActivity(intentLogin);
                 }else
                     Toast.makeText(getApplicationContext(),"Co loi xay ra",Toast.LENGTH_SHORT).show();
             }catch (JSONException e){

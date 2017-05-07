@@ -9,6 +9,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,17 +23,29 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.Volley;
+import com.example.nam.minisn.Activity.ChatActivity;
 import com.example.nam.minisn.Activity.RequestFriendActivity;
 import com.example.nam.minisn.Adapter.ListviewFriendAdapter;
 import com.example.nam.minisn.ItemListview.Friend;
 import com.example.nam.minisn.ItemListview.ItemDeleteFriend;
 import com.example.nam.minisn.R;
+import com.example.nam.minisn.UseVoley.CustomRequest;
 import com.example.nam.minisn.Util.Const;
 import com.example.nam.minisn.Util.SQLiteDataController;
 import com.example.nam.minisn.Util.SharedPrefManager;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by Nam on 2/24/2017.
@@ -63,9 +76,10 @@ public class FragmenFriend extends Fragment implements View.OnClickListener {
     private static String textSearch = "";
     private static FrameLayout frame;
     private static TextView tvCount;
-
-
+    private Intent intent;
+    private int newIdConversation = 0;
     private static CheckBox cbAll;
+    private Bundle bundleChat;
 
     public FragmenFriend() {
     }
@@ -116,7 +130,7 @@ public class FragmenFriend extends Fragment implements View.OnClickListener {
     @Override
     public void onStop() {
         super.onStop();
-        if (isOpenSubMenu){
+        if (isOpenSubMenu) {
             hideSubMenu();
             isOpenSubMenu = !isOpenSubMenu;
         }
@@ -124,6 +138,7 @@ public class FragmenFriend extends Fragment implements View.OnClickListener {
     }
 
     public void init() {
+        bundleChat = new Bundle();
         cbAll = (CheckBox) rootView.findViewById(R.id.friend_cb_all);
         tvCount = (TextView) rootView.findViewById(R.id.friend_count_delete);
         frame = (FrameLayout) rootView.findViewById(R.id.friend_frame);
@@ -143,6 +158,7 @@ public class FragmenFriend extends Fragment implements View.OnClickListener {
 
         adapter = new ListviewFriendAdapter(getActivity(), R.layout.item_lvfriend, friends);
         lvFriend.setAdapter(adapter);
+        intent = new Intent(getActivity(), ChatActivity.class);
         addListener();
     }
 
@@ -154,6 +170,7 @@ public class FragmenFriend extends Fragment implements View.OnClickListener {
         fabFriend.setOnClickListener(this);
         fabRequestFriend.setOnClickListener(this);
         inputSearch.addTextChangedListener(changeInput);
+        lvFriend.setOnItemClickListener(itemLvFriendClick);
     }
 
 
@@ -325,7 +342,7 @@ public class FragmenFriend extends Fragment implements View.OnClickListener {
         int choose = cbAll.isChecked() ? Const.TYPE_CHOOSE : Const.TYPE_NO_CHOOSE;
         for (int i = 0; i < friends.size(); i++) {
             friends.get(i).setTypeChoose(choose);
-            database.updateChooseFriend(use_id,friends.get(i).getFriend().getId(),choose);
+            database.updateChooseFriend(use_id, friends.get(i).getFriend().getId(), choose);
         }
         tvCount.setText(String.valueOf(database.getCountChooseFriend()));
         adapter.notifyDataSetChanged();
@@ -365,7 +382,7 @@ public class FragmenFriend extends Fragment implements View.OnClickListener {
     public void fab1Click() {
         if (!isSearch) {
 
-            if (isOpenSubMenu){
+            if (isOpenSubMenu) {
                 hideSubMenu();
                 isOpenSubMenu = !isOpenSubMenu;
             }
@@ -375,7 +392,7 @@ public class FragmenFriend extends Fragment implements View.OnClickListener {
 
     public void fab3Click() {
         if (!isDelete) {
-            if (isOpenSubMenu){
+            if (isOpenSubMenu) {
                 hideSubMenu();
                 isOpenSubMenu = !isOpenSubMenu;
             }
@@ -419,5 +436,59 @@ public class FragmenFriend extends Fragment implements View.OnClickListener {
 
     public static void setCbAll(CheckBox cbAll) {
         FragmenFriend.cbAll = cbAll;
+    }
+
+    public AdapterView.OnItemClickListener itemLvFriendClick = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            Friend item = friends.get(position).getFriend();
+            int idConversation = database.getConversationFriend(item.getId(), use_id);
+            Log.d(Const.TAG, "click");
+            Log.d(Const.TAG, "idCon: " + idConversation);
+            if (idConversation > 0) {
+                String name = database.getNameConversation(idConversation, use_id);
+                bundleChat.putInt(Const.CONVERSATION_ID, item.getId());
+                bundleChat.putString(Const.NAME_CONVERSATION, name);
+                intent.putExtra(Const.PACKAGE, bundleChat);
+                startActivity(intent);
+            } else {
+                HashMap<String,String> params = new HashMap<>();
+                params.put(Const.TOKEN,bundle.getString(Const.TOKEN));
+                params.put(Const.ID_USER_FRIEND+"0",String.valueOf(item.getId()));
+                addNewConversation(params,item.getUsername());
+            }
+        }
+    };
+
+    public void addNewConversation(HashMap<String,String> params, final String name){
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, Const.URL_ADD_NEW_CONVERSATION, params,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            if (response.getInt(Const.CODE) != Const.CODE_OK) {
+                                bundleChat.putInt(Const.CONVERSATION_ID,response.getInt(Const.DATA));
+                                bundleChat.putString(Const.NAME_CONVERSATION,name);
+                                intent.putExtra(Const.PACKAGE,bundle);
+                                startActivity(intent);
+                            } else {
+                                Toast.makeText(getActivity(),"Có lỗi xảy ra. Vui lòng thử lại",Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            Toast.makeText(getActivity(),"Có lỗi xảy ra. Vui lòng thử lại",Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(getActivity(),"Có lỗi xảy ra. Vui lòng thử lại",Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+
+        jsObjRequest.setShouldCache(false);
+        requestQueue.add(jsObjRequest);
     }
 }

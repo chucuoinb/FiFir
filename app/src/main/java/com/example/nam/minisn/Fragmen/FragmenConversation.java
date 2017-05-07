@@ -137,7 +137,7 @@ public class FragmenConversation extends Fragment implements View.OnClickListene
         setListener();
     }
 
-    public void setListener(){
+    public void setListener() {
         tvDelete.setOnClickListener(this);
         single.setOnClickListener(this);
         group.setOnClickListener(this);
@@ -203,9 +203,8 @@ public class FragmenConversation extends Fragment implements View.OnClickListene
             int idConversation = cursor.getInt(cursor.getColumnIndex(Const.CONVERSATION_COL2));
             String nameConversation = cursor.getString(cursor.getColumnIndex(Const.CONVERSATION_COL1));
             String lastMessage = cursor.getString(3);
-            long time = 0;
-            if (cursor.getLong(4) > 0)
-                time = cursor.getLong(4);
+            if (cursor.getLong(4) == 0) continue;
+            long time = cursor.getLong(4);
             boolean isNew = cursor.getInt(cursor.getColumnIndex(Const.CONVERSATION_COL6)) == 1;
             int typeChoose = cursor.getInt(cursor.getColumnIndex(Const.CONVERSATION_COL8));
             Conversation conversation = new Conversation(idConversation, nameConversation, lastMessage, time, isNew, typeChoose);
@@ -242,11 +241,8 @@ public class FragmenConversation extends Fragment implements View.OnClickListene
             intent = new Intent(getActivity(), ChatActivity.class);
             Conversation item = data.get(position);
             if (item.isNew()) {
-//                database.openDataBase();
                 database.setNewMessageConversation(item.getId(), use_id);
-//                database.close();
                 item.setNew(false);
-//                adapter.notifyDataSetChanged();
             }
             bundle.putInt(Const.CONVERSATION_ID, item.getId());
             bundle.putString(Const.NAME_CONVERSATION, item.getNameConservation());
@@ -258,7 +254,7 @@ public class FragmenConversation extends Fragment implements View.OnClickListene
     public AdapterView.OnItemLongClickListener itemLvConversationLongClick = new AdapterView.OnItemLongClickListener() {
         @Override
         public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-            database.updateChooseConversation(use_id,data.get(position).getId(),Const.TYPE_CHOOSE);
+            database.updateChooseConversation(use_id, data.get(position).getId(), Const.TYPE_CHOOSE);
             showDelete();
             clearData();
             getListConversation(isShowDelete);
@@ -268,19 +264,19 @@ public class FragmenConversation extends Fragment implements View.OnClickListene
 
     public void singleClick() {
 
-            setConversationSelect(Const.CONVERSATION_TYPE_SINGLE);
-            data.clear();
-            data.addAll(dataSingle);
-            adapter.notifyDataSetChanged();
-        }
+        setConversationSelect(Const.CONVERSATION_TYPE_SINGLE);
+        data.clear();
+        data.addAll(dataSingle);
+        adapter.notifyDataSetChanged();
+    }
 
-    public void groupClick () {
+    public void groupClick() {
 
-            setConversationSelect(Const.CONVERSATION_TYPE_GROUP);
-            data.clear();
-            data.addAll(dataGroup);
-            adapter.notifyDataSetChanged();
-        }
+        setConversationSelect(Const.CONVERSATION_TYPE_GROUP);
+        data.clear();
+        data.addAll(dataGroup);
+        adapter.notifyDataSetChanged();
+    }
 
 
     private void setConversationSelect(int choose) {
@@ -416,7 +412,7 @@ public class FragmenConversation extends Fragment implements View.OnClickListene
             }
             adapter.notifyDataSetChanged();
             int countChoose = 0;
-            for(int i = 0;i<data.size();i++){
+            for (int i = 0; i < data.size(); i++) {
                 if (data.get(i).getTypeChoose() == Const.TYPE_CHOOSE)
                     countChoose++;
             }
@@ -432,19 +428,19 @@ public class FragmenConversation extends Fragment implements View.OnClickListene
     };
 
     public void changeCheckAll() {
-            int choose = checkAll.isChecked() ? Const.TYPE_CHOOSE : Const.TYPE_NO_CHOOSE;
-            for (int i = 0; i < data.size(); i++) {
-                data.get(i).setTypeChoose(choose);
-            database.updateChooseConversation(use_id,data.get(i).getId(),choose);
-            }
-            tvCount.setText(String.valueOf(database.getCountChooseConversation()));
-            adapter.notifyDataSetChanged();
+        int choose = checkAll.isChecked() ? Const.TYPE_CHOOSE : Const.TYPE_NO_CHOOSE;
+        for (int i = 0; i < data.size(); i++) {
+            data.get(i).setTypeChoose(choose);
+            database.updateChooseConversation(use_id, data.get(i).getId(), choose);
         }
+        tvCount.setText(String.valueOf(database.getCountChooseConversation()));
+        adapter.notifyDataSetChanged();
+    }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (isOpenSubMenu){
+        if (isOpenSubMenu) {
             hideSubMenu();
             isOpenSubMenu = !isOpenSubMenu;
         }
@@ -497,7 +493,7 @@ public class FragmenConversation extends Fragment implements View.OnClickListene
 
             AlertDialog alertDialog = alertDialogBuilder.create();
             alertDialog.show();
-        }else {
+        } else {
             final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
             alertDialogBuilder
                     .setMessage("Bạn chưa chọn mục nào")
@@ -559,7 +555,7 @@ public class FragmenConversation extends Fragment implements View.OnClickListene
         }
     }
 
-    public void clearData(){
+    public void clearData() {
         data.clear();
         dataSingle.clear();
         dataGroup.clear();

@@ -15,7 +15,7 @@ import java.util.Date;
 public class Const {
     //Const string
 
-    public static final int NUMBER_PAGE_CONVERSATION = 30;
+    public static final int NUMBER_PAGE_CONVERSATION = 10;
     public static final String DISPLAY_MESSAGE_ACTION = "display_action";
 
     public static final String FAIL = "fail";
@@ -45,6 +45,7 @@ public class Const {
     public static final String USERNAME = "username";
     public static final String ID_USERNAME = "id_username";
     public static final String ID_FRIEND = "id_friend";
+    public static final String ID_USER_FRIEND = "id_userfriend";
     //URL
     public static final String URL = "http://www.namlv-hust.96.lt/ver1/";
 //    public static final String URL = "http://namlv.hol.es/ver1/";
@@ -56,6 +57,7 @@ public class Const {
     public static final String URL_SEND_MESSAGE = URL + "conversation/send_message.php";
     public static final String URL_GET_REQUEST_FRIEND = URL + "friend/get_request_friend.php?";
     public static final String URL_GET_SIZE_CONVERSATION = URL + "conversation/get_size_conversation.php";
+    public static final String URL_ADD_NEW_CONVERSATION = URL + "conversation/add_new_conversation.php";
 
     //Share preferen
     public static final String FCM_TOKEN = "fcm_token";

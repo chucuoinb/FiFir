@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -31,7 +32,7 @@ public class RequestFriendActivity extends AppCompatActivity {
     private ListView lvRequestFriend;
     private ListviewRequestFriendAdapter adapter;
     private ArrayList<Friend> friends = new ArrayList<Friend>();
-    private ImageView btnBack;
+    private LinearLayout btnBack;
     private SQLiteDataController database;
     private int useId;
     @Override
@@ -55,7 +56,7 @@ public class RequestFriendActivity extends AppCompatActivity {
     public void init(){
         useId = SharedPrefManager.getInstance(getApplicationContext()).getInt(Const.ID);
         database = new SQLiteDataController(getApplicationContext());
-        btnBack = (ImageView)findViewById(R.id.chat_btn_back);
+        btnBack = (LinearLayout) findViewById(R.id.chat_btn_back);
         lvRequestFriend = (ListView)findViewById(R.id.request_friend_lv);
         adapter = new ListviewRequestFriendAdapter(this,R.layout.item_listview_request_friend,friends);
         lvRequestFriend.setAdapter(adapter);
