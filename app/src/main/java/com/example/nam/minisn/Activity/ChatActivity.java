@@ -215,12 +215,11 @@ public class ChatActivity extends AppCompatActivity {
             adapter.notifyDataSetChanged();
             edInputMessage.setText("");
             sendMessage(params);
-            Log.d(Const.TAG, message);
         }
     };
 
 
-    public void sendMessage(HashMap<String, String> params) {
+    public void sendMessage(final HashMap<String, String> params) {
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, Const.URL_SEND_MESSAGE, params,
                 new Response.Listener<JSONObject>() {
@@ -232,11 +231,12 @@ public class ChatActivity extends AppCompatActivity {
                                 data.remove(data.size() - 1);
                                 adapter.notifyDataSetChanged();
                             } else {
-                                database.saveMessage(message,idConversation,useId,useId);
+                                database.saveMessage(params.get(Const.MESSAGE),idConversation,useId,useId);
                             }
                         } catch (JSONException e) {
-                            e.printStackTrace();
+                            Log.d(Const.TAG,"json err");
                         }
+                        Log.d(Const.TAG,"response");
                     }
                 },
                 new Response.ErrorListener() {

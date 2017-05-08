@@ -85,8 +85,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 database.addConversation(idConversation, nameConversation, message, use_id, Const.TYPE_NEW_MESSAGE);
 //                while (!database.isExistConversation(idConversation)) ;
             }
-                getSizeConversation();
-            database.saveMessage(message, idConversation, idSend,use_id);
+            getSizeConversation();
+            database.saveMessage(message, idConversation, idSend, use_id);
 //            database.close();
             if (idConversation == SharedPrefManager.getInstance(getApplicationContext()).getInt(Const.CONVERSATION_ID)) {
                 displayMessageOnScreen(getApplicationContext(), message);
@@ -163,10 +163,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         int size = jsonObject.getInt(Const.DATA);
                         database.openDataBase();
                         database.updateSizeConversation(idConversation, use_id, size);
-//                        database.close();
-//                        if (size == 2) {
-//                            database.addIdConversationIntoFriend(use_id, idConversation, idSend);
-//                        }
+                        if (size == 2) {
+                            if (database.isExistFriend(use_id, idSend))
+                                database.addIdConversationIntoFriend(use_id, idConversation, idSend);
+                        }
                     } else
                         Toast.makeText(getApplicationContext(), "Co loi xay ra", Toast.LENGTH_SHORT).show();
                 } catch (JSONException e) {

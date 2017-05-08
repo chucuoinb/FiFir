@@ -245,6 +245,7 @@ public class FragmenConversation extends Fragment implements View.OnClickListene
                 item.setNew(false);
             }
             bundle.putInt(Const.CONVERSATION_ID, item.getId());
+            Log.d(Const.TAG,"con: "+item.getId());
             bundle.putString(Const.NAME_CONVERSATION, item.getNameConservation());
             intent.putExtra(Const.PACKAGE, bundle);
             startActivity(intent);

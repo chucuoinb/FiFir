@@ -30,8 +30,9 @@ import java.util.ArrayList;
 
 public class RequestFriendActivity extends AppCompatActivity {
     private ListView lvRequestFriend;
-    private ListviewRequestFriendAdapter adapter;
-    private ArrayList<Friend> friends = new ArrayList<Friend>();
+    private static ListviewRequestFriendAdapter adapter;
+
+    private static ArrayList<Friend> friends = new ArrayList<Friend>();
     private LinearLayout btnBack;
     private SQLiteDataController database;
     private int useId;
@@ -68,4 +69,10 @@ public class RequestFriendActivity extends AppCompatActivity {
         });
     }
 
+    public static ArrayList<Friend> getFriends() {
+        return friends;
+    }
+    public static ListviewRequestFriendAdapter getAdapter() {
+        return adapter;
+    }
 }

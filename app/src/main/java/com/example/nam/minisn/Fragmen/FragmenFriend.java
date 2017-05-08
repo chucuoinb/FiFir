@@ -17,7 +17,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -60,7 +59,7 @@ public class FragmenFriend extends Fragment implements View.OnClickListener {
 
 
     private static ArrayList<ItemDeleteFriend> friends = new ArrayList<>();
-    private int use_id;
+    private int useId;
     private static LinearLayout requestFriend;
     private TextView newRequestFriendSize;
     private LinearLayout newRequest;
@@ -110,7 +109,7 @@ public class FragmenFriend extends Fragment implements View.OnClickListener {
         super.onResume();
 
         database.openDataBase();
-        int countRequest = database.getCountRequestFriend(use_id);
+        int countRequest = database.getCountRequestFriend(useId);
         newRequestFriendSize.setText(String.valueOf(countRequest));
         if (countRequest > 0) {
             newRequest.setVisibility(View.VISIBLE);
@@ -153,7 +152,7 @@ public class FragmenFriend extends Fragment implements View.OnClickListener {
         requestFriend = (LinearLayout) rootView.findViewById(R.id.friend_request);
         newRequestFriendSize = (TextView) rootView.findViewById(R.id.friend_newRequest_count);
         newRequest = (LinearLayout) rootView.findViewById(R.id.friend_newRequest);
-        use_id = SharedPrefManager.getInstance(getActivity()).getInt(Const.ID);
+        useId = SharedPrefManager.getInstance(getActivity()).getInt(Const.ID);
         lvFriend = (ListView) rootView.findViewById(R.id.tab_Friend_lvFriend);
 
         adapter = new ListviewFriendAdapter(getActivity(), R.layout.item_lvfriend, friends);
@@ -183,7 +182,7 @@ public class FragmenFriend extends Fragment implements View.OnClickListener {
                 Const.WHERE +
                 Const.FRIENDS_COL4 +
                 "= '" +
-                use_id +
+                useId +
                 "'";
         Cursor cursor = database.getDatabase().rawQuery(sql, null);
         while (cursor.moveToNext()) {
@@ -320,7 +319,7 @@ public class FragmenFriend extends Fragment implements View.OnClickListener {
             String name = inputSearch.getText().toString();
             textSearch = name;
             friends.clear();
-            friends.addAll(database.searchFriends(name, use_id));
+            friends.addAll(database.searchFriends(name, useId));
             adapter.notifyDataSetChanged();
             int countChoose = 0;
             for (int i = 0; i < friends.size(); i++) {
@@ -342,7 +341,7 @@ public class FragmenFriend extends Fragment implements View.OnClickListener {
         int choose = cbAll.isChecked() ? Const.TYPE_CHOOSE : Const.TYPE_NO_CHOOSE;
         for (int i = 0; i < friends.size(); i++) {
             friends.get(i).setTypeChoose(choose);
-            database.updateChooseFriend(use_id, friends.get(i).getFriend().getId(), choose);
+            database.updateChooseFriend(useId, friends.get(i).getFriend().getId(), choose);
         }
         tvCount.setText(String.valueOf(database.getCountChooseFriend()));
         adapter.notifyDataSetChanged();
@@ -442,40 +441,44 @@ public class FragmenFriend extends Fragment implements View.OnClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             Friend item = friends.get(position).getFriend();
-            int idConversation = database.getConversationFriend(item.getId(), use_id);
+            int idConversation = database.getConversationFriend(item.getId(), useId);
             Log.d(Const.TAG, "click");
             Log.d(Const.TAG, "idCon: " + idConversation);
             if (idConversation > 0) {
-                String name = database.getNameConversation(idConversation, use_id);
-                bundleChat.putInt(Const.CONVERSATION_ID, item.getId());
-                bundleChat.putString(Const.NAME_CONVERSATION, name);
-                intent.putExtra(Const.PACKAGE, bundleChat);
+                String name = database.getNameConversation(idConversation, useId);
+                bundle.putInt(Const.CONVERSATION_ID, idConversation);
+                bundle.putString(Const.NAME_CONVERSATION, name);
+                intent.putExtra(Const.PACKAGE, bundle);
                 startActivity(intent);
             } else {
                 HashMap<String,String> params = new HashMap<>();
                 params.put(Const.TOKEN,bundle.getString(Const.TOKEN));
                 params.put(Const.ID_USER_FRIEND+"0",String.valueOf(item.getId()));
-                addNewConversation(params,item.getUsername());
+                addNewConversation(params,item.getUsername(),item.getId());
             }
         }
     };
 
-    public void addNewConversation(HashMap<String,String> params, final String name){
+    public void addNewConversation(HashMap<String,String> params, final String name, final int friId){
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
         CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, Const.URL_ADD_NEW_CONVERSATION, params,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            if (response.getInt(Const.CODE) != Const.CODE_OK) {
-                                bundleChat.putInt(Const.CONVERSATION_ID,response.getInt(Const.DATA));
-                                bundleChat.putString(Const.NAME_CONVERSATION,name);
+                            if (response.getInt(Const.CODE) == Const.CODE_OK) {
+                                int idConversation = response.getInt(Const.DATA);
+                                database.addConversation(idConversation,name,"", useId,Const.TYPE_DONT_NEW_MESSAGE);
+                                database.addIdConversationIntoFriend(useId,idConversation,friId);
+                                bundle.putInt(Const.CONVERSATION_ID,idConversation);
+                                bundle.putString(Const.NAME_CONVERSATION,name);
                                 intent.putExtra(Const.PACKAGE,bundle);
                                 startActivity(intent);
                             } else {
                                 Toast.makeText(getActivity(),"Có lỗi xảy ra. Vui lòng thử lại",Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
+                            Log.d(Const.TAG,"json er");
                             Toast.makeText(getActivity(),"Có lỗi xảy ra. Vui lòng thử lại",Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -483,6 +486,7 @@ public class FragmenFriend extends Fragment implements View.OnClickListener {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        Log.d(Const.TAG,"volley er");
                         Toast.makeText(getActivity(),"Có lỗi xảy ra. Vui lòng thử lại",Toast.LENGTH_SHORT).show();
                     }
                 });

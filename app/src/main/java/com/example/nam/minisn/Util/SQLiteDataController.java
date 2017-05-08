@@ -203,7 +203,8 @@ public class SQLiteDataController extends SQLiteOpenHelper {
                 useID +
                 "')";
         database.execSQL(sql);
-        updateConversation(message, time, idConversation);
+        int type = idSend==useID?Const.TYPE_DONT_NEW_MESSAGE:Const.TYPE_NEW_MESSAGE;
+        updateConversation(message, time, idConversation,type);
     }
 
     public boolean isExistConversation(int idConversation) {
@@ -335,7 +336,7 @@ public class SQLiteDataController extends SQLiteOpenHelper {
         database.execSQL(sql);
     }
 
-    public void updateConversation(String lastMessage, long time, int idConversation) {
+    public void updateConversation(String lastMessage, long time, int idConversation,int type) {
         int use_id = SharedPrefManager.getInstance(mContext).getInt(Const.ID);
         String sql = Const.UPDATE +
                 Const.DB_CONVERSATION +
@@ -350,7 +351,7 @@ public class SQLiteDataController extends SQLiteOpenHelper {
                 "'," +
                 Const.CONVERSATION_COL6 +
                 "='" +
-                Const.TYPE_NEW_MESSAGE +
+                type +
                 "'" +
                 Const.WHERE +
                 Const.CONVERSATION_COL2 +
@@ -405,7 +406,28 @@ public class SQLiteDataController extends SQLiteOpenHelper {
                 "='" +
                 fri_id +
                 "'";
+
         database.execSQL(sql);
+    }
+
+    public boolean isExistFriend(int useId, int idFriend) {
+        String sql = Const.SELECT +
+                "*" +
+                Const.FROM +
+                Const.DB_FRIEND +
+                Const.WHERE +
+                Const.FRIENDS_COL1 +
+                "='" +
+                idFriend +
+                "'" +
+                Const.AND +
+                Const.FRIENDS_COL4 +
+                "='" +
+                useId +
+                "'";
+        Cursor cursor = database.rawQuery(sql, null);
+        return cursor.getCount() > 0;
+
     }
 
     public void updateSizeConversation(int idConversation, int use_id, int size) {
@@ -668,7 +690,7 @@ public class SQLiteDataController extends SQLiteOpenHelper {
                 useId +
                 "'";
         database.execSQL(sql);
-        updateConversation("", 0, idConversation);
+        updateConversation("", 0, idConversation,Const.TYPE_DONT_NEW_MESSAGE);
         updateActiveConversation(idConversation, useId, Const.TYPE_DONT_ACTIVE);
         setNewMessageConversation(idConversation, useId);
     }
@@ -779,9 +801,17 @@ public class SQLiteDataController extends SQLiteOpenHelper {
             cursor.moveToLast();
             do {
                 String message = cursor.getString(3);
-                int friId = cursor.getInt(2);
-                int gender = getGenderFriend(friId);
-                int typeMessage = friId == useId ? Const.MESSAGE_SEND : Const.MESSAGE_RECEIVE;
+                int idSend = cursor.getInt(2);
+                int gender = 0;
+                int typeMessage;
+                if (idSend != useId) {
+                    gender = getGenderFriend(idSend);
+                    typeMessage = Const.MESSAGE_RECEIVE;
+                } else {
+
+                    gender = 0;
+                    typeMessage = Const.MESSAGE_SEND;
+                }
                 Chat chat = new Chat(typeMessage, message, gender);
                 data.add(chat);
             } while (cursor.moveToPrevious());
@@ -858,14 +888,60 @@ public class SQLiteDataController extends SQLiteOpenHelper {
                 "='" +
                 useId +
                 "'";
-        Cursor cursor = database.rawQuery(sql,null);
+        Cursor cursor = database.rawQuery(sql, null);
         cursor.moveToFirst();
         String name = cursor.getString(0);
         return name;
     }
-    public void deleteRequest(){
-        String sql = "delete from "+
-                Const.DB_REQUEST_FRIEND;
+
+    //    public void deleteRequest(){
+//        String sql = "delete from "+
+//                Const.DB_REQUEST_FRIEND;
+//        database.execSQL(sql);
+//    }
+    public void addFriend(int useId, int friGender, String friUsername, int friId, int id) {
+        String sql = Const.INSERT +
+                Const.DB_FRIEND +
+                " (" +
+                Const.FRIENDS_COL1 +
+                "," +
+                Const.FRIENDS_COL1 +
+                "," +
+                Const.FRIENDS_COL2 +
+                "," +
+                Const.FRIENDS_COL4 +
+                "," +
+                Const.FRIENDS_COL5 +
+                ")" +
+                Const.VALUES +
+                "('" +
+                id +
+                "','" +
+                friId +
+                "','" +
+                friUsername +
+                "','" +
+                useId +
+                "','" +
+                friGender +
+                "')";
+        database.execSQL(sql);
+    }
+
+    public void deleteRequestFriend(int useId, int idRequest) {
+        String sql = Const.DELETE +
+                Const.FROM +
+                Const.DB_REQUEST_FRIEND +
+                Const.WHERE +
+                Const.REQUEST_FRIEND_COL1 +
+                "='" +
+                idRequest +
+                "'" +
+                Const.AND +
+                Const.REQUEST_FRIEND_COL3 +
+                "='" +
+                useId +
+                "'";
         database.execSQL(sql);
     }
 }

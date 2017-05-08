@@ -46,6 +46,8 @@ public class Const {
     public static final String ID_USERNAME = "id_username";
     public static final String ID_FRIEND = "id_friend";
     public static final String ID_USER_FRIEND = "id_userfriend";
+    public static final String ID_RECEIVE = "id_receive";
+    public static final String CODE_RESPONSE = "code_response";
     //URL
     public static final String URL = "http://www.namlv-hust.96.lt/ver1/";
 //    public static final String URL = "http://namlv.hol.es/ver1/";
@@ -58,6 +60,7 @@ public class Const {
     public static final String URL_GET_REQUEST_FRIEND = URL + "friend/get_request_friend.php?";
     public static final String URL_GET_SIZE_CONVERSATION = URL + "conversation/get_size_conversation.php";
     public static final String URL_ADD_NEW_CONVERSATION = URL + "conversation/add_new_conversation.php";
+    public static final String URL_SEND_RESPONSE_FRIEND = URL + "friend/send_response_request_friend.php";
 
     //Share preferen
     public static final String FCM_TOKEN = "fcm_token";
@@ -74,6 +77,9 @@ public class Const {
     public static final int CODE_USER_EXIST = 104;
     public static final int CODE_INVALID = 105;
     public static final int CODE_USER_NOT_EXIST = 106;
+
+    public static final int CODE_ACCEPT = 301;
+    public static final int CODE_CANCEL = 302;
 
     //Gender
     public static final int GENDER_UNKNOW = 300;

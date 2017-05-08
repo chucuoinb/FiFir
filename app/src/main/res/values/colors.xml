@@ -5,6 +5,8 @@
     <color name="colorAccent">#FF4081</color>
     <color name="colorGreen">#2196F3</color>
     <color name="colorButton">#64B5F6</color>
+    <color name="colorButtonAcceptPress">#0857d6</color>
+    <color name="colorButtonCancelPress">#8a94a3</color>
     <color name="backGroundLogin">#6E21A2</color>
     <color name="backGroundButton">#80000000</color>
     <color name="backgrounp_status">#DFD8C8</color>
