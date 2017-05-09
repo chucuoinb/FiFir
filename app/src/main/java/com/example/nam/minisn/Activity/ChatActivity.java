@@ -4,10 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -15,7 +13,6 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -85,11 +82,11 @@ public class ChatActivity extends AppCompatActivity {
 
     public void init() {
         headerLvChat = (LinearLayout) findViewById(R.id.header_lv_chat);
-        tvNameConversation = (TextView) findViewById(R.id.chat_tv_nameFriend);
+        tvNameConversation = (TextView) findViewById(R.id.toolbar_text);
         edInputMessage = (EditText) findViewById(R.id.chat_ed_inputMessage);
         btSend = (Button) findViewById(R.id.chat_bt_Send);
         lvChat = (ListView) findViewById(R.id.chat_lv_Chat);
-        btnBack = (LinearLayout) findViewById(R.id.chat_btn_back);
+        btnBack = (LinearLayout) findViewById(R.id.toolbar_btnback);
 
         adapter = new ListviewChatAdapter(ChatActivity.this, R.id.layoutChat, data);
         startDatabase();

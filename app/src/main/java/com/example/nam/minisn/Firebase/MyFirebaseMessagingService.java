@@ -25,13 +25,12 @@ import com.example.nam.minisn.Util.SharedPrefManager;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private RemoteViews mContentView;
-    private int idSend, use_id, idConversation;
+    private int idSend, useId, idConversation;
     private SQLiteDataController database;
 
     public MyFirebaseMessagingService() {
@@ -39,7 +38,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        database = new SQLiteDataController(getApplicationContext());
+
         if (remoteMessage.getData().size() > 0) {
             try {
                 JSONObject json = new JSONObject(remoteMessage.getData().toString());
@@ -55,14 +54,16 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public void resolveMessageFcm(JSONObject json) {
         try {
             JSONObject jsonObject = json.getJSONObject(Const.KEY_JSON_MESSAGE);
+            Log.d(Const.TAG, "new request: " + jsonObject.getInt(Const.CODE));
             switch (jsonObject.getInt(Const.CODE)) {
                 case Const.TYPE_MESSAGE:
                     receiveMessage(jsonObject);
                     break;
                 case Const.TYPE_REQUEST_FRIEND:
-                    solveRequestFriend();
+                    solveRequestFriend(jsonObject);
                     break;
                 case Const.TYPE_RESPONSE_FRIEND:
+                    solveResponse(jsonObject);
                     break;
             }
         } catch (JSONException e) {
@@ -77,16 +78,16 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             String usernameSend = jsonObject.getString(Const.USERNAME_SEND);
             String message = json.getString(Const.MESSAGE);
             String nameConversation = jsonObject.getString(Const.NAME_CONVERSATION);
-            use_id = SharedPrefManager.getInstance(getApplicationContext()).getInt(Const.ID);
+            useId = SharedPrefManager.getInstance(getApplicationContext()).getInt(Const.ID);
             idSend = jsonObject.getInt(Const.ID_USERNAME);
 
             database.openDataBase();
             if (!database.isExistConversation(idConversation)) {
-                database.addConversation(idConversation, nameConversation, message, use_id, Const.TYPE_NEW_MESSAGE);
+                database.addConversation(idConversation, nameConversation, message, useId, Const.TYPE_NEW_MESSAGE);
 //                while (!database.isExistConversation(idConversation)) ;
             }
             getSizeConversation();
-            database.saveMessage(message, idConversation, idSend, use_id);
+            database.saveMessage(message, idConversation, idSend, useId);
 //            database.close();
             if (idConversation == SharedPrefManager.getInstance(getApplicationContext()).getInt(Const.CONVERSATION_ID)) {
                 displayMessageOnScreen(getApplicationContext(), message);
@@ -116,7 +117,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     }
 
     public void pushNotifyMessage(Bundle bundle) {
-        int icon = R.drawable.icon_notify;
+        int icon = R.drawable.logo;
         String title = getResources().getString(R.string.notify_title_message);
         String content = getResources().getString(R.string.notify_content_message);
         Intent intentNotify = new Intent(getApplicationContext(), ChatActivity.class);
@@ -130,25 +131,68 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 setSmallIcon(icon).
                 setContentIntent(pending).
                 setAutoCancel(true);
-        manager.notify(Const.ID_NOTIFICATION, notification.build());
+        manager.notify(Const.ID_NOTIFICATION_MESSAGE, notification.build());
 
     }
 
-    public void solveRequestFriend() {
-        int icon = R.drawable.icon_notify;
-        String title = getResources().getString(R.string.notify_title_message);
-        String content = getResources().getString(R.string.notify_content_message);
-        Intent intentNotify = new Intent(getApplicationContext(), RequestFriendActivity.class);
-        intentNotify.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        NotificationManager manager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-        PendingIntent pending = PendingIntent.getActivity(getApplicationContext(), 0, intentNotify, 0);
-        NotificationCompat.Builder notification = new NotificationCompat.Builder(getApplicationContext()).
-                setContentTitle(title).
-                setContentText(content).
-                setSmallIcon(icon).
-                setContentIntent(pending).
-                setAutoCancel(true);
-        manager.notify(Const.ID_NOTIFICATION, notification.build());
+    public void solveRequestFriend(JSONObject json) {
+        try {
+            useId = SharedPrefManager.getInstance(getApplicationContext()).getInt(Const.ID);
+            JSONObject jsonObject = json.getJSONObject(Const.DATA);
+            int idRequest = jsonObject.getInt(Const.ID_REQUEST);
+            String usernameRequest = jsonObject.getString(Const.USERNAME_REQUEST);
+            database = new SQLiteDataController(getApplicationContext());
+            database.openDataBase();
+            database.saveRequestFriend(useId, usernameRequest, idRequest);
+            int icon = R.drawable.logo;
+            String title = getResources().getString(R.string.notify_request_friend);
+            String content = getResources().getString(R.string.notify_request_content);
+            Intent intentNotify = new Intent(getApplicationContext(), RequestFriendActivity.class);
+            intentNotify.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            NotificationManager manager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+            PendingIntent pending = PendingIntent.getActivity(getApplicationContext(), 0, intentNotify, 0);
+            NotificationCompat.Builder notification = new NotificationCompat.Builder(getApplicationContext()).
+                    setContentTitle(title).
+                    setContentText(content).
+                    setSmallIcon(icon).
+                    setContentIntent(pending).
+                    setAutoCancel(true);
+            manager.notify(Const.ID_NOTIFICATION_REQUEST, notification.build());
+        } catch (JSONException e) {
+            Log.d(Const.TAG, "json err: " + e.getMessage());
+        }
+    }
+
+    public void solveResponse(JSONObject json) {
+        try {
+            database = new SQLiteDataController(getApplicationContext());
+            database.openDataBase();
+            String content = "";
+            String notify = getResources().getString(R.string.responce_notify);
+            useId = SharedPrefManager.getInstance(getApplicationContext()).getInt(Const.ID);
+            JSONObject jsonObject = json.getJSONObject(Const.DATA);
+            int code = jsonObject.getInt(Const.CODE);
+            int idFriend = jsonObject.getInt(Const.ID);
+            database.deleteWaitResponse(useId, idFriend);
+            String username = jsonObject.getString(Const.USERNAME);
+            int id = jsonObject.getInt("id_friend");
+            int gender = jsonObject.getInt(Const.GENDER);
+            if (code == Const.CODE_ACCEPT) {
+                database.addFriend(useId, gender, username, idFriend, id);
+                content = username + " " + getResources().getString(R.string.responce_accept) + " " + notify;
+            } else {
+                content = username + " " + getResources().getString(R.string.responce_reject) + " " + notify;
+            }
+            int icon = R.drawable.logo;
+            NotificationManager manager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+            NotificationCompat.Builder notification = new NotificationCompat.Builder(getApplicationContext()).
+                    setContentText(content).
+                    setSmallIcon(icon).
+                    setAutoCancel(true);
+            manager.notify(Const.ID_NOTIFICATION_RESPONSE, notification.build());
+        } catch (JSONException e) {
+            Log.d(Const.TAG, "json err: " + e.getMessage());
+        }
     }
 
     public void getSizeConversation() {
@@ -161,11 +205,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 try {
                     if (jsonObject.getInt(Const.CODE) == Const.CODE_OK) {
                         int size = jsonObject.getInt(Const.DATA);
+                        database = new SQLiteDataController(getApplicationContext());
                         database.openDataBase();
-                        database.updateSizeConversation(idConversation, use_id, size);
+                        database.updateSizeConversation(idConversation, useId, size);
                         if (size == 2) {
-                            if (database.isExistFriend(use_id, idSend))
-                                database.addIdConversationIntoFriend(use_id, idConversation, idSend);
+                            if (database.isExistFriend(useId, idSend))
+                                database.addIdConversationIntoFriend(useId, idConversation, idSend);
                         }
                     } else
                         Toast.makeText(getApplicationContext(), "Co loi xay ra", Toast.LENGTH_SHORT).show();

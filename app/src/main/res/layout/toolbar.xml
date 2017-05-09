@@ -20,7 +20,7 @@
                 android:layout_width="30dp"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:id="@+id/chat_btn_back"
+                android:id="@+id/toolbar_btnback"
                 android:gravity="center">
 
             <ImageView
@@ -33,7 +33,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/chat_tv_nameFriend"
+                android:id="@+id/toolbar_text"
                 android:layout_marginLeft="10dp"
                 android:layout_weight="1"
                 android:textStyle="bold"

@@ -160,12 +160,14 @@ public class FragmenConversation extends Fragment implements View.OnClickListene
         database.openDataBase();
         setConversationSelect(Const.CONVERSATION_TYPE_SINGLE);
         clearData();
+        hideDelete();
+        hideSearch();
         getListConversation(isShowDelete);
-        if (isShowDelete) {
-            for (int i = 0; i < data.size(); i++) {
-                data.get(i).setShowCheckBox(true);
-            }
-        }
+//        if (isShowDelete) {
+//            for (int i = 0; i < data.size(); i++) {
+//                data.get(i).setShowCheckBox(true);
+//            }
+//        }
         adapter.notifyDataSetChanged();
     }
 
@@ -197,7 +199,7 @@ public class FragmenConversation extends Fragment implements View.OnClickListene
                 Const.CONVERSATION_COL4 +
                 "," +
                 Const.CONVERSATION_COL1 +
-                Const.ASC;
+                Const.DESC;
         Cursor cursor = database.getDatabase().rawQuery(sql, null);
         while (cursor.moveToNext()) {
             int idConversation = cursor.getInt(cursor.getColumnIndex(Const.CONVERSATION_COL2));

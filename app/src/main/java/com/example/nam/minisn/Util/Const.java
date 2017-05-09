@@ -48,6 +48,8 @@ public class Const {
     public static final String ID_USER_FRIEND = "id_userfriend";
     public static final String ID_RECEIVE = "id_receive";
     public static final String CODE_RESPONSE = "code_response";
+    public static final String USERNAME_REQUEST = "username_request";
+    public static final String ID_REQUEST = "id_request";
     //URL
     public static final String URL = "http://www.namlv-hust.96.lt/ver1/";
 //    public static final String URL = "http://namlv.hol.es/ver1/";
@@ -60,7 +62,12 @@ public class Const {
     public static final String URL_GET_REQUEST_FRIEND = URL + "friend/get_request_friend.php?";
     public static final String URL_GET_SIZE_CONVERSATION = URL + "conversation/get_size_conversation.php";
     public static final String URL_ADD_NEW_CONVERSATION = URL + "conversation/add_new_conversation.php";
+    public static final String URL_SEND_REQUEST_FRIENS = URL + "friend/send_request_friend.php";
     public static final String URL_SEND_RESPONSE_FRIEND = URL + "friend/send_response_request_friend.php";
+    public static final String URL_DELETE_FRIEND = URL + "friend/delete_friend.php";
+    public static final String URL_SEARCH_FRIEND = URL + "friend/search_friend.php/";
+
+    public static final String KEY_SEARCH = "search";
 
     //Share preferen
     public static final String FCM_TOKEN = "fcm_token";
@@ -73,6 +80,7 @@ public class Const {
     public static final int REQUEST_CODE_REGISTER = 100;
     public static final int CODE_OK = 101;
     public static final int CODE_FAIL = 102;
+    public static final int CODE_ERROR = 100;
     public static final int CODE_EMAIL_EXIST = 103;
     public static final int CODE_USER_EXIST = 104;
     public static final int CODE_INVALID = 105;
@@ -96,7 +104,9 @@ public class Const {
     public static final int TYPE_RESPONSE_FRIEND = 202;
 
 
-    public static final int ID_NOTIFICATION = 1111;
+    public static final int ID_NOTIFICATION_MESSAGE = 1111;
+    public static final int ID_NOTIFICATION_REQUEST = 1112;
+    public static final int ID_NOTIFICATION_RESPONSE= 1113;
 
     //Database
     public static final String DB_CONVERSATION = "conversation";
@@ -105,6 +115,7 @@ public class Const {
     public static final String DB_USERS = "users";
     public static final String DB_USERS_SAVE = "users_save";
     public static final String DB_REQUEST_FRIEND = "request_friend";
+    public static final String DB_WAIT_RESPONSE = "wait_response";
 
 //    Key Sql
     public static final String SELECT = "select ";
@@ -165,12 +176,17 @@ public class Const {
     public static final String REQUEST_FRIEND_COL2 = "username_request";
     public static final String REQUEST_FRIEND_COL3 = "use_id";
 
+    public static final String RESPONSE_COL0 = "id";
+    public static final String RESPONSE_COL1 = "use_id";
+    public static final String RESPONSE_COL2 = "id_request";
+    public static final String RESPONSE_COL3 = "name_friend";
+
+
     public static final int TYPE_NEW_MESSAGE = 1;
     public static final int TYPE_DONT_NEW_MESSAGE = 0;
 
     public static final int TYPE_DONT_ACTIVE = 0;
     public static final int TYPE_ACTIVE = 1;
-
 
 
     public static final int CONVERSATION_TYPE_SINGLE = 0;

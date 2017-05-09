@@ -39,7 +39,7 @@ public class SearchConversation extends AppCompatActivity {
         useId = SharedPrefManager.getInstance(getApplicationContext()).getInt(Const.ID);
         database = new SQLiteDataController(getApplicationContext());
         inputSearch = (EditText)findViewById(R.id.search_conversation_input);
-        btnBack = (ImageView)findViewById(R.id.chat_btn_back);
+        btnBack = (ImageView)findViewById(R.id.toolbar_btnback);
         adapter = new ListviewConversationAdapter(SearchConversation.this,R.layout.item_lvconversation,data);
 
         lv = (ListView)findViewById(R.id.search_conversation_lv);

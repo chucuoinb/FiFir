@@ -12,6 +12,7 @@ import com.example.nam.minisn.ItemListview.Chat;
 import com.example.nam.minisn.ItemListview.Conversation;
 import com.example.nam.minisn.ItemListview.Friend;
 import com.example.nam.minisn.ItemListview.ItemDeleteFriend;
+import com.example.nam.minisn.ItemListview.SearchFriendItem;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -203,8 +204,8 @@ public class SQLiteDataController extends SQLiteOpenHelper {
                 useID +
                 "')";
         database.execSQL(sql);
-        int type = idSend==useID?Const.TYPE_DONT_NEW_MESSAGE:Const.TYPE_NEW_MESSAGE;
-        updateConversation(message, time, idConversation,type);
+        int type = idSend == useID ? Const.TYPE_DONT_NEW_MESSAGE : Const.TYPE_NEW_MESSAGE;
+        updateConversation(message, time, idConversation, type);
     }
 
     public boolean isExistConversation(int idConversation) {
@@ -336,7 +337,7 @@ public class SQLiteDataController extends SQLiteOpenHelper {
         database.execSQL(sql);
     }
 
-    public void updateConversation(String lastMessage, long time, int idConversation,int type) {
+    public void updateConversation(String lastMessage, long time, int idConversation, int type) {
         int use_id = SharedPrefManager.getInstance(mContext).getInt(Const.ID);
         String sql = Const.UPDATE +
                 Const.DB_CONVERSATION +
@@ -486,6 +487,7 @@ public class SQLiteDataController extends SQLiteOpenHelper {
     }
 
     public void saveRequestFriend(int useId, String username, int id) {
+
         String sql = Const.INSERT +
                 Const.DB_REQUEST_FRIEND +
                 " (" +
@@ -690,7 +692,7 @@ public class SQLiteDataController extends SQLiteOpenHelper {
                 useId +
                 "'";
         database.execSQL(sql);
-        updateConversation("", 0, idConversation,Const.TYPE_DONT_NEW_MESSAGE);
+        updateConversation("", 0, idConversation, Const.TYPE_DONT_NEW_MESSAGE);
         updateActiveConversation(idConversation, useId, Const.TYPE_DONT_ACTIVE);
         setNewMessageConversation(idConversation, useId);
     }
@@ -943,5 +945,141 @@ public class SQLiteDataController extends SQLiteOpenHelper {
                 useId +
                 "'";
         database.execSQL(sql);
+    }
+
+    public ArrayList<Integer> getListFriendChoose() {
+        ArrayList<Integer> listId = new ArrayList<>();
+        String sql = Const.SELECT +
+                Const.FRIENDS_COL0 +
+                Const.FROM +
+                Const.DB_FRIEND +
+                Const.WHERE +
+                Const.FRIENDS_COL7 +
+                "='" +
+                Const.TYPE_CHOOSE +
+                "'";
+        Cursor cursor = database.rawQuery(sql, null);
+        while (cursor.moveToNext()) {
+            int id = cursor.getInt(cursor.getColumnIndex(Const.FRIENDS_COL0));
+            listId.add(id);
+        }
+//        Log.d(Const.TAG,"count: "+cursor.getCount());
+        return listId;
+    }
+
+    public void deleteFriend(int id, int useId) {
+        String sql = Const.DELETE +
+                Const.FROM +
+                Const.DB_FRIEND +
+                Const.WHERE +
+                Const.FRIENDS_COL0 +
+                "='" +
+                id +
+                "'" +
+                Const.AND +
+                Const.FRIENDS_COL4 +
+                "='" +
+                useId +
+                "'";
+        database.execSQL(sql);
+    }
+
+    public boolean isExistWaitResponse(int useId, int friId) {
+        String sql = Const.SELECT +
+                "*" +
+                Const.FROM +
+                Const.DB_WAIT_RESPONSE +
+                Const.WHERE +
+                Const.RESPONSE_COL1 +
+                "='" +
+                useId +
+                "'" +
+                Const.AND +
+                Const.RESPONSE_COL2 +
+                "='" +
+                friId +
+                "'";
+        Cursor cursor = database.rawQuery(sql, null);
+        return cursor.getCount() > 0;
+    }
+
+    public void addWaitResponse(int useId, int friId,String username) {
+        String sql = Const.INSERT +
+                Const.DB_WAIT_RESPONSE +
+                " (" +
+                Const.RESPONSE_COL1 +
+                "," +
+                Const.RESPONSE_COL2 +
+                "," +
+                Const.RESPONSE_COL3 +
+                ")" +
+                Const.VALUES +
+                "('" +
+                useId +
+                "','" +
+                friId +
+                "','" +
+                username +
+                "')";
+        if (!isExistWaitResponse(useId, friId))
+            database.execSQL(sql);
+    }
+    public boolean isExistRequest(int useId, int friId){
+        String sql = Const.SELECT +
+                "*" +
+                Const.FROM +
+                Const.DB_REQUEST_FRIEND +
+                Const.WHERE +
+                Const.REQUEST_FRIEND_COL1 +
+                "='" +
+                friId +
+                "'" +
+                Const.AND +
+                Const.REQUEST_FRIEND_COL3 +
+                "='" +
+                useId +
+                "'";
+        Cursor cursor = database.rawQuery(sql, null);
+        return cursor.getCount() > 0;
+    }
+
+    public ArrayList<SearchFriendItem> getListWaitResponse(int useId){
+        ArrayList<SearchFriendItem> data = new ArrayList<>();
+        String sql = Const.SELECT+
+                "*"+
+                Const.FROM+
+                Const.DB_WAIT_RESPONSE+
+                Const.WHERE+
+                Const.RESPONSE_COL1+
+                "='"+
+                useId+
+                "'";
+        Cursor cursor = database.rawQuery(sql,null);
+        while (cursor.moveToNext()){
+            int id = cursor.getInt(2);
+            String username = cursor.getString(3);
+            SearchFriendItem item = new SearchFriendItem(new Friend(id,username), true);
+            data.add(item);
+        }
+        return data;
+    }
+
+    public void deleteWaitResponse (int useId,int friId){
+        String sql = Const.DELETE+
+                Const.FROM+
+                Const.DB_WAIT_RESPONSE+
+                Const.WHERE+
+                Const.RESPONSE_COL1 +
+                "='" +
+                useId +
+                "'" +
+                Const.AND +
+                Const.RESPONSE_COL2 +
+                "='" +
+                friId +
+                "'";
+        if (isExistWaitResponse(useId, friId))
+            database.execSQL(sql);
+
     }
 }

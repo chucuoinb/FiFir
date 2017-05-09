@@ -161,6 +161,7 @@ public class LoginActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        Log.d(Const.TAG,"login vl er");
                         setEnableEdit(true);
                         Log.d(Const.TAG, "dang nhap that bai:"+error.getMessage());
                         progressDialog.dismiss();
@@ -283,7 +284,7 @@ public class LoginActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
-                Log.d(Const.TAG, "Request Error");
+                Log.d(Const.TAG, "Request Error sv list cv");
             }
         });
 
@@ -326,7 +327,7 @@ public class LoginActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
-                Log.d(Const.TAG, "Request Error");
+                Log.d(Const.TAG, "Request Error sv list fr");
             }
         });
 

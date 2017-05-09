@@ -38,6 +38,8 @@
     <!--notify-->
     <string name="notify_title_message">Có tin nhắn mới</string>
     <string name="notify_content_message">Click để xem</string>
+    <string name="notify_request_friend">Bạn nhận được lời mời kết bạn mới</string>
+    <string name="notify_request_content">Click để xem</string>
 
     <!--item_listview_request_friend-->
     <string name="accept">Chấp nhận</string>
@@ -61,4 +63,10 @@
 
     <!--friend-->
     <string name="friend_input_search">Nhập tên bạn bè</string>
+    <string name="friend_requested">Đang chờ</string>
+    <string name="friend_request">Gửi yêu cầu</string>
+
+    <string name="responce_accept">đã đồng ý</string>
+    <string name="responce_reject">đã từ chối</string>
+    <string name="responce_notify">lời mời kết bạn của bạn.</string>
 </resources>

@@ -1,12 +1,14 @@
 package com.example.nam.minisn.Fragmen;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -31,6 +33,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.example.nam.minisn.Activity.ChatActivity;
 import com.example.nam.minisn.Activity.RequestFriendActivity;
+import com.example.nam.minisn.Activity.SearchFriendActivity;
 import com.example.nam.minisn.Adapter.ListviewFriendAdapter;
 import com.example.nam.minisn.ItemListview.Friend;
 import com.example.nam.minisn.ItemListview.ItemDeleteFriend;
@@ -40,6 +43,7 @@ import com.example.nam.minisn.Util.Const;
 import com.example.nam.minisn.Util.SQLiteDataController;
 import com.example.nam.minisn.Util.SharedPrefManager;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -79,6 +83,7 @@ public class FragmenFriend extends Fragment implements View.OnClickListener {
     private int newIdConversation = 0;
     private static CheckBox cbAll;
     private Bundle bundleChat;
+    private TextView tvDelete;
 
     public FragmenFriend() {
     }
@@ -115,7 +120,8 @@ public class FragmenFriend extends Fragment implements View.OnClickListener {
             newRequest.setVisibility(View.VISIBLE);
         } else
             newRequest.setVisibility(View.INVISIBLE);
-
+        inputSearch.setText("");
+        hideSearch();
         friends.clear();
         getListFriend();
         adapter.notifyDataSetChanged();
@@ -138,6 +144,7 @@ public class FragmenFriend extends Fragment implements View.OnClickListener {
 
     public void init() {
         bundleChat = new Bundle();
+        tvDelete = (TextView) rootView.findViewById(R.id.friend_bt_delete);
         cbAll = (CheckBox) rootView.findViewById(R.id.friend_cb_all);
         tvCount = (TextView) rootView.findViewById(R.id.friend_count_delete);
         frame = (FrameLayout) rootView.findViewById(R.id.friend_frame);
@@ -162,6 +169,7 @@ public class FragmenFriend extends Fragment implements View.OnClickListener {
     }
 
     public void addListener() {
+        tvDelete.setOnClickListener(this);
         cbAll.setOnClickListener(this);
         requestFriend.setOnClickListener(this);
         fabConversation.setOnClickListener(this);
@@ -363,7 +371,7 @@ public class FragmenFriend extends Fragment implements View.OnClickListener {
                 fab3Click();
                 break;
             case R.id.fab_2:
-//                conversationTab.setVisibility(View.INVISIBLE);
+                fab2Click();
                 break;
             case R.id.fab_1:
                 fab1Click();
@@ -374,7 +382,63 @@ public class FragmenFriend extends Fragment implements View.OnClickListener {
             case R.id.friend_cb_all:
                 changeCheckAll();
                 break;
+            case R.id.friend_bt_delete:
+                deleteClick();
+                break;
 
+        }
+    }
+
+    public void deleteClick() {
+        if (database.getCountChooseFriend() > 0) {
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+            alertDialogBuilder.setTitle("Xóa " + tvCount.getText().toString() + " mục?");
+            alertDialogBuilder
+                    .setMessage("Click Yes để xóa?")
+                    .setCancelable(false)
+                    .setPositiveButton("Yes",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    int count = database.getCountChooseFriend();
+                                    progressDialog.setMessage("Đang xóa. Vui lòng đợi");
+                                    progressDialog.show();
+                                    tvCount.setText(String.valueOf(database.getCountChooseFriend()));
+
+                                    ArrayList<Integer> listDelete = database.getListFriendChoose();
+                                    HashMap<String, String> params = new HashMap<>();
+                                    for (int i = 0; i < listDelete.size(); i++) {
+                                        params.put(Const.ID + i, String.valueOf(listDelete.get(i)));
+                                        Log.d(Const.TAG, "count: " + listDelete.get(i));
+                                    }
+                                    params.put(Const.TOKEN,bundle.getString(Const.TOKEN));
+                                    deleteFriend(params);
+//                                    Toast.makeText(getActivity(), "Đã xóa " + String.valueOf(count) + " mục", Toast.LENGTH_SHORT).show();
+                                }
+                            })
+
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+
+                            dialog.cancel();
+                        }
+                    });
+
+            AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
+        } else {
+            final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+            alertDialogBuilder
+                    .setMessage("Bạn chưa chọn mục nào")
+                    .setCancelable(false)
+                    .setPositiveButton("Yes",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                }
+                            });
+
+            AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
         }
     }
 
@@ -387,6 +451,11 @@ public class FragmenFriend extends Fragment implements View.OnClickListener {
             }
             showSearch();
         }
+    }
+
+    public void fab2Click(){
+        Intent intent1= new Intent(getActivity(), SearchFriendActivity.class);
+        startActivity(intent1);
     }
 
     public void fab3Click() {
@@ -451,15 +520,15 @@ public class FragmenFriend extends Fragment implements View.OnClickListener {
                 intent.putExtra(Const.PACKAGE, bundle);
                 startActivity(intent);
             } else {
-                HashMap<String,String> params = new HashMap<>();
-                params.put(Const.TOKEN,bundle.getString(Const.TOKEN));
-                params.put(Const.ID_USER_FRIEND+"0",String.valueOf(item.getId()));
-                addNewConversation(params,item.getUsername(),item.getId());
+                HashMap<String, String> params = new HashMap<>();
+                params.put(Const.TOKEN, bundle.getString(Const.TOKEN));
+                params.put(Const.ID_USER_FRIEND + "0", String.valueOf(item.getId()));
+                addNewConversation(params, item.getUsername(), item.getId());
             }
         }
     };
 
-    public void addNewConversation(HashMap<String,String> params, final String name, final int friId){
+    public void addNewConversation(HashMap<String, String> params, final String name, final int friId) {
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
         CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, Const.URL_ADD_NEW_CONVERSATION, params,
                 new Response.Listener<JSONObject>() {
@@ -468,26 +537,26 @@ public class FragmenFriend extends Fragment implements View.OnClickListener {
                         try {
                             if (response.getInt(Const.CODE) == Const.CODE_OK) {
                                 int idConversation = response.getInt(Const.DATA);
-                                database.addConversation(idConversation,name,"", useId,Const.TYPE_DONT_NEW_MESSAGE);
-                                database.addIdConversationIntoFriend(useId,idConversation,friId);
-                                bundle.putInt(Const.CONVERSATION_ID,idConversation);
-                                bundle.putString(Const.NAME_CONVERSATION,name);
-                                intent.putExtra(Const.PACKAGE,bundle);
+                                database.addConversation(idConversation, name, "", useId, Const.TYPE_DONT_NEW_MESSAGE);
+                                database.addIdConversationIntoFriend(useId, idConversation, friId);
+                                bundle.putInt(Const.CONVERSATION_ID, idConversation);
+                                bundle.putString(Const.NAME_CONVERSATION, name);
+                                intent.putExtra(Const.PACKAGE, bundle);
                                 startActivity(intent);
                             } else {
-                                Toast.makeText(getActivity(),"Có lỗi xảy ra. Vui lòng thử lại",Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), "Có lỗi xảy ra. Vui lòng thử lại", Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
-                            Log.d(Const.TAG,"json er");
-                            Toast.makeText(getActivity(),"Có lỗi xảy ra. Vui lòng thử lại",Toast.LENGTH_SHORT).show();
+                            Log.d(Const.TAG, "json er");
+                            Toast.makeText(getActivity(), "Có lỗi xảy ra. Vui lòng thử lại", Toast.LENGTH_SHORT).show();
                         }
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.d(Const.TAG,"volley er");
-                        Toast.makeText(getActivity(),"Có lỗi xảy ra. Vui lòng thử lại",Toast.LENGTH_SHORT).show();
+                        Log.d(Const.TAG, "volley er");
+                        Toast.makeText(getActivity(), "Có lỗi xảy ra. Vui lòng thử lại", Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -495,4 +564,52 @@ public class FragmenFriend extends Fragment implements View.OnClickListener {
         jsObjRequest.setShouldCache(false);
         requestQueue.add(jsObjRequest);
     }
+
+
+    public void deleteFriend(HashMap<String, String> params) {
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, Const.URL_DELETE_FRIEND, params,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            if (response.getInt(Const.CODE) != Const.CODE_ERROR) {
+                                JSONArray list = response.getJSONArray(Const.DATA);
+                                if (list.length()>0){
+                                    for (int i = 0;i<list.length();i++){
+                                        database.deleteFriend(list.getInt(i),useId);
+                                    }
+                                }
+                                friends.clear();
+                                getListFriend();
+                                tvCount.setText("0");
+                                progressDialog.dismiss();
+                                Toast.makeText(getActivity(),"Đã xóa "+list.length()+" mục",Toast.LENGTH_SHORT).show();
+                            } else {
+                                progressDialog.dismiss();
+
+                                Toast.makeText(getActivity(), "Có lỗi xảy ra. Vui lòng thử lại", Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            Log.d(Const.TAG, "json er");
+                            progressDialog.dismiss();
+                            Toast.makeText(getActivity(), "Có lỗi xảy ra. Vui lòng thử lại", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d(Const.TAG, "volley er");
+                        progressDialog.dismiss();
+                        Toast.makeText(getActivity(), "Có lỗi xảy ra. Vui lòng thử lại", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+
+        jsObjRequest.setShouldCache(false);
+        requestQueue.add(jsObjRequest);
+
+    }
+
 }
