@@ -4,6 +4,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
 
+import com.example.nam.minisn.R;
+
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -197,6 +199,8 @@ public class Const {
 
     public static final int TAB_CONVERSATION = 0;
     public static final int TAB_FRIENDS = 1;
+    public static final int TAB_STATUS = 2;
+    public static final int TAB_SIZE= 3;
 
     //method
     public static final void log(String message) {
@@ -215,5 +219,23 @@ public class Const {
 //
 //        return result;
 //    }
+public static String getStringTime(Context context, long time) {
+//        String result = new String();
+    long nowTime = System.currentTimeMillis() / 1000;
+    long temp = nowTime - time;
+    if (temp < 60)
+        return context.getResources().getString(R.string.now_time);
+    else if (temp >= 60 && temp < 60 * 60)
+        return String.valueOf(temp / 60) + " " + context.getResources().getString(R.string.time2);
+    else if (temp >= 60 * 60 && temp < 60 * 60 * 24)
+        return String.valueOf(temp / (60 * 60)) + " " + context.getResources().getString(R.string.time3);
+    else if (temp >= 60 * 60 * 24 && temp < 60 * 60 * 24 * 7)
+        return String.valueOf(temp / (60 * 60 * 24)) + " " + context.getResources().getString(R.string.time4);
+    else {
+        String pattern = "dd/MM/yyyy";
+        SimpleDateFormat dateFormat = new SimpleDateFormat(pattern);
+        return dateFormat.format(new Date(time * 1000));
+    }
 
+}
 }

@@ -38,14 +38,14 @@ import java.util.HashMap;
  * Created by Nam on 5/9/2017.
  */
 
-public class ListviewSearchFriendAdapter extends ArrayAdapter<SearchFriendItem> {
+public class SearchFriendAdapter extends ArrayAdapter<SearchFriendItem> {
     private Activity context;
     private int layout;
     private ArrayList<SearchFriendItem> data = new ArrayList<>();
     private String token;
     private SQLiteDataController database;
     private int useId;
-    public ListviewSearchFriendAdapter (Activity context, int layout, ArrayList<SearchFriendItem> data) {
+    public SearchFriendAdapter(Activity context, int layout, ArrayList<SearchFriendItem> data) {
         super(context, layout, data);
         this.context = context;
         this.layout = layout;

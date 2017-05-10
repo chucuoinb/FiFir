@@ -5,9 +5,8 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
-import com.example.nam.minisn.Fragmen.FragmenFriend;
+import com.example.nam.minisn.Fragmen.FragmentFriend;
 import com.example.nam.minisn.ItemListview.Chat;
 import com.example.nam.minisn.ItemListview.Conversation;
 import com.example.nam.minisn.ItemListview.Friend;
@@ -763,7 +762,7 @@ public class SQLiteDataController extends SQLiteOpenHelper {
             String displayName = cursor.getString(3);
             int choose = cursor.getInt(7);
             Friend friend = new Friend(idFriend, nameFriend, displayName);
-            data.add(new ItemDeleteFriend(friend, FragmenFriend.isDelete(), choose));
+            data.add(new ItemDeleteFriend(friend, FragmentFriend.isDelete(), choose));
         }
 
         return data;

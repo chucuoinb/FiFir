@@ -14,8 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-import com.example.nam.minisn.Fragmen.FragmenConversation;
-import com.example.nam.minisn.Fragmen.FragmenFriend;
+import com.example.nam.minisn.Fragmen.FragmentFriend;
 import com.example.nam.minisn.ItemListview.ItemDeleteFriend;
 import com.example.nam.minisn.R;
 import com.example.nam.minisn.Util.Const;
@@ -30,13 +29,13 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * Created by Nam on 2/21/2017.
  */
 
-public class ListviewFriendAdapter extends ArrayAdapter<ItemDeleteFriend> {
+public class FriendAdapter extends ArrayAdapter<ItemDeleteFriend> {
     private Context context;
     private int layout;
     private ArrayList<ItemDeleteFriend> data;
     private SQLiteDataController database;
     private int useId;
-    public ListviewFriendAdapter(Context context, int layout, ArrayList<ItemDeleteFriend> data) {
+    public FriendAdapter(Context context, int layout, ArrayList<ItemDeleteFriend> data) {
         super(context, layout, data);
         this.context = context;
         this.data = data;
@@ -73,12 +72,12 @@ public class ListviewFriendAdapter extends ArrayAdapter<ItemDeleteFriend> {
         }
         else
             holder.checkBox.setVisibility(View.INVISIBLE);
-        if (!FragmenFriend.isSearch() || FragmenFriend.getTextSearch().length() == 0)
+        if (!FragmentFriend.isSearch() || FragmentFriend.getTextSearch().length() == 0)
             holder.namFriend.setText(temp.getFriend().getUsername());
         else {
             String name = temp.getFriend().getUsername();
-            int start = name.indexOf(FragmenFriend.getTextSearch());
-            int end = start + FragmenFriend.getTextSearch().length();
+            int start = name.indexOf(FragmentFriend.getTextSearch());
+            int end = start + FragmentFriend.getTextSearch().length();
             Spannable spannable = new SpannableString(name);
 
             spannable.setSpan(new ForegroundColorSpan(Color.RED), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -88,20 +87,20 @@ public class ListviewFriendAdapter extends ArrayAdapter<ItemDeleteFriend> {
         holder.checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int choose = (FragmenFriend.getFriends().get(position).getTpeChoose()==Const.TYPE_CHOOSE)?
+                int choose = (FragmentFriend.getFriends().get(position).getTpeChoose()==Const.TYPE_CHOOSE)?
                         Const.TYPE_NO_CHOOSE :Const.TYPE_CHOOSE;
-                FragmenFriend.getFriends().get(position).setTypeChoose(choose);
-                database.updateChooseFriend(useId,FragmenFriend.getFriends().get(position).getFriend().getId(),choose);
+                FragmentFriend.getFriends().get(position).setTypeChoose(choose);
+                database.updateChooseFriend(useId, FragmentFriend.getFriends().get(position).getFriend().getId(),choose);
                 int count = 0;
-                FragmenFriend.getTvCount().setText(String.valueOf(database.getCountChooseFriend()));
-                for(int i = 0;i<FragmenFriend.getFriends().size();i++){
-                    if (FragmenFriend.getFriends().get(i).getTpeChoose() == Const.TYPE_CHOOSE)
+                FragmentFriend.getTvCount().setText(String.valueOf(database.getCountChooseFriend()));
+                for(int i = 0; i< FragmentFriend.getFriends().size(); i++){
+                    if (FragmentFriend.getFriends().get(i).getTpeChoose() == Const.TYPE_CHOOSE)
                         count++;
                 }
-                if (count == FragmenFriend.getFriends().size())
-                    FragmenFriend.getCbAll().setChecked(true);
+                if (count == FragmentFriend.getFriends().size())
+                    FragmentFriend.getCbAll().setChecked(true);
                 else
-                    FragmenFriend.getCbAll().setChecked(false);
+                    FragmentFriend.getCbAll().setChecked(false);
             }
         });
         return row;

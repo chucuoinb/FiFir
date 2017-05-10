@@ -19,12 +19,12 @@ import java.util.ArrayList;
  * Created by Nam on 2/27/2017.
  */
 
-public class ListviewChatAdapter extends ArrayAdapter<Chat> {
+public class ChatAdapter extends ArrayAdapter<Chat> {
     private Context context;
     private int layout;
     private ArrayList<Chat> data = new ArrayList<>();
 
-    public ListviewChatAdapter(Context context, int layout, ArrayList<Chat> data) {
+    public ChatAdapter(Context context, int layout, ArrayList<Chat> data) {
         super(context, layout, data);
         this.context = context;
         this.layout = layout;

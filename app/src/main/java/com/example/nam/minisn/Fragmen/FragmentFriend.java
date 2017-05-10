@@ -34,7 +34,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.nam.minisn.Activity.ChatActivity;
 import com.example.nam.minisn.Activity.RequestFriendActivity;
 import com.example.nam.minisn.Activity.SearchFriendActivity;
-import com.example.nam.minisn.Adapter.ListviewFriendAdapter;
+import com.example.nam.minisn.Adapter.FriendAdapter;
 import com.example.nam.minisn.ItemListview.Friend;
 import com.example.nam.minisn.ItemListview.ItemDeleteFriend;
 import com.example.nam.minisn.R;
@@ -54,12 +54,12 @@ import java.util.HashMap;
  * Created by Nam on 2/24/2017.
  */
 
-public class FragmenFriend extends Fragment implements View.OnClickListener {
+public class FragmentFriend extends Fragment implements View.OnClickListener {
     private View rootView;
     private Bundle bundle = new Bundle();
     private ListView lvFriend;
     private ProgressDialog progressDialog;
-    private static ListviewFriendAdapter adapter;
+    private static FriendAdapter adapter;
 
 
     private static ArrayList<ItemDeleteFriend> friends = new ArrayList<>();
@@ -85,11 +85,11 @@ public class FragmenFriend extends Fragment implements View.OnClickListener {
     private Bundle bundleChat;
     private TextView tvDelete;
 
-    public FragmenFriend() {
+    public FragmentFriend() {
     }
 
-    public static FragmenFriend newInstance(Bundle bundle) {
-        FragmenFriend fragmen = new FragmenFriend();
+    public static FragmentFriend newInstance(Bundle bundle) {
+        FragmentFriend fragmen = new FragmentFriend();
 
         fragmen.setArguments(bundle);
         return fragmen;
@@ -120,8 +120,14 @@ public class FragmenFriend extends Fragment implements View.OnClickListener {
             newRequest.setVisibility(View.VISIBLE);
         } else
             newRequest.setVisibility(View.INVISIBLE);
-        inputSearch.setText("");
-        hideSearch();
+        if (isSearch()) {
+
+            inputSearch.setText("");
+            hideSearch();
+        }
+        if (isDelete()) {
+            hideDelete();
+        }
         friends.clear();
         getListFriend();
         adapter.notifyDataSetChanged();
@@ -139,7 +145,6 @@ public class FragmenFriend extends Fragment implements View.OnClickListener {
             hideSubMenu();
             isOpenSubMenu = !isOpenSubMenu;
         }
-        database.close();
     }
 
     public void init() {
@@ -162,7 +167,7 @@ public class FragmenFriend extends Fragment implements View.OnClickListener {
         useId = SharedPrefManager.getInstance(getActivity()).getInt(Const.ID);
         lvFriend = (ListView) rootView.findViewById(R.id.tab_Friend_lvFriend);
 
-        adapter = new ListviewFriendAdapter(getActivity(), R.layout.item_lvfriend, friends);
+        adapter = new FriendAdapter(getActivity(), R.layout.item_lvfriend, friends);
         lvFriend.setAdapter(adapter);
         intent = new Intent(getActivity(), ChatActivity.class);
         addListener();
@@ -410,7 +415,7 @@ public class FragmenFriend extends Fragment implements View.OnClickListener {
                                         params.put(Const.ID + i, String.valueOf(listDelete.get(i)));
                                         Log.d(Const.TAG, "count: " + listDelete.get(i));
                                     }
-                                    params.put(Const.TOKEN,bundle.getString(Const.TOKEN));
+                                    params.put(Const.TOKEN, bundle.getString(Const.TOKEN));
                                     deleteFriend(params);
 //                                    Toast.makeText(getActivity(), "Đã xóa " + String.valueOf(count) + " mục", Toast.LENGTH_SHORT).show();
                                 }
@@ -453,8 +458,8 @@ public class FragmenFriend extends Fragment implements View.OnClickListener {
         }
     }
 
-    public void fab2Click(){
-        Intent intent1= new Intent(getActivity(), SearchFriendActivity.class);
+    public void fab2Click() {
+        Intent intent1 = new Intent(getActivity(), SearchFriendActivity.class);
         startActivity(intent1);
     }
 
@@ -486,7 +491,7 @@ public class FragmenFriend extends Fragment implements View.OnClickListener {
     }
 
     public static void setTvCount(TextView tvCount) {
-        FragmenFriend.tvCount = tvCount;
+        FragmentFriend.tvCount = tvCount;
     }
 
     public static ArrayList<ItemDeleteFriend> getFriends() {
@@ -494,7 +499,7 @@ public class FragmenFriend extends Fragment implements View.OnClickListener {
     }
 
     public static void setFriends(ArrayList<ItemDeleteFriend> friends) {
-        FragmenFriend.friends = friends;
+        FragmentFriend.friends = friends;
     }
 
 
@@ -503,7 +508,7 @@ public class FragmenFriend extends Fragment implements View.OnClickListener {
     }
 
     public static void setCbAll(CheckBox cbAll) {
-        FragmenFriend.cbAll = cbAll;
+        FragmentFriend.cbAll = cbAll;
     }
 
     public AdapterView.OnItemClickListener itemLvFriendClick = new AdapterView.OnItemClickListener() {
@@ -575,16 +580,16 @@ public class FragmenFriend extends Fragment implements View.OnClickListener {
                         try {
                             if (response.getInt(Const.CODE) != Const.CODE_ERROR) {
                                 JSONArray list = response.getJSONArray(Const.DATA);
-                                if (list.length()>0){
-                                    for (int i = 0;i<list.length();i++){
-                                        database.deleteFriend(list.getInt(i),useId);
+                                if (list.length() > 0) {
+                                    for (int i = 0; i < list.length(); i++) {
+                                        database.deleteFriend(list.getInt(i), useId);
                                     }
                                 }
                                 friends.clear();
                                 getListFriend();
                                 tvCount.setText("0");
                                 progressDialog.dismiss();
-                                Toast.makeText(getActivity(),"Đã xóa "+list.length()+" mục",Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), "Đã xóa " + list.length() + " mục", Toast.LENGTH_SHORT).show();
                             } else {
                                 progressDialog.dismiss();
 

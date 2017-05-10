@@ -4,12 +4,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewPager;
 
 import com.example.nam.minisn.Adapter.TabsAdapter;
-import com.example.nam.minisn.Fragmen.FragmenConversation;
-import com.example.nam.minisn.Fragmen.FragmenFriend;
+import com.example.nam.minisn.Fragmen.FragmentConversation;
+import com.example.nam.minisn.Fragmen.FragmentFriend;
 import com.example.nam.minisn.ItemListview.Conversation;
 import com.example.nam.minisn.R;
 import com.example.nam.minisn.Util.Const;
@@ -17,15 +16,7 @@ import com.example.nam.minisn.Util.Const;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.Toast;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 public class Main extends AppCompatActivity {
@@ -50,10 +41,6 @@ public class Main extends AppCompatActivity {
 
     public void init() {
 
-//        fabMain = (FloatingActionButton)findViewById(R.id.main_fab);
-//        fabConversation = (FloatingActionButton)findViewById(R.id.fab_1);
-//        fabFriend = (FloatingActionButton)findViewById(R.id.fab_2);
-//        fabRequestFriend = (FloatingActionButton)findViewById(R.id.fab_3);
 
         intent = getIntent();
         bundle = intent.getBundleExtra(Const.PACKAGE);
@@ -61,12 +48,12 @@ public class Main extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.main_viewPager);
         mSectionsPagerAdapter = new TabsAdapter(getSupportFragmentManager(), bundle);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-//        mViewPager.setOffscreenPageLimit(2);
+        mViewPager.setOffscreenPageLimit(Const.TAB_SIZE-1);
         tabLayout.setupWithViewPager(mViewPager);
         tabLayout.setOnTabSelectedListener(changeTab);
         tabLayout.getTabAt(0).setIcon(iconTabs[0]);
         tabLayout.getTabAt(0).getIcon().setColorFilter(getResources().getColor(R.color.color_tab_select), PorterDuff.Mode.SRC_IN);
-        for (int i = 1; i < 2; i++) {
+        for (int i = 1; i < Const.TAB_SIZE; i++) {
             tabLayout.getTabAt(i).setIcon(iconTabs[i]);
             tabLayout.getTabAt(i).getIcon().setColorFilter(getResources().getColor(R.color.color_tab), PorterDuff.Mode.SRC_IN);
         }
@@ -76,24 +63,24 @@ public class Main extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if (tabLayout.getSelectedTabPosition() == Const.TAB_CONVERSATION) {
-            if (FragmenConversation.isShowDelete) {
-                FragmenConversation.hideDelete();
+            if (FragmentConversation.isShowDelete) {
+                FragmentConversation.hideDelete();
 
             } else {
-                if (FragmenConversation.isSearch) {
-                    FragmenConversation.hideSearch();
+                if (FragmentConversation.isSearch) {
+                    FragmentConversation.hideSearch();
 
                 } else
                     showAlertIsCloseApp();
             }
         }
         else if(tabLayout.getSelectedTabPosition() == Const.TAB_FRIENDS){
-            if (FragmenFriend.isDelete()) {
-                FragmenFriend.hideDelete();
+            if (FragmentFriend.isDelete()) {
+                FragmentFriend.hideDelete();
 
             } else {
-                if (FragmenFriend.isSearch()) {
-                    FragmenFriend.hideSearch();
+                if (FragmentFriend.isSearch()) {
+                    FragmentFriend.hideSearch();
 
                 } else
                     showAlertIsCloseApp();

@@ -5,9 +5,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.example.nam.minisn.Activity.Main;
-import com.example.nam.minisn.Fragmen.FragmenConversation;
-import com.example.nam.minisn.Fragmen.FragmenFriend;
+import com.example.nam.minisn.Fragmen.FragmentConversation;
+import com.example.nam.minisn.Fragmen.FragmentFriend;
+import com.example.nam.minisn.Fragmen.FragmentStatus;
+import com.example.nam.minisn.Util.Const;
 
 
 /**
@@ -23,21 +24,19 @@ public class TabsAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         switch (position){
-            case 0:
-                return FragmenConversation.newInstance(bundle);
-            case 1:
-                return FragmenFriend.newInstance(bundle);
-//            case 2:
-//                return FragmentStatus.newInstance(bundle);
-//            case 3:
-//                return FragmentIndividual.newInstance(bundle);
+            case Const.TAB_CONVERSATION:
+                return FragmentConversation.newInstance(bundle);
+            case Const.TAB_FRIENDS:
+                return FragmentFriend.newInstance(bundle);
+            case Const.TAB_STATUS:
+                return FragmentStatus.newInstance(bundle);
         }
         return null;
     }
 
     @Override
     public int getCount() {
-        return 2;
+        return Const.TAB_SIZE;
     }
 
 }

@@ -7,7 +7,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.example.nam.minisn.Adapter.ListviewRequestFriendAdapter;
+import com.example.nam.minisn.Adapter.RequestFriendAdapter;
 import com.example.nam.minisn.ItemListview.Friend;
 import com.example.nam.minisn.R;
 import com.example.nam.minisn.Util.Const;
@@ -18,7 +18,7 @@ import java.util.ArrayList;
 
 public class RequestFriendActivity extends AppCompatActivity {
     private ListView lvRequestFriend;
-    private static ListviewRequestFriendAdapter adapter;
+    private static RequestFriendAdapter adapter;
 
     private static ArrayList<Friend> friends = new ArrayList<Friend>();
     private LinearLayout btnBack;
@@ -50,7 +50,7 @@ public class RequestFriendActivity extends AppCompatActivity {
         database = new SQLiteDataController(getApplicationContext());
         btnBack = (LinearLayout) findViewById(R.id.toolbar_btnback);
         lvRequestFriend = (ListView)findViewById(R.id.request_friend_lv);
-        adapter = new ListviewRequestFriendAdapter(this,R.layout.item_listview_request_friend,friends);
+        adapter = new RequestFriendAdapter(this,R.layout.item_listview_request_friend,friends);
         lvRequestFriend.setAdapter(adapter);
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,7 +63,7 @@ public class RequestFriendActivity extends AppCompatActivity {
     public static ArrayList<Friend> getFriends() {
         return friends;
     }
-    public static ListviewRequestFriendAdapter getAdapter() {
+    public static RequestFriendAdapter getAdapter() {
         return adapter;
     }
 }

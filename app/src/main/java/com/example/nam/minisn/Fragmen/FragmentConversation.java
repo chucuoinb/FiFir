@@ -18,7 +18,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -28,7 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.nam.minisn.Activity.ChatActivity;
-import com.example.nam.minisn.Adapter.ListviewConversationAdapter;
+import com.example.nam.minisn.Adapter.ConversationAdapter;
 import com.example.nam.minisn.ItemListview.Conversation;
 import com.example.nam.minisn.R;
 import com.example.nam.minisn.Util.Const;
@@ -41,7 +40,7 @@ import java.util.ArrayList;
  * Created by Nam on 2/21/2017.
  */
 
-public class FragmenConversation extends Fragment implements View.OnClickListener {
+public class FragmentConversation extends Fragment implements View.OnClickListener {
     private static final String SHOW_DELETE = "s_delete";
     private static final String SHOW_SEARCH = "s_search";
     private static final int TYPE_SHOW = 1;
@@ -52,7 +51,7 @@ public class FragmenConversation extends Fragment implements View.OnClickListene
     public static ArrayList<Conversation> dataSingle = new ArrayList<>();
     public static ArrayList<Conversation> dataGroup = new ArrayList<>();
     private Bundle bundle;
-    public static ListviewConversationAdapter adapter;
+    public static ConversationAdapter adapter;
     private ProgressDialog progressDialog;
     private Intent intent;
     private String token;
@@ -79,12 +78,12 @@ public class FragmenConversation extends Fragment implements View.OnClickListene
     private static FrameLayout frame;
     public static boolean isShowDelete = false;
 
-    public FragmenConversation() {
+    public FragmentConversation() {
 
     }
 
-    public static FragmenConversation newInstance(Bundle bundle) {
-        FragmenConversation fragmen = new FragmenConversation();
+    public static FragmentConversation newInstance(Bundle bundle) {
+        FragmentConversation fragmen = new FragmentConversation();
 
         fragmen.setArguments(bundle);
         return fragmen;
@@ -127,8 +126,8 @@ public class FragmenConversation extends Fragment implements View.OnClickListene
         lvConversation = (ListView) rootView.findViewById(R.id.tab_Conversation_lv);
 
         database = new SQLiteDataController(getActivity());
-
-        adapter = new ListviewConversationAdapter(getActivity(), R.layout.item_lvconversation, data);
+        database.openDataBase();
+        adapter = new ConversationAdapter(getActivity(), R.layout.item_lvconversation, data);
         lvConversation.setAdapter(adapter);
 
 
@@ -157,11 +156,17 @@ public class FragmenConversation extends Fragment implements View.OnClickListene
     @Override
     public void onResume() {
         super.onResume();
-        database.openDataBase();
+
         setConversationSelect(Const.CONVERSATION_TYPE_SINGLE);
         clearData();
-        hideDelete();
-        hideSearch();
+        if (isShowDelete) {
+
+            hideDelete();
+        }
+        if (isSearch) {
+
+            hideSearch();
+        }
         getListConversation(isShowDelete);
 //        if (isShowDelete) {
 //            for (int i = 0; i < data.size(); i++) {
@@ -197,8 +202,6 @@ public class FragmenConversation extends Fragment implements View.OnClickListene
                 "'" +
                 Const.ORDER_BY +
                 Const.CONVERSATION_COL4 +
-                "," +
-                Const.CONVERSATION_COL1 +
                 Const.DESC;
         Cursor cursor = database.getDatabase().rawQuery(sql, null);
         while (cursor.moveToNext()) {
@@ -227,8 +230,6 @@ public class FragmenConversation extends Fragment implements View.OnClickListene
             }
             dataClone.add(conversation);
         }
-//        database.close();
-//        data = new ArrayList<>(dataSingle);
         if (isSearch)
             data.addAll(dataClone);
         else
@@ -247,7 +248,7 @@ public class FragmenConversation extends Fragment implements View.OnClickListene
                 item.setNew(false);
             }
             bundle.putInt(Const.CONVERSATION_ID, item.getId());
-            Log.d(Const.TAG,"con: "+item.getId());
+            Log.d(Const.TAG, "con: " + item.getId());
             bundle.putString(Const.NAME_CONVERSATION, item.getNameConservation());
             intent.putExtra(Const.PACKAGE, bundle);
             startActivity(intent);
@@ -401,28 +402,33 @@ public class FragmenConversation extends Fragment implements View.OnClickListene
         public void onTextChanged(CharSequence s, int start, int before, int count) {
 //            database.openDataBase();
             String name = inputSearch.getText().toString();
-            FragmenConversation.search = name;
-            data.clear();
-            ArrayList<Conversation> temp = new ArrayList<>();
+            Log.d(Const.TAG,"err: "+name);
+            if (name != null) {
 
-            temp.addAll(database.searchConversation(name, use_id));
-            for (int i = 0; i < temp.size(); i++) {
-                int id = temp.get(i).getId();
-                for (int j = 0; j < dataClone.size(); j++) {
-                    if (dataClone.get(j).getId() == id)
-                        data.add(dataClone.get(j));
+
+                FragmentConversation.search = name;
+                data.clear();
+                ArrayList<Conversation> temp = new ArrayList<>();
+
+                temp.addAll(database.searchConversation(name, use_id));
+                for (int i = 0; i < temp.size(); i++) {
+                    int id = temp.get(i).getId();
+                    for (int j = 0; j < dataClone.size(); j++) {
+                        if (dataClone.get(j).getId() == id)
+                            data.add(dataClone.get(j));
+                    }
                 }
+                adapter.notifyDataSetChanged();
+                int countChoose = 0;
+                for (int i = 0; i < data.size(); i++) {
+                    if (data.get(i).getTypeChoose() == Const.TYPE_CHOOSE)
+                        countChoose++;
+                }
+                if (countChoose == data.size())
+                    checkAll.setChecked(true);
+                else
+                    checkAll.setChecked(false);
             }
-            adapter.notifyDataSetChanged();
-            int countChoose = 0;
-            for (int i = 0; i < data.size(); i++) {
-                if (data.get(i).getTypeChoose() == Const.TYPE_CHOOSE)
-                    countChoose++;
-            }
-            if (countChoose == data.size())
-                checkAll.setChecked(true);
-            else
-                checkAll.setChecked(false);
         }
 
         @Override
@@ -453,7 +459,6 @@ public class FragmenConversation extends Fragment implements View.OnClickListene
     public void onDestroy() {
         super.onDestroy();
         database.setAllChooseConversation(Const.TYPE_NO_CHOOSE);
-        database.close();
     }
 
     public void deleteClick() {

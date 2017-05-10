@@ -37,7 +37,7 @@ import java.util.HashMap;
  * Created by Nam on 2/21/2017.
  */
 
-public class ListviewRequestFriendAdapter extends ArrayAdapter<Friend> {
+public class RequestFriendAdapter extends ArrayAdapter<Friend> {
     private Activity context;
     private int layout;
     private ArrayList<Friend> data = null;
@@ -46,7 +46,7 @@ public class ListviewRequestFriendAdapter extends ArrayAdapter<Friend> {
     private int positionItem;
     private SQLiteDataController database;
 
-    public ListviewRequestFriendAdapter(Activity context, int layout, ArrayList<Friend> data) {
+    public RequestFriendAdapter(Activity context, int layout, ArrayList<Friend> data) {
         super(context, layout, data);
         this.context = context;
         this.data = data;

@@ -18,9 +18,8 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.nam.minisn.Adapter.ListviewSearchFriendAdapter;
+import com.example.nam.minisn.Adapter.SearchFriendAdapter;
 import com.example.nam.minisn.ItemListview.Friend;
 import com.example.nam.minisn.ItemListview.SearchFriendItem;
 import com.example.nam.minisn.R;
@@ -39,7 +38,7 @@ import java.util.HashMap;
 public class SearchFriendActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static ArrayList<SearchFriendItem> data;
-    private static ListviewSearchFriendAdapter adapter;
+    private static SearchFriendAdapter adapter;
     private EditText edInput;
     private ImageView btSearch;
     private ListView lvData;
@@ -71,7 +70,7 @@ public class SearchFriendActivity extends AppCompatActivity implements View.OnCl
         database = new SQLiteDataController(getApplicationContext());
         database.openDataBase();
         data = new ArrayList<>();
-        adapter = new ListviewSearchFriendAdapter(this, R.layout.item_lv_search_friend, data);
+        adapter = new SearchFriendAdapter(this, R.layout.item_lv_search_friend, data);
         dialog = new ProgressDialog(this, R.style.AppTheme_Dialog);
         dialog.setMessage("Đang tìm kiếm ...");
         listener();
@@ -192,7 +191,7 @@ public class SearchFriendActivity extends AppCompatActivity implements View.OnCl
     public static ArrayList<SearchFriendItem> getData() {
         return data;
     }
-    public static ListviewSearchFriendAdapter getAdapter() {
+    public static SearchFriendAdapter getAdapter() {
         return adapter;
     }
 }

@@ -11,7 +11,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 
-import com.example.nam.minisn.Adapter.ListviewConversationAdapter;
+import com.example.nam.minisn.Adapter.ConversationAdapter;
 import com.example.nam.minisn.ItemListview.Conversation;
 import com.example.nam.minisn.R;
 import com.example.nam.minisn.Util.Const;
@@ -25,7 +25,7 @@ public class SearchConversation extends AppCompatActivity {
     private ImageView btnBack;
     private ListView lv;
     private ArrayList<Conversation> data = new ArrayList<>();
-    private ListviewConversationAdapter adapter;
+    private ConversationAdapter adapter;
     private SQLiteDataController database;
     private int useId;
     @Override
@@ -40,7 +40,7 @@ public class SearchConversation extends AppCompatActivity {
         database = new SQLiteDataController(getApplicationContext());
         inputSearch = (EditText)findViewById(R.id.search_conversation_input);
         btnBack = (ImageView)findViewById(R.id.toolbar_btnback);
-        adapter = new ListviewConversationAdapter(SearchConversation.this,R.layout.item_lvconversation,data);
+        adapter = new ConversationAdapter(SearchConversation.this,R.layout.item_lvconversation,data);
 
         lv = (ListView)findViewById(R.id.search_conversation_lv);
         lv.setAdapter(adapter);

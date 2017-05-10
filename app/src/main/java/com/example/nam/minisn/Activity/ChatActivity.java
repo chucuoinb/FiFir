@@ -23,7 +23,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
-import com.example.nam.minisn.Adapter.ListviewChatAdapter;
+import com.example.nam.minisn.Adapter.ChatAdapter;
 import com.example.nam.minisn.ItemListview.Chat;
 import com.example.nam.minisn.R;
 import com.example.nam.minisn.UseVoley.CustomRequest;
@@ -39,7 +39,7 @@ import java.util.HashMap;
 
 public class ChatActivity extends AppCompatActivity {
     private ListView lvChat;
-    private ListviewChatAdapter adapter;
+    private ChatAdapter adapter;
     private ArrayList<Chat> data = new ArrayList<>();
     private Intent intent;
     private Bundle bundle;
@@ -88,7 +88,7 @@ public class ChatActivity extends AppCompatActivity {
         lvChat = (ListView) findViewById(R.id.chat_lv_Chat);
         btnBack = (LinearLayout) findViewById(R.id.toolbar_btnback);
 
-        adapter = new ListviewChatAdapter(ChatActivity.this, R.id.layoutChat, data);
+        adapter = new ChatAdapter(ChatActivity.this, R.id.layoutChat, data);
         startDatabase();
         setInfoConversation();
         setListener();
