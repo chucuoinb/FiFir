@@ -72,6 +72,9 @@
         </activity>
         <activity android:name=".Activity.PersonalActivity">
         </activity>
+        <activity android:name=".Activity.CreateConversation"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
     </application>
 
 </manifest>

@@ -27,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.nam.minisn.Activity.ChatActivity;
+import com.example.nam.minisn.Activity.CreateConversation;
 import com.example.nam.minisn.Adapter.ConversationAdapter;
 import com.example.nam.minisn.ItemListview.Conversation;
 import com.example.nam.minisn.R;
@@ -453,6 +454,7 @@ public class FragmentConversation extends Fragment implements View.OnClickListen
             hideSubMenu();
             isOpenSubMenu = !isOpenSubMenu;
         }
+        database.setAllChooseConversation(Const.TYPE_NO_CHOOSE);
     }
 
     @Override
@@ -539,7 +541,7 @@ public class FragmentConversation extends Fragment implements View.OnClickListen
                 showDelete();
                 break;
             case R.id.fab_2:
-//                conversationTab.setVisibility(View.INVISIBLE);
+                fab2Click();
                 break;
             case R.id.fab_1:
                 if (isOpenSubMenu) {
@@ -561,6 +563,11 @@ public class FragmentConversation extends Fragment implements View.OnClickListen
                 changeCheckAll();
                 break;
         }
+    }
+
+    public void fab2Click(){
+        Intent intent = new Intent(getActivity(), CreateConversation.class);
+        startActivity(intent);
     }
 
     public void clearData() {

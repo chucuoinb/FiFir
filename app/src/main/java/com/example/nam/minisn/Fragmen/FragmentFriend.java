@@ -3,7 +3,6 @@ package com.example.nam.minisn.Fragmen;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -145,6 +144,7 @@ public class FragmentFriend extends Fragment implements View.OnClickListener {
             hideSubMenu();
             isOpenSubMenu = !isOpenSubMenu;
         }
+        database.setAllChooseFriend(Const.TYPE_NO_CHOOSE);
     }
 
     public void init() {
@@ -187,26 +187,8 @@ public class FragmentFriend extends Fragment implements View.OnClickListener {
 
 
     public void getListFriend() {
-        String sql = Const.SELECT +
-
-                " * " +
-                Const.FROM +
-                Const.DB_FRIEND +
-                Const.WHERE +
-                Const.FRIENDS_COL4 +
-                "= '" +
-                useId +
-                "'";
-        Cursor cursor = database.getDatabase().rawQuery(sql, null);
-        while (cursor.moveToNext()) {
-            int fri_id = cursor.getInt(1);
-            String fri_username = cursor.getString(2);
-            String fri_display = cursor.getString(3);
-            int choose = cursor.getInt(7);
-
-            Friend friend = new Friend(fri_id, fri_username, fri_display);
-            friends.add(new ItemDeleteFriend(friend, isDelete, choose));
-        }
+        friends.clear();
+        friends.addAll(database.getListFriend(useId,isDelete));
 
         adapter.notifyDataSetChanged();
         progressDialog.dismiss();
@@ -317,6 +299,7 @@ public class FragmentFriend extends Fragment implements View.OnClickListener {
             LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) frame.getLayoutParams();
             layoutParams.topMargin -= 100;
             frame.setLayoutParams(layoutParams);
+
         }
     }
 
@@ -409,7 +392,7 @@ public class FragmentFriend extends Fragment implements View.OnClickListener {
                                     progressDialog.show();
                                     tvCount.setText(String.valueOf(database.getCountChooseFriend()));
 
-                                    ArrayList<Integer> listDelete = database.getListFriendChoose();
+                                    ArrayList<Integer> listDelete = database.getListFriendDelete();
                                     HashMap<String, String> params = new HashMap<>();
                                     for (int i = 0; i < listDelete.size(); i++) {
                                         params.put(Const.ID + i, String.valueOf(listDelete.get(i)));
@@ -516,8 +499,6 @@ public class FragmentFriend extends Fragment implements View.OnClickListener {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             Friend item = friends.get(position).getFriend();
             int idConversation = database.getConversationFriend(item.getId(), useId);
-            Log.d(Const.TAG, "click");
-            Log.d(Const.TAG, "idCon: " + idConversation);
             if (idConversation > 0) {
                 String name = database.getNameConversation(idConversation, useId);
                 bundle.putInt(Const.CONVERSATION_ID, idConversation);

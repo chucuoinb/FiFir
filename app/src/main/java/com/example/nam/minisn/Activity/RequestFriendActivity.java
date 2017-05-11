@@ -21,9 +21,9 @@ public class RequestFriendActivity extends AppCompatActivity {
     private static RequestFriendAdapter adapter;
 
     private static ArrayList<Friend> friends = new ArrayList<Friend>();
-    private LinearLayout btnBack;
     private SQLiteDataController database;
     private int useId;
+    private LinearLayout btnBack;
     private TextView toolbarText;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,9 +46,9 @@ public class RequestFriendActivity extends AppCompatActivity {
     public void init(){
         toolbarText = (TextView)findViewById(R.id.toolbar_text);
         toolbarText.setText("Lời mời kết bạn");
+        btnBack = (LinearLayout) findViewById(R.id.toolbar_btnback);
         useId = SharedPrefManager.getInstance(getApplicationContext()).getInt(Const.ID);
         database = new SQLiteDataController(getApplicationContext());
-        btnBack = (LinearLayout) findViewById(R.id.toolbar_btnback);
         lvRequestFriend = (ListView)findViewById(R.id.request_friend_lv);
         adapter = new RequestFriendAdapter(this,R.layout.item_listview_request_friend,friends);
         lvRequestFriend.setAdapter(adapter);

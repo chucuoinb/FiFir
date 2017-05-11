@@ -259,6 +259,31 @@ public class SQLiteDataController extends SQLiteOpenHelper {
         database.execSQL(sql);
     }
 
+    public ArrayList<ItemDeleteFriend> getListFriend(int useId,boolean isDelete){
+        ArrayList<ItemDeleteFriend> friends = new ArrayList<>();
+        String sql = Const.SELECT +
+
+                " * " +
+                Const.FROM +
+                Const.DB_FRIEND +
+                Const.WHERE +
+                Const.FRIENDS_COL4 +
+                "= '" +
+                useId +
+                "'";
+        Cursor cursor = database.rawQuery(sql, null);
+        while (cursor.moveToNext()) {
+            int fri_id = cursor.getInt(1);
+            String fri_username = cursor.getString(2);
+            String fri_display = cursor.getString(3);
+            int choose = cursor.getInt(7);
+
+            Friend friend = new Friend(fri_id, fri_username, fri_display);
+            friends.add(new ItemDeleteFriend(friend,isDelete,choose));
+        }
+        return friends;
+    }
+
     public boolean checkLogged(int id) {
         Cursor cursor = database.rawQuery(Const.SELECT + "*" + Const.FROM + Const.DB_USERS_SAVE + Const.WHERE +
                 Const.SAVE_COL1 + " = '" + id + "'", null);
@@ -960,7 +985,36 @@ public class SQLiteDataController extends SQLiteOpenHelper {
         database.execSQL(sql);
     }
 
-    public ArrayList<Integer> getListFriendChoose() {
+    public ArrayList<Friend> getListFriendAdd(int useId){
+        ArrayList<Friend> friends = new ArrayList<>();
+        String sql = Const.SELECT +
+                "*" +
+                Const.FROM +
+                Const.DB_FRIEND +
+                Const.WHERE +
+                Const.FRIENDS_COL7 +
+                "='" +
+                Const.TYPE_CHOOSE +
+                "'"+
+                Const.AND+
+                Const.FRIENDS_COL4+
+                "='"+
+                useId+
+                "'";
+        Cursor cursor = database.rawQuery(sql, null);
+        while (cursor.moveToNext()) {
+            int id = cursor.getInt(1);
+            String username = cursor.getString(2);
+            String display = cursor.getString(3);
+            int gender = cursor.getInt(5);
+            Friend friend = new Friend(username,display,gender,id);
+            friends.add(friend);
+        }
+//        Log.d(Const.TAG,"count: "+cursor.getCount());
+        return friends;
+    }
+
+    public ArrayList<Integer> getListFriendDelete() {
         ArrayList<Integer> listId = new ArrayList<>();
         String sql = Const.SELECT +
                 Const.FRIENDS_COL0 +

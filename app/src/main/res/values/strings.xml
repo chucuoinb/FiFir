@@ -79,6 +79,7 @@
 
     <string name="personal">Vào trang cá nhân</string>
     <string name="logout">Đăng xuất</string>
+    <string name="no_choose">Chưa chọn bạn bè nào.</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

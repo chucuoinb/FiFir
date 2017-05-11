@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.util.Log;
+import android.widget.TextView;
 
 import com.example.nam.minisn.Activity.LoginActivity;
 import com.example.nam.minisn.R;
@@ -250,6 +251,5 @@ public class Const {
         }
 
     }
-
 
 }

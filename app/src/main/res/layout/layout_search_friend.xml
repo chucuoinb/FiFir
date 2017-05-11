@@ -41,13 +41,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/search_lv"
-        android:divider="@color/colorText"
+        android:divider="@color/colorDivide"
         android:dividerHeight="1dp">
     </ListView>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/colorText"
+        android:background="@color/colorDivide"
         android:orientation="vertical">
 
     </LinearLayout>
