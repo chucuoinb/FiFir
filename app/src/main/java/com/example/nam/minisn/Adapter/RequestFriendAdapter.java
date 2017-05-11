@@ -106,8 +106,9 @@ public class RequestFriendAdapter extends ArrayAdapter<Friend> {
                                             String username = userFriend.getString(Const.USERNAME);
                                             int fri_id = userFriend.getInt(Const.ID);
                                             int id = userFriend.getInt("id_friend");
+                                            String displayName = userFriend.getString(Const.DISPLAY_NAME);
                                             if (!database.isExistFriend(useId, id))
-                                                database.addFriend(useId, gender, username, fri_id, id);
+                                                database.addFriend(useId, gender, username, fri_id, id,displayName);
                                         }
                                     }
                                 } catch (JSONException e) {

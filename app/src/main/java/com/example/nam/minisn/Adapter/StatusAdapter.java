@@ -3,6 +3,7 @@ package com.example.nam.minisn.Adapter;
 import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,6 +66,7 @@ public class StatusAdapter extends ArrayAdapter<Status>{
             holder = (Holder)row.getTag();
 
         Status temp = data.get(position);
+//        Log.d(Const.TAG,temp.getFriend().getDisplayName());
         holder.nameFriend.setText(temp.getFriend().getDisplayName());
         holder.timeStatus.setText(Const.getStringTime(context,temp.getTime()));
         holder.status.setText(temp.getStatus());

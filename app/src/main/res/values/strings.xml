@@ -77,6 +77,9 @@
     <string name="status_comment">Bình luận</string>
     <string name="status_like">Thích</string>
 
+    <string name="personal">Vào trang cá nhân</string>
+    <string name="logout">Đăng xuất</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

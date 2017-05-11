@@ -38,6 +38,14 @@ public class SharedPrefManager
         return true;
     }
 
+    public boolean savePreferences(String tag, long data){
+        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(Const.SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putLong(tag, data);
+        editor.apply();
+        return true;
+    }
+
     //this method will fetch the device token from shared preferences
     public String getString(String tag){
         SharedPreferences sharedPreferences = mCtx.getSharedPreferences(Const.SHARED_PREF_NAME, Context.MODE_PRIVATE);
@@ -48,4 +56,5 @@ public class SharedPrefManager
         SharedPreferences sharedPreferences = mCtx.getSharedPreferences(Const.SHARED_PREF_NAME, Context.MODE_PRIVATE);
         return  sharedPreferences.getInt(tag, 0);
     }
+
 }

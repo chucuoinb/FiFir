@@ -5,6 +5,7 @@ package com.example.nam.minisn.ItemListview;
  */
 
 public class Status {
+    private int id;
     private Friend friend;
     private long time;
     private String status;
@@ -24,7 +25,8 @@ public class Status {
     public Status() {
     }
 
-    public Status(Friend friend, long time, String status, boolean isLike, int countComment,int countLike) {
+    public Status(int id,Friend friend, long time, String status, boolean isLike, int countComment,int countLike) {
+        this.id = id;
         this.friend = friend;
         this.time = time;
         this.status = status;
@@ -71,5 +73,13 @@ public class Status {
 
     public void setCountComment(int countComment) {
         this.countComment = countComment;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

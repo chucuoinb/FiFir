@@ -66,8 +66,11 @@
             android:name=".Activity.SearchConversation"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
-        <activity android:name=".Activity.SearchFriendActivity"
+        <activity
+            android:name=".Activity.SearchFriendActivity"
             android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity android:name=".Activity.PersonalActivity">
         </activity>
     </application>
 

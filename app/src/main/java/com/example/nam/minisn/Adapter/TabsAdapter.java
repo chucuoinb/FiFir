@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import com.example.nam.minisn.Fragmen.FragmentConversation;
 import com.example.nam.minisn.Fragmen.FragmentFriend;
+import com.example.nam.minisn.Fragmen.FragmentPersonal;
 import com.example.nam.minisn.Fragmen.FragmentStatus;
 import com.example.nam.minisn.Util.Const;
 
@@ -30,6 +31,8 @@ public class TabsAdapter extends FragmentPagerAdapter {
                 return FragmentFriend.newInstance(bundle);
             case Const.TAB_STATUS:
                 return FragmentStatus.newInstance(bundle);
+            case Const.TAB_PERSONAL:
+                return FragmentPersonal.newInstance(bundle);
         }
         return null;
     }

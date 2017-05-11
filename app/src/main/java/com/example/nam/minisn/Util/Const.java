@@ -1,9 +1,11 @@
 package com.example.nam.minisn.Util;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.util.Log;
 
+import com.example.nam.minisn.Activity.LoginActivity;
 import com.example.nam.minisn.R;
 
 import java.io.IOException;
@@ -52,9 +54,12 @@ public class Const {
     public static final String CODE_RESPONSE = "code_response";
     public static final String USERNAME_REQUEST = "username_request";
     public static final String ID_REQUEST = "id_request";
+    public static final String PAGE = "page";
+    public static final String TIME_POST = "time_post";
+    public static final String KEY_NEW_STATUS = "time";
     //URL
     public static final String URL = "http://www.namlv-hust.96.lt/ver1/";
-//    public static final String URL = "http://namlv.hol.es/ver1/";
+    //    public static final String URL = "http://namlv.hol.es/ver1/";
     public static final String URL_LOGIN = URL + "user/login.php";
     public static final String URL_GET_LIST_CONVERSATION = URL + "conversation/get_list_conversation.php";
     public static final String URL_GET_LIST_FRIEND = URL + "friend/get_list_friend.php";
@@ -68,8 +73,12 @@ public class Const {
     public static final String URL_SEND_RESPONSE_FRIEND = URL + "friend/send_response_request_friend.php";
     public static final String URL_DELETE_FRIEND = URL + "friend/delete_friend.php";
     public static final String URL_SEARCH_FRIEND = URL + "friend/search_friend.php/";
+    public static final String URL_GET_STATUS = URL + "status/get_status.php";
+    public static final String URL_GET_NEW_STATUS = URL + "status/get_new_status.php";
+    public static final String URL_ADD_STATUS = URL + "status/add_status.php";
 
     public static final String KEY_SEARCH = "search";
+    public static final String KEY_LAST_LOAD = "last_load";
 
     //Share preferen
     public static final String FCM_TOKEN = "fcm_token";
@@ -108,7 +117,7 @@ public class Const {
 
     public static final int ID_NOTIFICATION_MESSAGE = 1111;
     public static final int ID_NOTIFICATION_REQUEST = 1112;
-    public static final int ID_NOTIFICATION_RESPONSE= 1113;
+    public static final int ID_NOTIFICATION_RESPONSE = 1113;
 
     //Database
     public static final String DB_CONVERSATION = "conversation";
@@ -119,7 +128,7 @@ public class Const {
     public static final String DB_REQUEST_FRIEND = "request_friend";
     public static final String DB_WAIT_RESPONSE = "wait_response";
 
-//    Key Sql
+    //    Key Sql
     public static final String SELECT = "select ";
     public static final String FROM = " from ";
     public static final String WHERE = " where ";
@@ -133,18 +142,20 @@ public class Const {
     public static final String ASC = " asc ";
     public static final String DESC = " desc ";
     public static final String LIKE = " like ";
-    public static final String LIMIT= " limit ";
+    public static final String LIMIT = " limit ";
 //    public static final String OR = " or ";
 
 
-    public static final String SAVE_COL2 = "save_username";
+    public static final String SAVE_COL2 = "use_username";
     public static final String SAVE_COL0 = "id";
-    public static final String SAVE_COL1 = "save_id";
+    public static final String SAVE_COL1 = "use_id";
+    public static final String SAVE_COL3 = "use_display_name";
+    public static final String SAVE_COL4 = "use_gender";
 
-    public static final String USERS_COL0 = "use_id";
-    public static final String USERS_COL1 = "use_username";
-    public static final String USERS_COL2 = "use_displayname";
-    public static final String USERS_COL3 = "use_gender";
+//    public static final String USERS_COL0 = "use_id";
+//    public static final String USERS_COL1 = "use_username";
+//    public static final String USERS_COL2 = "use_displayname";
+//    public static final String USERS_COL3 = "use_gender";
 
     public static final String FRIENDS_COL0 = "id";
     public static final String FRIENDS_COL1 = "fri_id";
@@ -200,14 +211,15 @@ public class Const {
     public static final int TAB_CONVERSATION = 0;
     public static final int TAB_FRIENDS = 1;
     public static final int TAB_STATUS = 2;
-    public static final int TAB_SIZE= 3;
+    public static final int TAB_PERSONAL = 3;
+    public static final int TAB_SIZE = 4;
 
     //method
     public static final void log(String message) {
         Log.d(Const.TAG, message);
     }
 
-//    public String getTimeNow(long time) {
+    //    public String getTimeNow(long time) {
 ////        String pattern = "yyyy/MM/dd, HH:mm:ss";
 ////        SimpleDateFormat dateFormat = new SimpleDateFormat(pattern);
 ////        return dateFormat.format(new Date());
@@ -219,23 +231,25 @@ public class Const {
 //
 //        return result;
 //    }
-public static String getStringTime(Context context, long time) {
+    public static String getStringTime(Context context, long time) {
 //        String result = new String();
-    long nowTime = System.currentTimeMillis() / 1000;
-    long temp = nowTime - time;
-    if (temp < 60)
-        return context.getResources().getString(R.string.now_time);
-    else if (temp >= 60 && temp < 60 * 60)
-        return String.valueOf(temp / 60) + " " + context.getResources().getString(R.string.time2);
-    else if (temp >= 60 * 60 && temp < 60 * 60 * 24)
-        return String.valueOf(temp / (60 * 60)) + " " + context.getResources().getString(R.string.time3);
-    else if (temp >= 60 * 60 * 24 && temp < 60 * 60 * 24 * 7)
-        return String.valueOf(temp / (60 * 60 * 24)) + " " + context.getResources().getString(R.string.time4);
-    else {
-        String pattern = "dd/MM/yyyy";
-        SimpleDateFormat dateFormat = new SimpleDateFormat(pattern);
-        return dateFormat.format(new Date(time * 1000));
+        long nowTime = System.currentTimeMillis() / 1000;
+        long temp = nowTime - time;
+        if (temp < 60)
+            return context.getResources().getString(R.string.now_time);
+        else if (temp >= 60 && temp < 60 * 60)
+            return String.valueOf(temp / 60) + " " + context.getResources().getString(R.string.time2);
+        else if (temp >= 60 * 60 && temp < 60 * 60 * 24)
+            return String.valueOf(temp / (60 * 60)) + " " + context.getResources().getString(R.string.time3);
+        else if (temp >= 60 * 60 * 24 && temp < 60 * 60 * 24 * 7)
+            return String.valueOf(temp / (60 * 60 * 24)) + " " + context.getResources().getString(R.string.time4);
+        else {
+            String pattern = "dd/MM/yyyy";
+            SimpleDateFormat dateFormat = new SimpleDateFormat(pattern);
+            return dateFormat.format(new Date(time * 1000));
+        }
+
     }
 
-}
+
 }

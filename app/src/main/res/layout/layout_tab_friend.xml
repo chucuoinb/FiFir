@@ -40,6 +40,7 @@
             android:buttonTint="@color/colorPrimary"
             android:text="@string/all"/>
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -54,13 +55,13 @@
             android:layout_height="wrap_content">
 
             <LinearLayout
-                android:visibility="visible"
                 android:id="@+id/friend_request"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:paddingBottom="@dimen/main_margin"
-                android:paddingTop="@dimen/main_margin">
+                android:paddingTop="@dimen/main_margin"
+                android:visibility="visible">
 
                 <RelativeLayout
                     android:layout_width="30dp"
@@ -111,6 +112,7 @@
                     android:layout_gravity="center_vertical"
                     android:src="@drawable/ic_next"/>
             </LinearLayout>
+
             <EditText
                 android:id="@+id/search_friend_input"
                 android:layout_width="match_parent"
@@ -156,10 +158,11 @@
         app:srcCompat="@android:drawable/ic_input_add"
         />
 
-    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                 xmlns:app="http://schemas.android.com/apk/res-auto"
-                 android:layout_width="match_parent"
-                 android:layout_height="match_parent">
+    <FrameLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab_1"

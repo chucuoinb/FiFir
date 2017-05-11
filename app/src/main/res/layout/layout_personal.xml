@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/colorDivide"
+    >
+    <android.support.design.widget.AppBarLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/chat_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <LinearLayout
+                    android:layout_width="40dp"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:id="@+id/toolbar_btnback"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:src="@drawable/btn_back"
+                        android:layout_gravity="center_vertical"/>
+
+                </LinearLayout>
+                <de.hdodenhof.circleimageview.CircleImageView
+
+                    android:id="@+id/lv_conversation_avata"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/test"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/toolbar_text"
+                    android:layout_marginLeft="20dp"
+                    android:textStyle="bold"
+                    android:textSize="20dp"
+                    android:layout_gravity="center_vertical"
+                    android:text="aaa"
+                    android:layout_weight="1"/>
+            <de.hdodenhof.circleimageview.CircleImageView
+
+                android:id="@+id/logout"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:src="@drawable/logout"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="@dimen/main_margin"/>
+            </LinearLayout>
+
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <LinearLayout
+        android:id="@+id/status_post_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/background_radius"
+        android:orientation="vertical"
+        android:padding="@dimen/main_margin">
+
+        <EditText
+            android:id="@+id/status_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/transparent"
+            android:backgroundTint="@color/colorPrimary"
+            android:hint="@string/status_hint"
+            android:minHeight="50dp"
+            android:textCursorDrawable="@color/colorPrimary"
+            />
+
+        <TextView
+            android:id="@+id/status_btnPost"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:background="@drawable/background_request"
+            android:paddingBottom="@dimen/padding_top"
+            android:paddingLeft="@dimen/main_margin"
+            android:paddingRight="@dimen/main_margin"
+            android:paddingTop="@dimen/padding_top"
+            android:text="@string/status_post"
+            android:textColor="@color/white"
+            android:textSize="20dp"
+            android:enabled="false"/>
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/personal_lv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:divider="@color/transparent"
+        android:dividerHeight="@dimen/main_margin">
+
+    </ListView>
+</LinearLayout>

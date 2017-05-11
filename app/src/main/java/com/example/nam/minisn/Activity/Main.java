@@ -27,6 +27,7 @@ public class Main extends AppCompatActivity {
     public static int[] iconTabs = {R.drawable.tabchat,
             R.drawable.tabfriend,
             R.drawable.tabstatus,
+            R.drawable.tabpersonal
     };
     private ViewPager mViewPager;
     public static TabLayout tabLayout;

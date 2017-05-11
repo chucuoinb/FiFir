@@ -131,24 +131,31 @@ public class LoginActivity extends AppCompatActivity {
                                 JSONObject newObject = response.getJSONObject(Const.DATA);
                                 token = newObject.getString(Const.TOKEN);
                                 use_id = newObject.getInt(Const.ID);
+                                String displayName = newObject.getString(Const.DISPLAY_NAME);
+                                int gender = newObject.getInt(Const.GENDER);
                                 String username = newObject.getString(Const.USERNAME);
                                 Bundle bundle = new Bundle();
                                 bundle.putString(Const.USERNAME, newObject.getString(Const.USERNAME));
                                 bundle.putString(Const.TOKEN, token);
+                                bundle.putString(Const.DISPLAY_NAME, displayName);
+                                bundle.putInt(Const.ID,use_id);
                                 SharedPrefManager.getInstance(getApplicationContext()).savePreferences(Const.TOKEN, token);
                                 SharedPrefManager.getInstance(getApplicationContext()).savePreferences(Const.USERNAME, newObject.getString(Const.USERNAME));
                                 SharedPrefManager.getInstance(getApplicationContext()).savePreferences(Const.ID, use_id);
                                 SharedPrefManager.getInstance(getApplicationContext()).savePreferences(Const.IS_LOGIN, Const.LOGIN);
+                                SharedPrefManager.getInstance(getApplicationContext()).savePreferences(Const.DISPLAY_NAME, newObject.getString(Const.DISPLAY_NAME));
                                 intentLogin.putExtra(Const.PACKAGE, bundle);
                                 setEnableEdit(true);
 
                                 if (!database.checkLogged(use_id)) {
-                                    database.saveAccount(use_id,username);
+                                    database.saveAccount(use_id,username,displayName,gender);
                                     saveListFriend();
-
-
                                 }
-
+                                else {
+                                    progressDialog.dismiss();
+                                    Toast.makeText(LoginActivity.this, getResources().getString(R.string.login_success), Toast.LENGTH_SHORT).show();
+                                    startActivity(intentLogin);
+                                }
                             }
 
                         } catch (JSONException e) {
@@ -272,8 +279,10 @@ public class LoginActivity extends AppCompatActivity {
                             }
                         }
                         getListRequestFriend();
-                    } else
+                    } else{
+                        Log.d(Const.TAG,"err conver");
                         Toast.makeText(getApplicationContext(), "Co loi xay ra", Toast.LENGTH_SHORT).show();
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                     Log.d(Const.TAG, "JSON error: " + e.getMessage());
@@ -307,16 +316,18 @@ public class LoginActivity extends AppCompatActivity {
                         for (int i = 0; i < listFriend.length(); i++) {
                             JSONObject obj = listFriend.getJSONObject(i);
                             String username = obj.getString(Const.USERNAME);
-//                            String displayName = obj.getString(Const.DISPLAY_NAME);
+                            String displayName = obj.getString(Const.DISPLAY_NAME);
                             int gender = obj.getInt(Const.GENDER);
                             int fri_id = obj.getInt(Const.ID);
                             int id = obj.getInt(Const.ID_FRIEND);
-                            database.insertListFriend(fri_id, username, use_id, gender,id);
+                            database.addFriend(use_id, gender,username,fri_id,id,displayName);
                         }
                         saveListConversation(token);
 
-                    } else
+                    } else{
+                        Log.d(Const.TAG,"err save list fri");
                         Toast.makeText(getApplicationContext(), "Co loi xay ra", Toast.LENGTH_SHORT).show();
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                     Log.d(Const.TAG, "JSON error: " + e.getMessage());
@@ -352,11 +363,13 @@ public class LoginActivity extends AppCompatActivity {
                         database.saveRequestFriend(use_id,username,id);
 
                     }
-                    progressDialog.dismiss();
-                    Toast.makeText(LoginActivity.this, getResources().getString(R.string.login_success), Toast.LENGTH_SHORT).show();
-                    startActivity(intentLogin);
-                }else
+                }else{
+                    Log.d(Const.TAG,"err request friend");
                     Toast.makeText(getApplicationContext(),"Co loi xay ra",Toast.LENGTH_SHORT).show();
+                }
+                progressDialog.dismiss();
+                Toast.makeText(LoginActivity.this, getResources().getString(R.string.login_success), Toast.LENGTH_SHORT).show();
+                startActivity(intentLogin);
             }catch (JSONException e){
                 e.printStackTrace();
                 Log.d(Const.TAG,"JSON error: "+ e.getMessage());

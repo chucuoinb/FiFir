@@ -89,9 +89,14 @@ public class ConversationAdapter extends ArrayAdapter<Conversation> {
 
             holder.nameConversation.setText(spannable, TextView.BufferType.SPANNABLE);
         }
-        holder.lastMessage.setText(temp.getLastMessage());
+        if (temp.getLastMessage().length() <= 15)
+            holder.lastMessage.setText(temp.getLastMessage());
+        else {
+            String subLastMessage = temp.getLastMessage().substring(0,15) + " ...";
+            holder.lastMessage.setText(subLastMessage);
+        }
         if (temp.getTime() > 0)
-            holder.time.setText(Const.getStringTime(context,temp.getTime()));
+            holder.time.setText(Const.getStringTime(context, temp.getTime()));
         else
             holder.time.setText("");
         if (temp.isNew())
@@ -101,13 +106,13 @@ public class ConversationAdapter extends ArrayAdapter<Conversation> {
         holder.check.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int choose = (FragmentConversation.data.get(position).getTypeChoose()==Const.TYPE_CHOOSE)?
-                            Const.TYPE_NO_CHOOSE :Const.TYPE_CHOOSE;
+                int choose = (FragmentConversation.data.get(position).getTypeChoose() == Const.TYPE_CHOOSE) ?
+                        Const.TYPE_NO_CHOOSE : Const.TYPE_CHOOSE;
                 FragmentConversation.data.get(position).setTypeChoose(choose);
-                database.updateChooseConversation(useId, FragmentConversation.data.get(position).getId(),choose);
+                database.updateChooseConversation(useId, FragmentConversation.data.get(position).getId(), choose);
                 FragmentConversation.tvCount.setText(String.valueOf(database.getCountChooseConversation()));
                 int countChoose = 0;
-                for(int i = 0; i< FragmentConversation.data.size(); i++){
+                for (int i = 0; i < FragmentConversation.data.size(); i++) {
                     if (FragmentConversation.data.get(i).getTypeChoose() == Const.TYPE_CHOOSE)
                         countChoose++;
                 }
@@ -119,7 +124,6 @@ public class ConversationAdapter extends ArrayAdapter<Conversation> {
         });
         return row;
     }
-
 
 
     public static class Holder {

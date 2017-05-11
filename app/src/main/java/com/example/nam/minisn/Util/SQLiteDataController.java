@@ -265,19 +265,60 @@ public class SQLiteDataController extends SQLiteOpenHelper {
         return cursor.getCount() > 0;
     }
 
-    public void saveAccount(int id, String username) {
+    public void saveAccount(int id, String username,String displayName,int gender) {
         String sql = Const.INSERT +
                 Const.DB_USERS_SAVE +
                 " (" +
                 Const.SAVE_COL1 +
                 "," +
                 Const.SAVE_COL2 +
+                "," +
+                Const.SAVE_COL3 +
+                "," +
+                Const.SAVE_COL4 +
                 ")" +
                 Const.VALUES +
                 "('" +
                 id +
                 "','" +
                 username +
+                "','" +
+                displayName +
+                "','" +
+                gender +
+                "')";
+        database.execSQL(sql);
+    }
+
+    public void addFriend(int useId, int friGender, String friUsername, int friId, int id, String displayName) {
+        String sql = Const.INSERT +
+                Const.DB_FRIEND +
+                " (" +
+                Const.FRIENDS_COL0 +
+                "," +
+                Const.FRIENDS_COL1 +
+                "," +
+                Const.FRIENDS_COL2 +
+                "," +
+                Const.FRIENDS_COL3 +
+                "," +
+                Const.FRIENDS_COL4 +
+                "," +
+                Const.FRIENDS_COL5 +
+                ")" +
+                Const.VALUES +
+                "('" +
+                id +
+                "','" +
+                friId +
+                "','" +
+                friUsername+
+                "','" +
+                displayName +
+                "','" +
+                useId +
+                "','" +
+                friGender +
                 "')";
         database.execSQL(sql);
     }
@@ -900,34 +941,7 @@ public class SQLiteDataController extends SQLiteOpenHelper {
 //                Const.DB_REQUEST_FRIEND;
 //        database.execSQL(sql);
 //    }
-    public void addFriend(int useId, int friGender, String friUsername, int friId, int id) {
-        String sql = Const.INSERT +
-                Const.DB_FRIEND +
-                " (" +
-                Const.FRIENDS_COL1 +
-                "," +
-                Const.FRIENDS_COL1 +
-                "," +
-                Const.FRIENDS_COL2 +
-                "," +
-                Const.FRIENDS_COL4 +
-                "," +
-                Const.FRIENDS_COL5 +
-                ")" +
-                Const.VALUES +
-                "('" +
-                id +
-                "','" +
-                friId +
-                "','" +
-                friUsername +
-                "','" +
-                useId +
-                "','" +
-                friGender +
-                "')";
-        database.execSQL(sql);
-    }
+
 
     public void deleteRequestFriend(int useId, int idRequest) {
         String sql = Const.DELETE +
@@ -1002,7 +1016,7 @@ public class SQLiteDataController extends SQLiteOpenHelper {
         return cursor.getCount() > 0;
     }
 
-    public void addWaitResponse(int useId, int friId,String username) {
+    public void addWaitResponse(int useId, int friId, String username) {
         String sql = Const.INSERT +
                 Const.DB_WAIT_RESPONSE +
                 " (" +
@@ -1023,7 +1037,8 @@ public class SQLiteDataController extends SQLiteOpenHelper {
         if (!isExistWaitResponse(useId, friId))
             database.execSQL(sql);
     }
-    public boolean isExistRequest(int useId, int friId){
+
+    public boolean isExistRequest(int useId, int friId) {
         String sql = Const.SELECT +
                 "*" +
                 Const.FROM +
@@ -1042,32 +1057,32 @@ public class SQLiteDataController extends SQLiteOpenHelper {
         return cursor.getCount() > 0;
     }
 
-    public ArrayList<SearchFriendItem> getListWaitResponse(int useId){
+    public ArrayList<SearchFriendItem> getListWaitResponse(int useId) {
         ArrayList<SearchFriendItem> data = new ArrayList<>();
-        String sql = Const.SELECT+
-                "*"+
-                Const.FROM+
-                Const.DB_WAIT_RESPONSE+
-                Const.WHERE+
-                Const.RESPONSE_COL1+
-                "='"+
-                useId+
+        String sql = Const.SELECT +
+                "*" +
+                Const.FROM +
+                Const.DB_WAIT_RESPONSE +
+                Const.WHERE +
+                Const.RESPONSE_COL1 +
+                "='" +
+                useId +
                 "'";
-        Cursor cursor = database.rawQuery(sql,null);
-        while (cursor.moveToNext()){
+        Cursor cursor = database.rawQuery(sql, null);
+        while (cursor.moveToNext()) {
             int id = cursor.getInt(2);
             String username = cursor.getString(3);
-            SearchFriendItem item = new SearchFriendItem(new Friend(id,username), true);
+            SearchFriendItem item = new SearchFriendItem(new Friend(id, username), true);
             data.add(item);
         }
         return data;
     }
 
-    public void deleteWaitResponse (int useId,int friId){
-        String sql = Const.DELETE+
-                Const.FROM+
-                Const.DB_WAIT_RESPONSE+
-                Const.WHERE+
+    public void deleteWaitResponse(int useId, int friId) {
+        String sql = Const.DELETE +
+                Const.FROM +
+                Const.DB_WAIT_RESPONSE +
+                Const.WHERE +
                 Const.RESPONSE_COL1 +
                 "='" +
                 useId +
@@ -1080,5 +1095,47 @@ public class SQLiteDataController extends SQLiteOpenHelper {
         if (isExistWaitResponse(useId, friId))
             database.execSQL(sql);
 
+    }
+
+    public Friend getFriend(int idFriend) {
+        Friend friend = new Friend();
+        String sql = Const.SELECT +
+                "*" +
+                Const.FROM +
+                Const.DB_FRIEND +
+                Const.WHERE+
+                Const.FRIENDS_COL1 +
+                "='" +
+                idFriend +
+                "'";
+        Cursor cursor = database.rawQuery(sql, null);
+        if (cursor.getCount() > 0) {
+
+            cursor.moveToFirst();
+            String displayName = cursor.getString(3);
+            String username = cursor.getString(2);
+
+            friend = new Friend(idFriend, username, displayName);
+        }
+        return friend;
+    }
+
+    public Friend getUserSave(int id){
+        String sql = Const.SELECT+
+                    "*"+
+                Const.FROM+
+                Const.DB_USERS_SAVE+
+                Const.WHERE+
+                Const.SAVE_COL1+
+                "='"+
+                id+
+                "'";
+        Cursor cursor = database.rawQuery(sql,null );
+        cursor.moveToFirst();
+        String username = cursor.getString(2);
+        String display = cursor.getString(3);
+        int gender = cursor.getInt(4);
+        Friend friend = new Friend(username,display,gender,id);
+        return friend;
     }
 }

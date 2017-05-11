@@ -175,10 +175,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             int idFriend = jsonObject.getInt(Const.ID);
             database.deleteWaitResponse(useId, idFriend);
             String username = jsonObject.getString(Const.USERNAME);
+            if (code == Const.CODE_ACCEPT) {
             int id = jsonObject.getInt("id_friend");
             int gender = jsonObject.getInt(Const.GENDER);
-            if (code == Const.CODE_ACCEPT) {
-                database.addFriend(useId, gender, username, idFriend, id);
+            String displayName = jsonObject.getString(Const.DISPLAY_NAME);
+                database.addFriend(useId, gender, username, idFriend, id,displayName);
                 content = username + " " + getResources().getString(R.string.responce_accept) + " " + notify;
             } else {
                 content = username + " " + getResources().getString(R.string.responce_reject) + " " + notify;

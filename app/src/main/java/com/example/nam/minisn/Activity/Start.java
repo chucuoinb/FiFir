@@ -35,6 +35,8 @@ public class Start extends AppCompatActivity {
             Bundle bundle= new Bundle();
             bundle.putString(Const.TOKEN,SharedPrefManager.getInstance(getApplicationContext()).getString(Const.TOKEN));
             bundle.putString(Const.USERNAME,SharedPrefManager.getInstance(getApplicationContext()).getString(Const.USERNAME));
+            bundle.putString(Const.DISPLAY_NAME,SharedPrefManager.getInstance(getApplicationContext()).getString(Const.DISPLAY_NAME));
+            bundle.putInt(Const.ID,SharedPrefManager.getInstance(getApplicationContext()).getInt(Const.ID));
             intent.putExtra(Const.PACKAGE,bundle);
         }
         startActivity(intent);
