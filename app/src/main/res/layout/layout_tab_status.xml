@@ -88,7 +88,6 @@
     </FrameLayout>
 
     <LinearLayout
-        android:visibility="invisible"
         android:id="@+id/status_progress"
         android:layout_width="50dp"
         android:layout_height="50dp"

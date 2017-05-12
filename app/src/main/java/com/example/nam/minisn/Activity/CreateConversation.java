@@ -231,6 +231,8 @@ public class CreateConversation extends AppCompatActivity implements View.OnClic
                                 dataControllerl.addConversation(idConversation, params.get(Const.NAME_CONVERSATION), "", useId, Const.TYPE_DONT_NEW_MESSAGE);
                                 if (size == 1)
                                     dataControllerl.addIdConversationIntoFriend(useId, idConversation, Integer.parseInt(params.get(Const.ID_USER_FRIEND + "0")));
+                                else
+                                    dataControllerl.updateSizeConversation(idConversation,useId,size);
                                 bundle.putInt(Const.CONVERSATION_ID, idConversation);
                                 bundle.putString(Const.NAME_CONVERSATION, params.get(Const.NAME_CONVERSATION));
                                 intent.putExtra(Const.PACKAGE, bundle);

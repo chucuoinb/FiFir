@@ -112,7 +112,9 @@ public class ChatActivity extends AppCompatActivity {
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                Intent intent = new Intent(getApplicationContext(), Main.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
             }
         });
 
@@ -166,7 +168,7 @@ public class ChatActivity extends AppCompatActivity {
         String newMessage = bundle.getString(Const.MESSAGE, "");
         if (!"".equals(newMessage))
             data.add(new Chat(Const.MESSAGE_RECEIVE, newMessage, Const.GENDER_WOMAN));
-        token = SharedPrefManager.getInstance(getApplicationContext()).getString(Const.FCM_TOKEN);
+        token = SharedPrefManager.getInstance(getApplicationContext()).getString(Const.TOKEN);
         nameConversation = bundle.getString(Const.NAME_CONVERSATION);
         idConversation = bundle.getInt(Const.CONVERSATION_ID);
 
@@ -205,7 +207,9 @@ public class ChatActivity extends AppCompatActivity {
             HashMap<String, String> params = new HashMap<>();
             params.put(Const.MESSAGE, message);
             params.put(Const.CONVERSATION_ID, String.valueOf(idConversation));
-            params.put(Const.TOKEN, bundle.getString(Const.TOKEN));
+            params.put(Const.TOKEN, token
+
+            );
             btSend.setEnabled(false);
             btSend.setBackgroundResource(R.drawable.button_send_message_2);
             data.add(new Chat(Const.MESSAGE_SEND, message, Const.GENDER_MAN));
@@ -223,6 +227,7 @@ public class ChatActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
+        Log.d(Const.TAG,response.getString(Const.MESSAGE));
                             if (response.getInt(Const.CODE) != Const.CODE_OK) {
                                 Toast.makeText(getApplicationContext(), "Gui loi", Toast.LENGTH_SHORT).show();
                                 data.remove(data.size() - 1);

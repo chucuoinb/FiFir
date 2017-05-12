@@ -36,6 +36,8 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.HashMap;
 
+import es.dmoral.toasty.Toasty;
+
 public class LoginActivity extends AppCompatActivity {
 
     private EditText edUser;
@@ -153,7 +155,8 @@ public class LoginActivity extends AppCompatActivity {
                                 }
                                 else {
                                     progressDialog.dismiss();
-                                    Toast.makeText(LoginActivity.this, getResources().getString(R.string.login_success), Toast.LENGTH_SHORT).show();
+                                    Toasty.success(getApplicationContext(), getResources().getString(R.string.login_success), Toast.LENGTH_SHORT, true).show();
+//                                    Toast.makeText(LoginActivity.this, getResources().getString(R.string.login_success), Toast.LENGTH_SHORT).show();
                                     startActivity(intentLogin);
                                 }
                             }

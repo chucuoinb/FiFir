@@ -59,8 +59,10 @@ public class Const {
     public static final String TIME_POST = "time_post";
     public static final String KEY_NEW_STATUS = "time";
     //URL
-    public static final String URL = "http://www.namlv-hust.96.lt/ver1/";
-    //    public static final String URL = "http://namlv.hol.es/ver1/";
+
+
+//    public static final String URL = "http://www.namlv-hust.96.lt/ver1/";
+    public static final String URL = "http://192.168.4.242:1010/ver1/";
     public static final String URL_LOGIN = URL + "user/login.php";
     public static final String URL_GET_LIST_CONVERSATION = URL + "conversation/get_list_conversation.php";
     public static final String URL_GET_LIST_FRIEND = URL + "friend/get_list_friend.php";

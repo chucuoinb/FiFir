@@ -301,13 +301,13 @@ public class FragmentStatus extends Fragment implements View.OnClickListener {
         if (!isShowProgress) {
             isShowProgress = true;
             progress.setVisibility(View.VISIBLE);
-            CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) progress.getLayoutParams();
-            layoutParams.topMargin = (int) (statutPost.getHeight() + getResources().getDimension(R.dimen.main_margin));
-            TranslateAnimation translateAnimation = new TranslateAnimation(progress.getTranslationX(), progress.getTranslationX(),
-                    -statutPost.getHeight() + getResources().getDimension(R.dimen.main_margin), 0);
-            translateAnimation.setDuration(700);
-            progress.startAnimation(translateAnimation);
-            progress.setLayoutParams(layoutParams);
+//            CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) progress.getLayoutParams();
+//            layoutParams.topMargin = (int) (statutPost.getHeight() + getResources().getDimension(R.dimen.main_margin));
+//            TranslateAnimation translateAnimation = new TranslateAnimation(progress.getTranslationX(), progress.getTranslationX(),
+//                    -statutPost.getHeight() + getResources().getDimension(R.dimen.main_margin), 0);
+//            translateAnimation.setDuration(1000);
+//            progress.startAnimation(translateAnimation);
+//            progress.setLayoutParams(layoutParams);
         }
     }
 
@@ -315,13 +315,13 @@ public class FragmentStatus extends Fragment implements View.OnClickListener {
     public void hideProgress() {
         if (isShowProgress) {
             isShowProgress = false;
-            CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) progress.getLayoutParams();
-            layoutParams.topMargin = 0;
-            TranslateAnimation translateAnimation = new TranslateAnimation(progress.getTranslationX(), progress.getTranslationX(),
-                    statutPost.getHeight() + getResources().getDimension(R.dimen.main_margin), 0);
-            translateAnimation.setDuration(700);
-            progress.startAnimation(translateAnimation);
-            progress.setLayoutParams(layoutParams);
+//            CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) progress.getLayoutParams();
+//            layoutParams.topMargin = 0;
+//            TranslateAnimation translateAnimation = new TranslateAnimation(progress.getTranslationX(), progress.getTranslationX(),
+//                    statutPost.getHeight() + getResources().getDimension(R.dimen.main_margin), 0);
+//            translateAnimation.setDuration(1000);
+//            progress.startAnimation(translateAnimation);
+//            progress.setLayoutParams(layoutParams);
             progress.setVisibility(View.INVISIBLE);
 
         }
