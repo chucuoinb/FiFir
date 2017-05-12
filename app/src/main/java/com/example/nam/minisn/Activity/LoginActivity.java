@@ -40,6 +40,7 @@ import es.dmoral.toasty.Toasty;
 
 public class LoginActivity extends AppCompatActivity {
 
+    private static int KEY_REGISTER = 100;
     private EditText edUser;
     private EditText edPass;
     private CheckBox cbSave;
@@ -57,6 +58,7 @@ public class LoginActivity extends AppCompatActivity {
     private boolean isLoadedFriend = false;
     private boolean isLoadedRequest = false;
     private String token;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,7 +80,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void init() {
-        database =  new SQLiteDataController(getApplicationContext());
+        intentReg = new Intent(getApplicationContext(), RegisterActivity.class);
+        database = new SQLiteDataController(getApplicationContext());
         edUser = (EditText) findViewById(R.id.login_ed_user);
         edPass = (EditText) findViewById(R.id.login_ed_password);
         cbSave = (CheckBox) findViewById(R.id.login_cb_save);
@@ -128,6 +131,7 @@ public class LoginActivity extends AppCompatActivity {
                     public void onResponse(JSONObject response) {
                         try {
                             if (response.getInt(Const.CODE) != Const.CODE_OK) {
+                                progressDialog.dismiss();
                                 CheckCode(response.getInt(Const.CODE));
                             } else {
                                 JSONObject newObject = response.getJSONObject(Const.DATA);
@@ -140,7 +144,7 @@ public class LoginActivity extends AppCompatActivity {
                                 bundle.putString(Const.USERNAME, newObject.getString(Const.USERNAME));
                                 bundle.putString(Const.TOKEN, token);
                                 bundle.putString(Const.DISPLAY_NAME, displayName);
-                                bundle.putInt(Const.ID,use_id);
+                                bundle.putInt(Const.ID, use_id);
                                 SharedPrefManager.getInstance(getApplicationContext()).savePreferences(Const.TOKEN, token);
                                 SharedPrefManager.getInstance(getApplicationContext()).savePreferences(Const.USERNAME, newObject.getString(Const.USERNAME));
                                 SharedPrefManager.getInstance(getApplicationContext()).savePreferences(Const.ID, use_id);
@@ -150,10 +154,9 @@ public class LoginActivity extends AppCompatActivity {
                                 setEnableEdit(true);
 
                                 if (!database.checkLogged(use_id)) {
-                                    database.saveAccount(use_id,username,displayName,gender);
+                                    database.saveAccount(use_id, username, displayName, gender);
                                     saveListFriend();
-                                }
-                                else {
+                                } else {
                                     progressDialog.dismiss();
                                     Toasty.success(getApplicationContext(), getResources().getString(R.string.login_success), Toast.LENGTH_SHORT, true).show();
 //                                    Toast.makeText(LoginActivity.this, getResources().getString(R.string.login_success), Toast.LENGTH_SHORT).show();
@@ -171,9 +174,11 @@ public class LoginActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.d(Const.TAG,"login vl er");
+                        Toasty.error(getApplicationContext(), getResources().getString(R.string.notifi_error), Toast.LENGTH_SHORT).show();
+
+                        Log.d(Const.TAG, "login vl er");
                         setEnableEdit(true);
-                        Log.d(Const.TAG, "dang nhap that bai:"+error.getMessage());
+                        Log.d(Const.TAG, "dang nhap that bai:" + error.getMessage());
                         progressDialog.dismiss();
                     }
                 });
@@ -216,7 +221,7 @@ public class LoginActivity extends AppCompatActivity {
     public View.OnClickListener tvRegClick = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            intentReg = new Intent(getApplicationContext(), RegisterActivity.class);
+
             startActivityForResult(intentReg, Const.REQUEST_CODE_REGISTER);
         }
     };
@@ -225,7 +230,7 @@ public class LoginActivity extends AppCompatActivity {
 
         switch (code) {
             case Const.CODE_FAIL:
-                Toast.makeText(getApplicationContext(), getResources().getString(R.string.login_fail), Toast.LENGTH_SHORT).show();
+                Toasty.error(getApplicationContext(), getResources().getString(R.string.login_fail), Toast.LENGTH_SHORT).show();
                 setEnableEdit(true);
                 break;
             case Const.CODE_USER_NOT_EXIST:
@@ -233,14 +238,14 @@ public class LoginActivity extends AppCompatActivity {
                 AlertDialog.Builder b = new AlertDialog.Builder(LoginActivity.this);
                 b.setTitle(getResources().getString(R.string.login_user_not_exist));
                 b.setMessage(getResources().getString(R.string.login_question_register));
-                b.setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
+                b.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
+                        startActivityForResult(intentReg, Const.REQUEST_CODE_REGISTER);
                         setEnableEdit(true);
                     }
                 });
-                b.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+                b.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
@@ -273,21 +278,23 @@ public class LoginActivity extends AppCompatActivity {
                             int idConversation = object.getInt(Const.ID);
                             String nameConversation = object.getString(Const.NAME_CONVERSATION);
                             JSONArray listUser = object.getJSONArray(Const.LIST_USER);
-                            database.insertConversation(idConversation, nameConversation,use_id,listUser.length());
-                            if (listUser.length() ==2){
+                            database.insertConversation(idConversation, nameConversation, use_id, listUser.length());
+                            if (listUser.length() == 2) {
                                 int fri_id = listUser.getJSONObject(0).getInt(Const.ID);
-                                if ( fri_id == use_id)
+                                if (fri_id == use_id)
                                     fri_id = listUser.getJSONObject(1).getInt(Const.ID);
-                                database.addIdConversationIntoFriend(use_id,idConversation,fri_id);
+                                database.addIdConversationIntoFriend(use_id, idConversation, fri_id);
                             }
                         }
                         getListRequestFriend();
-                    } else{
-                        Log.d(Const.TAG,"err conver");
-                        Toast.makeText(getApplicationContext(), "Co loi xay ra", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Log.d(Const.TAG, "err conver");
+                        Toasty.error(getApplicationContext(), getResources().getString(R.string.notifi_error), Toast.LENGTH_SHORT).show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    Toasty.error(getApplicationContext(), getResources().getString(R.string.notifi_error), Toast.LENGTH_SHORT).show();
+
                     Log.d(Const.TAG, "JSON error: " + e.getMessage());
                 }
                 isLoadedConversation = true;
@@ -296,6 +303,8 @@ public class LoginActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
+                Toasty.error(getApplicationContext(), getResources().getString(R.string.notifi_error), Toast.LENGTH_SHORT).show();
+
                 Log.d(Const.TAG, "Request Error sv list cv");
             }
         });
@@ -323,12 +332,12 @@ public class LoginActivity extends AppCompatActivity {
                             int gender = obj.getInt(Const.GENDER);
                             int fri_id = obj.getInt(Const.ID);
                             int id = obj.getInt(Const.ID_FRIEND);
-                            database.addFriend(use_id, gender,username,fri_id,id,displayName);
+                            database.addFriend(use_id, gender, username, fri_id, id, displayName);
                         }
                         saveListConversation(token);
 
-                    } else{
-                        Log.d(Const.TAG,"err save list fri");
+                    } else {
+                        Log.d(Const.TAG, "err save list fri");
                         Toast.makeText(getApplicationContext(), "Co loi xay ra", Toast.LENGTH_SHORT).show();
                     }
                 } catch (JSONException e) {
@@ -349,44 +358,77 @@ public class LoginActivity extends AppCompatActivity {
         progressDialog.dismiss();
     }
 
-    public void getListRequestFriend(){
-    RequestQueue request = Volley.newRequestQueue(getApplicationContext());
-    JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.GET, Const.URL_GET_REQUEST_FRIEND +
-            Const.TOKEN +"="+token
-            ,new Response.Listener<JSONObject>() {
-        @Override
-        public void onResponse(JSONObject jsonObject) {
-            try{
-                if (Const.CODE_OK == jsonObject.getInt(Const.CODE)){
-                    JSONArray data = jsonObject.getJSONArray(Const.DATA);
-                    for (int i = 0;i<data.length();i++){
-                        JSONObject request = data.getJSONObject(i);
-                        String username = request.getString(Const.USERNAME);
-                        int id = request.getInt(Const.ID);
-                        database.saveRequestFriend(use_id,username,id);
+    public void getListRequestFriend() {
+        RequestQueue request = Volley.newRequestQueue(getApplicationContext());
+        JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.GET, Const.URL_GET_REQUEST_FRIEND +
+                Const.TOKEN + "=" + token
+                , new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+                try {
+                    if (Const.CODE_OK == jsonObject.getInt(Const.CODE)) {
+                        JSONArray data = jsonObject.getJSONArray(Const.DATA);
+                        for (int i = 0; i < data.length(); i++) {
+                            JSONObject request = data.getJSONObject(i);
+                            String username = request.getString(Const.USERNAME);
+                            int id = request.getInt(Const.ID);
+                            database.saveRequestFriend(use_id, username, id);
+
+                        }
+                    } else {
+                        Log.d(Const.TAG, "err request friend");
+                        Toasty.error(getApplicationContext(), "Có lỗi xảy ra. Vui lòng thử lại", Toast.LENGTH_SHORT).show();
 
                     }
-                }else{
-                    Log.d(Const.TAG,"err request friend");
-                    Toast.makeText(getApplicationContext(),"Co loi xay ra",Toast.LENGTH_SHORT).show();
+                    progressDialog.dismiss();
+                    Toast.makeText(LoginActivity.this, getResources().getString(R.string.login_success), Toast.LENGTH_SHORT).show();
+                    startActivity(intentLogin);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Log.d(Const.TAG, "JSON error: " + e.getMessage());
                 }
-                progressDialog.dismiss();
-                Toast.makeText(LoginActivity.this, getResources().getString(R.string.login_success), Toast.LENGTH_SHORT).show();
-                startActivity(intentLogin);
-            }catch (JSONException e){
-                e.printStackTrace();
-                Log.d(Const.TAG,"JSON error: "+ e.getMessage());
-            }
-            isLoadedRequest = true;
+                isLoadedRequest = true;
 
-        }
-    },new Response.ErrorListener() {
-        @Override
-        public void onErrorResponse(VolleyError volleyError) {
-            Log.d(Const.TAG,"Request Error");
-        }
-    });
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                Log.d(Const.TAG, "Request Error");
+            }
+        });
 
         request.add(objectRequest);
-}
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        showAlertIsCloseApp();
+    }
+    public void showAlertIsCloseApp() {
+        android.support.v7.app.AlertDialog.Builder alertDialogBuilder = new android.support.v7.app.AlertDialog.Builder(this);
+        alertDialogBuilder.setTitle("Đóng ứng dụng?");
+        alertDialogBuilder
+                .setMessage("Click Yes để đóng ứng dụng!")
+                .setCancelable(false)
+                .setPositiveButton("Yes",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                moveTaskToBack(true);
+                                android.os.Process.killProcess(android.os.Process.myPid());
+                                System.exit(1);
+                            }
+                        })
+
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                        dialog.cancel();
+                    }
+                });
+
+        android.support.v7.app.AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+
+    }
 }

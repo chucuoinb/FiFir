@@ -37,6 +37,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import es.dmoral.toasty.Toasty;
+
 public class ChatActivity extends AppCompatActivity {
     private ListView lvChat;
     private ChatAdapter adapter;
@@ -229,7 +231,7 @@ public class ChatActivity extends AppCompatActivity {
                         try {
         Log.d(Const.TAG,response.getString(Const.MESSAGE));
                             if (response.getInt(Const.CODE) != Const.CODE_OK) {
-                                Toast.makeText(getApplicationContext(), "Gui loi", Toast.LENGTH_SHORT).show();
+                                Toasty.error(getApplicationContext(), "Gui loi", Toast.LENGTH_SHORT).show();
                                 data.remove(data.size() - 1);
                                 adapter.notifyDataSetChanged();
                             } else {

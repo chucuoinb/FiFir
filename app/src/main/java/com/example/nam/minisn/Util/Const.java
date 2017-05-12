@@ -62,7 +62,7 @@ public class Const {
 
 
 //    public static final String URL = "http://www.namlv-hust.96.lt/ver1/";
-    public static final String URL = "http://192.168.4.242:1010/ver1/";
+    public static final String URL = "http://192.168.43.205:1010/ver1/";
     public static final String URL_LOGIN = URL + "user/login.php";
     public static final String URL_GET_LIST_CONVERSATION = URL + "conversation/get_list_conversation.php";
     public static final String URL_GET_LIST_FRIEND = URL + "friend/get_list_friend.php";
@@ -79,6 +79,7 @@ public class Const {
     public static final String URL_GET_STATUS = URL + "status/get_status.php";
     public static final String URL_GET_NEW_STATUS = URL + "status/get_new_status.php";
     public static final String URL_ADD_STATUS = URL + "status/add_status.php";
+    public static final String URL_LOGOUT = URL + "user/logout.php";
 
     public static final String KEY_SEARCH = "search";
     public static final String KEY_LAST_LOAD = "last_load";

@@ -50,12 +50,15 @@ import org.w3c.dom.Text;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class FragmentPersonal extends Fragment implements View.OnClickListener{
+import es.dmoral.toasty.Toasty;
+
+public class FragmentPersonal extends Fragment implements View.OnClickListener {
     private View rootView;
     private Bundle bundle;
     private Intent intent;
     private TextView tvName;
-    private LinearLayout goPersonal,lnLogout;
+    private LinearLayout goPersonal, lnLogout;
+
     public FragmentPersonal() {
     }
 
@@ -78,17 +81,17 @@ public class FragmentPersonal extends Fragment implements View.OnClickListener{
 
     public void init() {
         intent = new Intent(getActivity(), PersonalActivity.class);
-        intent.putExtra(Const.PACKAGE,bundle);
+        intent.putExtra(Const.PACKAGE, bundle);
 
         tvName = (TextView) rootView.findViewById(R.id.personal_name);
-        goPersonal = (LinearLayout)rootView.findViewById(R.id.personal_go);
-        lnLogout = (LinearLayout)rootView.findViewById(R.id.tab_personal_logout);
+        goPersonal = (LinearLayout) rootView.findViewById(R.id.personal_go);
+        lnLogout = (LinearLayout) rootView.findViewById(R.id.tab_personal_logout);
 
         tvName.setText(SharedPrefManager.getInstance(getActivity()).getString(Const.DISPLAY_NAME));
         listener();
     }
 
-    public void listener(){
+    public void listener() {
         lnLogout.setOnClickListener(this);
         goPersonal.setOnClickListener(this);
     }
@@ -96,7 +99,7 @@ public class FragmentPersonal extends Fragment implements View.OnClickListener{
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.tab_personal_logout:
                 logout();
                 break;
@@ -104,15 +107,44 @@ public class FragmentPersonal extends Fragment implements View.OnClickListener{
                 break;
         }
     }
-    public  void logout(){
-        Intent intent = new Intent(getActivity(), LoginActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        clearPre();
-        startActivity(intent);
+
+    public void logout() {
+        HashMap<String, String> params = new HashMap<>();
+        params.put(Const.TOKEN, SharedPrefManager.getInstance(getActivity()).getString(Const.TOKEN));
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        CustomRequest customRequest = new CustomRequest(Request.Method.POST, Const.URL_LOGOUT, params,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            if (response.getInt(Const.CODE) == Const.CODE_OK){
+                                Intent intent = new Intent(getActivity(), LoginActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                clearPre();
+                                startActivity(intent);
+                            }
+                            else
+                                Toasty.error(getActivity(),getActivity().getResources().getString(R.string.notifi_error),Toast.LENGTH_SHORT).show();
+                        } catch (JSONException e) {
+                            Toasty.error(getActivity(),getActivity().getResources().getString(R.string.notifi_error),Toast.LENGTH_SHORT).show();
+
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toasty.error(getActivity(),getActivity().getResources().getString(R.string.notifi_error),Toast.LENGTH_SHORT).show();
+
+                    }
+                });
+        customRequest.setShouldCache(false);
+        requestQueue.add(customRequest);
+
 
     }
 
-    public void clearPre(){
+    public void clearPre() {
         SharedPrefManager.getInstance(getActivity()).savePreferences(Const.TOKEN, "");
         SharedPrefManager.getInstance(getActivity()).savePreferences(Const.USERNAME, "");
         SharedPrefManager.getInstance(getActivity()).savePreferences(Const.ID, 0);

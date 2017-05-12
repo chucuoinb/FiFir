@@ -38,6 +38,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import es.dmoral.toasty.Toasty;
+
 public class CreateConversation extends AppCompatActivity implements View.OnClickListener {
     private EditText inputName;
     private static EditText listFriend;
@@ -238,11 +240,13 @@ public class CreateConversation extends AppCompatActivity implements View.OnClic
                                 intent.putExtra(Const.PACKAGE, bundle);
                                 startActivity(intent);
                             } else {
-                                Toast.makeText(getApplicationContext(), "Có lỗi xảy ra. Vui lòng thử lại", Toast.LENGTH_SHORT).show();
+                                Toasty.error(getApplicationContext(), "Có lỗi xảy ra. Vui lòng thử lại", Toast.LENGTH_SHORT).show();
+
                             }
                         } catch (JSONException e) {
                             Log.d(Const.TAG, "json er");
-                            Toast.makeText(getApplicationContext(), "Có lỗi xảy ra. Vui lòng thử lại", Toast.LENGTH_SHORT).show();
+                            Toasty.error(getApplicationContext(), "Có lỗi xảy ra. Vui lòng thử lại", Toast.LENGTH_SHORT).show();
+
                         }
                     }
                 },
@@ -250,7 +254,7 @@ public class CreateConversation extends AppCompatActivity implements View.OnClic
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.d(Const.TAG, "volley er");
-                        Toast.makeText(getApplicationContext(), "Có lỗi xảy ra. Vui lòng thử lại", Toast.LENGTH_SHORT).show();
+                        Toasty.error(getApplicationContext(), "Có lỗi xảy ra. Vui lòng thử lại", Toast.LENGTH_SHORT).show();
                     }
                 });
 

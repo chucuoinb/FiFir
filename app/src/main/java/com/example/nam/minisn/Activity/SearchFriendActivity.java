@@ -35,6 +35,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import es.dmoral.toasty.Toasty;
+
 public class SearchFriendActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static ArrayList<SearchFriendItem> data;
@@ -140,7 +142,8 @@ public class SearchFriendActivity extends AppCompatActivity implements View.OnCl
                     public void onResponse(JSONObject response) {
                         try {
                             if (response.getInt(Const.CODE) != Const.CODE_OK) {
-                                Toast.makeText(getApplicationContext(),"Có lỗi xảy ra, vui lòng thử lại",Toast.LENGTH_SHORT).show();
+                                Toasty.error(getApplicationContext(), "Có lỗi xảy ra. Vui lòng thử lại", Toast.LENGTH_SHORT).show();
+
                             } else {
                                 JSONArray newObject = response.getJSONArray(Const.DATA);
 //                                Log.d(Const.TAG,"new obj: "+params.get(Const.KEY_SEARCH));
@@ -158,6 +161,8 @@ public class SearchFriendActivity extends AppCompatActivity implements View.OnCl
 
                         } catch (JSONException e) {
                             Log.d(Const.TAG,"json err");
+                            Toasty.error(getApplicationContext(), "Có lỗi xảy ra. Vui lòng thử lại", Toast.LENGTH_SHORT).show();
+
                         }
                     }
                 },
@@ -165,6 +170,8 @@ public class SearchFriendActivity extends AppCompatActivity implements View.OnCl
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.d(Const.TAG,"volley err");
+                        Toasty.error(getApplicationContext(), "Có lỗi xảy ra. Vui lòng thử lại", Toast.LENGTH_SHORT).show();
+
                     }
                 });
 

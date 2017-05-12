@@ -88,10 +88,27 @@
     </FrameLayout>
 
     <LinearLayout
+        android:visibility="invisible"
         android:id="@+id/status_progress"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_gravity="top"
+        android:orientation="vertical"
+        android:background="@drawable/background_progress"
+        android:padding="@dimen/main_margin"
+        android:gravity="center">
+
+        <ProgressBar
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:indeterminateTint="@color/colorPrimary"/>
+    </LinearLayout>
+    <LinearLayout
+        android:visibility="invisible"
+        android:id="@+id/status_progress_bottom"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="bottom"
         android:orientation="vertical"
         android:background="@drawable/background_progress"
         android:padding="@dimen/main_margin"

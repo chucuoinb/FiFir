@@ -1,8 +1,267 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/layout_register"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-</RelativeLayout>
+    <include layout="@layout/toolbar"></include>
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/toolbar"
+        android:layout_weight="1"
+        android:paddingTop="?actionBarSize"
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="0dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/main_margin"
+                android:background="@drawable/background_radius"
+                android:orientation="horizontal"
+                android:padding="@dimen/main_margin"
+                >
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/register_usernameWrapper"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <EditText
+                        android:id="@+id/res_input_username"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/transparent"
+                        android:hint="@string/input_username"
+                        android:textCursorDrawable="@color/colorPrimary"/>
+                </android.support.design.widget.TextInputLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top"
+                    android:text="*"
+                    android:textColor="@color/red"
+                    android:textSize="20dp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/main_margin"
+                android:background="@drawable/background_radius"
+                android:orientation="horizontal"
+                android:padding="@dimen/main_margin"
+                >
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/res_email_wrapper"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <EditText
+                        android:id="@+id/res_input_email"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/transparent"
+                        android:hint="@string/input_email"
+                        android:textCursorDrawable="@color/colorPrimary"/>
+                </android.support.design.widget.TextInputLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top"
+                    android:text="*"
+                    android:textColor="@color/red"
+                    android:textSize="20dp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/main_margin"
+                android:background="@drawable/background_radius"
+                android:orientation="horizontal"
+                android:padding="@dimen/main_margin"
+                >
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/register_passWrapper"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <EditText
+                        android:id="@+id/res_input_pass"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/transparent"
+                        android:hint="@string/input_password"
+                        android:inputType="textPassword"
+                        android:textCursorDrawable="@color/colorPrimary"/>
+                </android.support.design.widget.TextInputLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top"
+                    android:text="*"
+                    android:textColor="@color/red"
+                    android:textSize="20dp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/main_margin"
+                android:background="@drawable/background_radius"
+                android:orientation="horizontal"
+                android:padding="@dimen/main_margin"
+                >
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/res_retype_wrapper"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <EditText
+                        android:id="@+id/res_input_retype"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/transparent"
+                        android:hint="@string/input_retype_pass"
+                        android:inputType="textPassword"
+                        android:textCursorDrawable="@color/colorPrimary"/>
+                </android.support.design.widget.TextInputLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top"
+                    android:text="*"
+                    android:textColor="@color/red"
+                    android:textSize="20dp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/main_margin"
+                android:background="@drawable/background_radius"
+                android:orientation="horizontal"
+                android:padding="@dimen/main_margin"
+                >
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/res_fullname_wrapper"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <EditText
+                        android:id="@+id/res_input_fullname"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/transparent"
+                        android:hint="@string/input_fullname"
+                        android:textCursorDrawable="@color/colorPrimary"/>
+                </android.support.design.widget.TextInputLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top"
+                    android:text="*"
+                    android:textColor="@color/red"
+                    android:textSize="20dp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/res_ln_birth"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/main_margin"
+                android:background="@drawable/background_radius"
+                android:orientation="horizontal"
+                android:padding="@dimen/main_margin"
+                >
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/res_birth_wrapper"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:id="@+id/res_input_birth"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/transparent"
+                        android:hint="@string/input_birth"
+                        android:textCursorDrawable="@color/colorPrimary"/>
+                </android.support.design.widget.TextInputLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top"
+                    android:text="*"
+                    android:textColor="@color/red"
+                    android:textSize="20dp"/>
+            </LinearLayout>
+
+            <RadioGroup
+                android:id="@+id/res_gender"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/main_margin"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/res_gender_male"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="@color/colorPrimary"
+                    android:checked="true"
+                    android:text="Nam"
+                    android:textCursorDrawable="@color/colorPrimary"/>
+
+                <RadioButton
+                    android:id="@+id/res_gender_female"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/main_margin"
+                    android:buttonTint="@color/colorPrimary"
+                    android:checked="false"
+                    android:text="Nữ"
+                    android:textCursorDrawable="@color/colorPrimary"/>
+            </RadioGroup>
+
+            <Button
+                android:id="@+id/res_btn_res"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="@dimen/main_margin"
+                android:background="@drawable/custom_button"
+                android:text="@string/register"
+                android:textColor="@color/white"
+                android:textSize="17dp"/>
+
+        </LinearLayout>
+    </ScrollView>
+</android.support.design.widget.CoordinatorLayout>
