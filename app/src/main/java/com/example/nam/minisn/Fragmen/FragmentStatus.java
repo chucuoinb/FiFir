@@ -160,8 +160,11 @@ public class FragmentStatus extends Fragment implements View.OnClickListener {
                                         int idFriend = jsonStatus.getInt(Const.ID_USERNAME);
                                         String status = jsonStatus.getString(Const.STATUS);
                                         long timePost = jsonStatus.getLong(Const.TIME_POST);
+                                        int typeLike = jsonStatus.getInt(Const.TYPE_LIKE);
+                                        int numberLike = jsonStatus.getInt(Const.NUMBER_LIKE);
+                                        int numberComment = jsonStatus.getInt(Const.NUMBER_COMMENT);
                                         Friend friend = dataController.getFriend(idFriend);
-                                        Status item = new Status(idStatus, friend, timePost, status, true, 5, 8);
+                                        Status item = new Status(idStatus, friend, timePost, status, typeLike,numberComment, numberLike);
                                         data.add(item);
                                     }
                                     adapter.notifyDataSetChanged();
@@ -211,16 +214,18 @@ public class FragmentStatus extends Fragment implements View.OnClickListener {
                             } else {
                                 lastLoad = (long) (System.currentTimeMillis() / 1000);
                                 JSONArray listStatus = response.getJSONArray(Const.DATA);
-                                Log.d(Const.TAG, "new status: " + listStatus.length());
-                                Log.d(Const.TAG, "new status: " + lastLoad);
                                 for (int i = 0; i < listStatus.length(); i++) {
                                     JSONObject jsonStatus = listStatus.getJSONObject(i);
                                     int idStatus = jsonStatus.getInt(Const.ID);
                                     int idFriend = jsonStatus.getInt(Const.ID_USERNAME);
                                     String status = jsonStatus.getString(Const.STATUS);
                                     long timePost = jsonStatus.getLong(Const.TIME_POST);
+                                    int typeLike = jsonStatus.getInt(Const.TYPE_LIKE);
+                                    int numberLike = jsonStatus.getInt(Const.NUMBER_LIKE);
+                                    int numberComment = jsonStatus.getInt(Const.NUMBER_COMMENT);
+
                                     Friend friend = dataController.getFriend(idFriend);
-                                    Status item = new Status(idStatus, friend, timePost, status, true, 5, 8);
+                                    Status item = new Status(idStatus, friend, timePost, status, typeLike,numberComment, numberLike);
                                     data.add(0, item);
                                 }
                                 adapter.notifyDataSetChanged();

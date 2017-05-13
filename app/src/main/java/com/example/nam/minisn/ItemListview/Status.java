@@ -9,7 +9,7 @@ public class Status {
     private Friend friend;
     private long time;
     private String status;
-    private boolean isLike;
+    private int typeLike;
     private int countComment;
 
     public int getCountLike() {
@@ -25,12 +25,12 @@ public class Status {
     public Status() {
     }
 
-    public Status(int id,Friend friend, long time, String status, boolean isLike, int countComment,int countLike) {
+    public Status(int id,Friend friend, long time, String status, int typeLike, int countComment,int countLike) {
         this.id = id;
         this.friend = friend;
         this.time = time;
         this.status = status;
-        this.isLike = isLike;
+        this.typeLike = typeLike;
         this.countComment = countComment;
         this.countLike=countLike;
     }
@@ -59,12 +59,12 @@ public class Status {
         this.status = status;
     }
 
-    public boolean isLike() {
-        return isLike;
+    public int getTypeLike() {
+        return typeLike;
     }
 
-    public void setLike(boolean like) {
-        isLike = like;
+    public void setTypeLike(int typeLike) {
+        this.typeLike = typeLike;
     }
 
     public int getCountComment() {

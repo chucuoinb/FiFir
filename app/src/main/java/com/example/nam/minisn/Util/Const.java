@@ -48,7 +48,10 @@ public class Const {
     public static final String DISPLAY_NAME = "displayname";
     public static final String TOKEN = "token";
     public static final String USERNAME = "username";
+    public static final String EMAIL = "email";
+    public static final String BIRTH_DAY = "birthday";
     public static final String ID_USERNAME = "id_username";
+    public static final String USE_ID = "use_id";
     public static final String ID_FRIEND = "id_friend";
     public static final String ID_USER_FRIEND = "id_userfriend";
     public static final String ID_RECEIVE = "id_receive";
@@ -58,12 +61,23 @@ public class Const {
     public static final String PAGE = "page";
     public static final String TIME_POST = "time_post";
     public static final String KEY_NEW_STATUS = "time";
+    public static final String STATUS_ID = "status_id";
+    public static final String TYPE_LIKE = "type_like";
+    public static final String NUMBER_LIKE = "number_like";
+    public static final String NUMBER_COMMENT = "number_comment";
+    public static final int STA_LIKE = 1;
+    public static final int STA_UNLIKE = 2;
+
     //URL
 
 
 //    public static final String URL = "http://www.namlv-hust.96.lt/ver1/";
-    public static final String URL = "http://192.168.43.205:1010/ver1/";
+//    public static final String IP_LOCAL = "192.168.137.1";
+//    public static final String IP_LOCAL = "192.168.1.6";
+    public static final String IP_LOCAL = "192.168.43.205";
+    public static final String URL = "http://"+IP_LOCAL+":1010/ver1/";
     public static final String URL_LOGIN = URL + "user/login.php";
+    public static final String URL_REGISTER = URL + "user/register.php";
     public static final String URL_GET_LIST_CONVERSATION = URL + "conversation/get_list_conversation.php";
     public static final String URL_GET_LIST_FRIEND = URL + "friend/get_list_friend.php";
     public static final String URL_UPLOAD_AVATAR = URL + "user/upload_avatar.php";
@@ -80,6 +94,7 @@ public class Const {
     public static final String URL_GET_NEW_STATUS = URL + "status/get_new_status.php";
     public static final String URL_ADD_STATUS = URL + "status/add_status.php";
     public static final String URL_LOGOUT = URL + "user/logout.php";
+    public static final String URL_LIKE_STATUS = URL + "status/like_status.php";
 
     public static final String KEY_SEARCH = "search";
     public static final String KEY_LAST_LOAD = "last_load";

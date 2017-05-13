@@ -91,6 +91,7 @@ public class LoginActivity extends AppCompatActivity {
         passwordWrapper = (TextInputLayout) findViewById(R.id.login_passwordWrapper);
 
         intentLogin = new Intent(LoginActivity.this, Main.class);
+        tvRegister.setOnClickListener(tvRegClick);
     }
 
 
@@ -130,6 +131,7 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
+                            Log.d(Const.TAG,response.getString(Const.MESSAGE));
                             if (response.getInt(Const.CODE) != Const.CODE_OK) {
                                 progressDialog.dismiss();
                                 CheckCode(response.getInt(Const.CODE));
@@ -145,6 +147,7 @@ public class LoginActivity extends AppCompatActivity {
                                 bundle.putString(Const.TOKEN, token);
                                 bundle.putString(Const.DISPLAY_NAME, displayName);
                                 bundle.putInt(Const.ID, use_id);
+                                Log.d(Const.TAG,"id: "+use_id);
                                 SharedPrefManager.getInstance(getApplicationContext()).savePreferences(Const.TOKEN, token);
                                 SharedPrefManager.getInstance(getApplicationContext()).savePreferences(Const.USERNAME, newObject.getString(Const.USERNAME));
                                 SharedPrefManager.getInstance(getApplicationContext()).savePreferences(Const.ID, use_id);
@@ -221,7 +224,8 @@ public class LoginActivity extends AppCompatActivity {
     public View.OnClickListener tvRegClick = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-
+            Bundle bundle = new Bundle();
+            intentReg.putExtra(Const.PACKAGE,bundle);
             startActivityForResult(intentReg, Const.REQUEST_CODE_REGISTER);
         }
     };
@@ -234,13 +238,16 @@ public class LoginActivity extends AppCompatActivity {
                 setEnableEdit(true);
                 break;
             case Const.CODE_USER_NOT_EXIST:
-
+//                Toasty.error(getApplicationContext(), "Tên đăng nhập không tồn tại", Toast.LENGTH_SHORT).show();
                 AlertDialog.Builder b = new AlertDialog.Builder(LoginActivity.this);
                 b.setTitle(getResources().getString(R.string.login_user_not_exist));
                 b.setMessage(getResources().getString(R.string.login_question_register));
                 b.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        Bundle bundle = new Bundle();
+                        bundle.putString(Const.USERNAME,edUser.getText().toString());
+                        intentReg.putExtra(Const.PACKAGE,bundle);
                         startActivityForResult(intentReg, Const.REQUEST_CODE_REGISTER);
                         setEnableEdit(true);
                     }
@@ -430,5 +437,18 @@ public class LoginActivity extends AppCompatActivity {
         android.support.v7.app.AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && requestCode == Const.REQUEST_CODE_REGISTER){
+            Bundle bundle = new Bundle();
+            bundle=data.getBundleExtra(Const.PACKAGE);
+            String username = bundle.getString(Const.USERNAME);
+            String password = bundle.getString(Const.PASSWORD);
+            edUser.setText(username);
+            edPass.setText(password);
+        }
     }
 }
