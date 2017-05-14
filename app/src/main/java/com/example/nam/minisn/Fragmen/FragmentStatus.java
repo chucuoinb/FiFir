@@ -45,6 +45,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import es.dmoral.toasty.Toasty;
+
 public class FragmentStatus extends Fragment implements View.OnClickListener {
     private View rootView;
     private Bundle bundle;
@@ -53,16 +55,16 @@ public class FragmentStatus extends Fragment implements View.OnClickListener {
     private ListView lvStatus;
     private EditText inputStatus;
     private TextView btnPost;
-    private ProgressDialog dialog;
     private int useId;
     private String token;
+    private Animation progressAnim;
+    private LinearLayout progress, statutPost;
+    private ProgressDialog dialog;
     private LinearLayout loadErr, loadSucess;
     private SQLiteDataController dataController;
     private int page;
     private boolean isLoad = false;
     private long lastLoad;
-    private Animation progressAnim;
-    private LinearLayout progress, statutPost;
     private boolean isShowProgress = false;
     private int lastPositionFirst = 0;
     private int lastPositionEnd = 0;
@@ -101,12 +103,12 @@ public class FragmentStatus extends Fragment implements View.OnClickListener {
         page = 0;
 
 
-        dataController = new SQLiteDataController(getActivity());
-        dataController.openDataBase();
         data = new ArrayList<>();
         adapter = new StatusAdapter(getActivity(), R.layout.item_tab_status, data);
         lvStatus.setAdapter(adapter);
 
+        dataController = new SQLiteDataController(getActivity());
+        dataController.openDataBase();
         dialog = new ProgressDialog(getActivity(), R.style.AppTheme_Dialog);
         dialog.setMessage("Đang tải");
         dialog.setCancelable(false);
@@ -116,8 +118,6 @@ public class FragmentStatus extends Fragment implements View.OnClickListener {
 
         if (!isEmptyStatus)
             getListStatus();
-        else
-            Toast.makeText(getActivity(),"Không còn bảng tin cũ hơn",Toast.LENGTH_SHORT).show();
         listener();
     }
 
@@ -125,7 +125,7 @@ public class FragmentStatus extends Fragment implements View.OnClickListener {
         lvStatus.setOnScrollListener(lvScroll);
         loadErr.setOnClickListener(this);
         btnPost.setOnClickListener(this);
-
+        inputStatus.addTextChangedListener(changePost);
     }
 
     public static StatusAdapter getAdapter() {
@@ -276,11 +276,8 @@ public class FragmentStatus extends Fragment implements View.OnClickListener {
                         getNewStatus();
                     }
                 }
-//                Log.d(Const.TAG,"hihi+ "+lvStatus.getLastVisiblePosition() +":"+data.size());
                 if (lvStatus.getLastVisiblePosition() == data.size()-1) {
                     if (lvStatus.getLastVisiblePosition() == lastPositionEnd) {
-//                        dialog.setMessage("Đang tải thêm..");
-//                        dialog.show();
                         if (!isEmptyStatus)
                             getListStatus();
                         else
@@ -306,13 +303,6 @@ public class FragmentStatus extends Fragment implements View.OnClickListener {
         if (!isShowProgress) {
             isShowProgress = true;
             progress.setVisibility(View.VISIBLE);
-//            CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) progress.getLayoutParams();
-//            layoutParams.topMargin = (int) (statutPost.getHeight() + getResources().getDimension(R.dimen.main_margin));
-//            TranslateAnimation translateAnimation = new TranslateAnimation(progress.getTranslationX(), progress.getTranslationX(),
-//                    -statutPost.getHeight() + getResources().getDimension(R.dimen.main_margin), 0);
-//            translateAnimation.setDuration(1000);
-//            progress.startAnimation(translateAnimation);
-//            progress.setLayoutParams(layoutParams);
         }
     }
 
@@ -320,13 +310,6 @@ public class FragmentStatus extends Fragment implements View.OnClickListener {
     public void hideProgress() {
         if (isShowProgress) {
             isShowProgress = false;
-//            CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) progress.getLayoutParams();
-//            layoutParams.topMargin = 0;
-//            TranslateAnimation translateAnimation = new TranslateAnimation(progress.getTranslationX(), progress.getTranslationX(),
-//                    statutPost.getHeight() + getResources().getDimension(R.dimen.main_margin), 0);
-//            translateAnimation.setDuration(1000);
-//            progress.startAnimation(translateAnimation);
-//            progress.setLayoutParams(layoutParams);
             progress.setVisibility(View.INVISIBLE);
 
         }
@@ -386,9 +369,18 @@ public class FragmentStatus extends Fragment implements View.OnClickListener {
                         public void onResponse(JSONObject response) {
                             try {
                                 if (response.getInt(Const.CODE) != Const.CODE_OK) {
+                                    Toasty.error(getActivity(), getResources().getString(R.string.notifi_error), Toast.LENGTH_SHORT).show();
+
                                 } else {
-                                    JSONObject newObject = response.getJSONObject(Const.DATA);
-//                                    Friend friend = new
+                                    String displayName = SharedPrefManager.getInstance(getActivity()).getString(Const.DISPLAY_NAME);
+                                    String username = SharedPrefManager.getInstance(getActivity()).getString(Const.USERNAME);
+                                    int id = SharedPrefManager.getInstance(getActivity()).getInt(Const.ID);
+                                    Friend friend = new Friend(id,username,displayName);
+                                    Status status = new Status(response.getInt(Const.DATA),friend,System.currentTimeMillis()/1000,statusMessage,Const.STA_UNLIKE,0,0);
+                                    data.add(0,status);
+                                    adapter.notifyDataSetChanged();
+                                    inputStatus.setText("");
+                                    btnPost.setEnabled(false);
 
                                 }
                                 if (dialog.isShowing())
@@ -398,6 +390,8 @@ public class FragmentStatus extends Fragment implements View.OnClickListener {
                                 if (dialog.isShowing())
                                     dialog.dismiss();
                                 Log.d(Const.TAG, e.getMessage());
+                                Toasty.error(getActivity(), getResources().getString(R.string.notifi_error), Toast.LENGTH_SHORT).show();
+
                             }
                         }
                     },
@@ -407,6 +401,8 @@ public class FragmentStatus extends Fragment implements View.OnClickListener {
                             if (dialog.isShowing())
                                 dialog.dismiss();
                             Log.d(Const.TAG, "post vl er");
+                            Toasty.error(getActivity(), getResources().getString(R.string.notifi_error), Toast.LENGTH_SHORT).show();
+
                         }
                     });
 

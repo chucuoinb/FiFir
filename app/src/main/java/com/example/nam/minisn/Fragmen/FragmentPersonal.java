@@ -58,7 +58,7 @@ public class FragmentPersonal extends Fragment implements View.OnClickListener {
     private Intent intent;
     private TextView tvName;
     private LinearLayout goPersonal, lnLogout;
-
+    private int useId;
     public FragmentPersonal() {
     }
 
@@ -88,6 +88,7 @@ public class FragmentPersonal extends Fragment implements View.OnClickListener {
         lnLogout = (LinearLayout) rootView.findViewById(R.id.tab_personal_logout);
 
         tvName.setText(SharedPrefManager.getInstance(getActivity()).getString(Const.DISPLAY_NAME));
+        useId = SharedPrefManager.getInstance(getActivity()).getInt(Const.ID);
         listener();
     }
 
@@ -104,6 +105,11 @@ public class FragmentPersonal extends Fragment implements View.OnClickListener {
                 logout();
                 break;
             case R.id.personal_go:
+                Intent intentPersonal = new Intent(getActivity(),PersonalActivity.class);
+                Bundle bundlePersonal = new Bundle();
+                bundlePersonal.putInt(Const.ID,useId);
+                intentPersonal.putExtra(Const.PACKAGE,bundlePersonal);
+                startActivity(intentPersonal);
                 break;
         }
     }

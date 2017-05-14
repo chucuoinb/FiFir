@@ -66,7 +66,6 @@ public class TestUpAvatar extends AppCompatActivity implements View.OnClickListe
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
-//        File file = icon_new File();
     }
 
     @Override

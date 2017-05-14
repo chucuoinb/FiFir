@@ -65,6 +65,7 @@ public class Const {
     public static final String TYPE_LIKE = "type_like";
     public static final String NUMBER_LIKE = "number_like";
     public static final String NUMBER_COMMENT = "number_comment";
+    public static final String COMMENT = "comment";
     public static final int STA_LIKE = 1;
     public static final int STA_UNLIKE = 2;
 
@@ -95,6 +96,10 @@ public class Const {
     public static final String URL_ADD_STATUS = URL + "status/add_status.php";
     public static final String URL_LOGOUT = URL + "user/logout.php";
     public static final String URL_LIKE_STATUS = URL + "status/like_status.php";
+    public static final String URL_GET_STATUS_FRIEND = URL + "status/get_friend_status.php";
+    public static final String URL_GET_NEW_STATUS_FRIEND = URL + "status/get_new_status_friend.php";
+    public static final String URL_GET_COMMENT = URL + "status/get_comment.php";
+    public static final String URL_ADD_COMMENT = URL + "status/add_comment.php";
 
     public static final String KEY_SEARCH = "search";
     public static final String KEY_LAST_LOAD = "last_load";

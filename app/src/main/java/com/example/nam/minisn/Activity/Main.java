@@ -49,7 +49,7 @@ public class Main extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.main_viewPager);
         mSectionsPagerAdapter = new TabsAdapter(getSupportFragmentManager(), bundle);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-        mViewPager.setOffscreenPageLimit(Const.TAB_SIZE-1);
+        mViewPager.setOffscreenPageLimit(Const.TAB_SIZE - 1);
         tabLayout.setupWithViewPager(mViewPager);
         tabLayout.setOnTabSelectedListener(changeTab);
         tabLayout.getTabAt(0).setIcon(iconTabs[0]);
@@ -74,8 +74,7 @@ public class Main extends AppCompatActivity {
                 } else
                     showAlertIsCloseApp();
             }
-        }
-        else if(tabLayout.getSelectedTabPosition() == Const.TAB_FRIENDS){
+        } else if (tabLayout.getSelectedTabPosition() == Const.TAB_FRIENDS) {
             if (FragmentFriend.isDelete()) {
                 FragmentFriend.hideDelete();
 
@@ -87,6 +86,8 @@ public class Main extends AppCompatActivity {
                     showAlertIsCloseApp();
             }
         }
+        else
+            showAlertIsCloseApp();
     }
 
     TabLayout.OnTabSelectedListener changeTab = new TabLayout.OnTabSelectedListener() {
