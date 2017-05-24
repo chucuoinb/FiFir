@@ -500,10 +500,12 @@ public class FragmentFriend extends Fragment implements View.OnClickListener {
             Friend item = friends.get(position).getFriend();
             int idConversation = database.getConversationFriend(item.getId(), useId);
             if (idConversation > 0) {
+                Bundle bundle1 = new Bundle();
                 String name = database.getNameConversation(idConversation, useId);
-                bundle.putInt(Const.CONVERSATION_ID, idConversation);
-                bundle.putString(Const.NAME_CONVERSATION, name);
-                intent.putExtra(Const.PACKAGE, bundle);
+                bundle1.putInt(Const.CONVERSATION_ID, idConversation);
+                bundle1.putString(Const.NAME_CONVERSATION, name);
+                bundle1.putString(Const.MESSAGE, "");
+                intent.putExtra(Const.PACKAGE, bundle1);
                 startActivity(intent);
             } else {
                 HashMap<String, String> params = new HashMap<>();

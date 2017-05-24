@@ -21,7 +21,7 @@
         android:layout_marginTop="@dimen/main_margin"
         android:layout_marginLeft="@dimen/main_margin"
         android:textSize="18dp"
-        android:textColor="@color/color_name_conversation"/>
+        android:textColor="@color/color_name"/>
     <TextView
         android:id="@+id/search_bt_request"
         android:layout_width="wrap_content"

@@ -163,7 +163,7 @@ public class CreateConversation extends AppCompatActivity implements View.OnClic
 
                 params.put(Const.NAME_CONVERSATION, friendAdd.get(0).getUsername());
                 params.put(Const.ID_USER_FRIEND + "0", String.valueOf(friendAdd.get(0).getId()));
-                addNewConversation(params, 1);
+                addNewConversation(params, 2);
             }
         }
         if (friendAdd.size() > 1) {
@@ -202,7 +202,7 @@ public class CreateConversation extends AppCompatActivity implements View.OnClic
                                         params.put(Const.ID_USER_FRIEND + i, String.valueOf(friendAdd.get(i).getId()));
                                     }
                                     alertDialog.dismiss();
-                                    addNewConversation(params, friendAdd.size());
+                                    addNewConversation(params, friendAdd.size() + 1);
                                 }
                             }
                         }
@@ -233,8 +233,7 @@ public class CreateConversation extends AppCompatActivity implements View.OnClic
                                 dataControllerl.addConversation(idConversation, params.get(Const.NAME_CONVERSATION), "", useId, Const.TYPE_DONT_NEW_MESSAGE);
                                 if (size == 1)
                                     dataControllerl.addIdConversationIntoFriend(useId, idConversation, Integer.parseInt(params.get(Const.ID_USER_FRIEND + "0")));
-                                else
-                                    dataControllerl.updateSizeConversation(idConversation,useId,size);
+                                dataControllerl.updateSizeConversation(idConversation, useId, size);
                                 bundle.putInt(Const.CONVERSATION_ID, idConversation);
                                 bundle.putString(Const.NAME_CONVERSATION, params.get(Const.NAME_CONVERSATION));
                                 intent.putExtra(Const.PACKAGE, bundle);

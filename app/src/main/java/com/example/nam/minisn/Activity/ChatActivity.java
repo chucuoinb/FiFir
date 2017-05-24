@@ -83,6 +83,17 @@ public class ChatActivity extends AppCompatActivity {
 
 
     public void init() {
+        receiverMessage = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Bundle bundleBroad = new Bundle();
+                bundleBroad = intent.getBundleExtra(Const.PACKAGE);
+                String newMessage = bundleBroad.getString(Const.MESSAGE);
+                int idSend = bundleBroad.getInt(Const.ID);
+                data.add(new Chat(Const.MESSAGE_RECEIVE, newMessage, Const.GENDER_WOMAN,idSend));
+                adapter.notifyDataSetChanged();
+            }
+        };
         headerLvChat = (LinearLayout) findViewById(R.id.header_lv_chat);
         tvNameConversation = (TextView) findViewById(R.id.toolbar_text);
         edInputMessage = (EditText) findViewById(R.id.chat_ed_inputMessage);
@@ -120,15 +131,7 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
-        receiverMessage = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                String newMessage = intent.getExtras().getString(Const.MESSAGE);
 
-                data.add(new Chat(Const.MESSAGE_RECEIVE, newMessage, Const.GENDER_WOMAN));
-                adapter.notifyDataSetChanged();
-            }
-        };
         registerReceiver(receiverMessage, new IntentFilter(Const.DISPLAY_MESSAGE_ACTION));
         lvChat.setOnScrollListener(lvScroll);
 
@@ -168,8 +171,9 @@ public class ChatActivity extends AppCompatActivity {
         intent = getIntent();
         bundle = intent.getBundleExtra(Const.PACKAGE);
         String newMessage = bundle.getString(Const.MESSAGE, "");
+        int idSend = bundle.getInt(Const.ID,0);
         if (!"".equals(newMessage))
-            data.add(new Chat(Const.MESSAGE_RECEIVE, newMessage, Const.GENDER_WOMAN));
+            data.add(new Chat(Const.MESSAGE_RECEIVE, newMessage, Const.GENDER_WOMAN,idSend));
         token = SharedPrefManager.getInstance(getApplicationContext()).getString(Const.TOKEN);
         nameConversation = bundle.getString(Const.NAME_CONVERSATION);
         idConversation = bundle.getInt(Const.CONVERSATION_ID);
@@ -214,7 +218,7 @@ public class ChatActivity extends AppCompatActivity {
             );
             btSend.setEnabled(false);
             btSend.setBackgroundResource(R.drawable.button_send_message_2);
-            data.add(new Chat(Const.MESSAGE_SEND, message, Const.GENDER_MAN));
+            data.add(new Chat(Const.MESSAGE_SEND, message, Const.GENDER_MAN,useId));
             adapter.notifyDataSetChanged();
             edInputMessage.setText("");
             sendMessage(params);

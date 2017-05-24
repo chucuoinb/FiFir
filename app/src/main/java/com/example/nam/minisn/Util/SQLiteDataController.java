@@ -882,7 +882,7 @@ public class SQLiteDataController extends SQLiteOpenHelper {
                     gender = 0;
                     typeMessage = Const.MESSAGE_SEND;
                 }
-                Chat chat = new Chat(typeMessage, message, gender);
+                Chat chat = new Chat(typeMessage, message, gender,idSend);
                 data.add(chat);
             } while (cursor.moveToPrevious());
         }

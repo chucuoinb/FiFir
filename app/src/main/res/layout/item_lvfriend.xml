@@ -37,7 +37,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_weight="1"
                     android:text="abcd"
-                    android:textColor="@color/color_name_conversation"
+                    android:textColor="@color/color_name"
                     android:textSize="25dp"/>
 
                 <CheckBox

@@ -101,6 +101,7 @@ public class SearchFriendAdapter extends ArrayAdapter<SearchFriendItem> {
                             @Override
                             public void onResponse(JSONObject response) {
                                 try {
+                                    Log.d(Const.TAG,response.getString(Const.MESSAGE));
                                     if (response.getInt(Const.CODE) != Const.CODE_OK) {
                                         Toast.makeText(context,"Có lỗi xảy ra, vui lòng thử lại",Toast.LENGTH_SHORT).show();
                                     } else {

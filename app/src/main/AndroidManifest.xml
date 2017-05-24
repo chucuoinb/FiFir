@@ -15,7 +15,6 @@
         <activity
             android:name=".Activity.RegisterActivity"
             android:theme="@style/AppTheme.NoActionBar">
-
         </activity>
         <activity
             android:name=".Activity.Main"
@@ -74,10 +73,15 @@
             android:name=".Activity.SearchFriendActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
-        <activity android:name=".Activity.PersonalActivity"
+        <activity
+            android:name=".Activity.PersonalActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
-        <activity android:name=".Activity.CreateConversation"
+        <activity
+            android:name=".Activity.CreateConversation"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity android:name=".Activity.CommentActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
     </application>

@@ -1,6 +1,7 @@
 package com.example.nam.minisn.Adapter;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -18,6 +19,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
+import com.example.nam.minisn.Activity.CommentActivity;
 import com.example.nam.minisn.Fragmen.FragmentStatus;
 import com.example.nam.minisn.ItemListview.Status;
 import com.example.nam.minisn.R;
@@ -144,6 +146,14 @@ public class StatusAdapter extends ArrayAdapter<Status> {
                 jsonRequest.setShouldCache(false);
                 requestQueue.add(jsonRequest);
 
+            }
+        });
+
+        holder.comment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, CommentActivity.class);
+                context.startActivity(intent);
             }
         });
 

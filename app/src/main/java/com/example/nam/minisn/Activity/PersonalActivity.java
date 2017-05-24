@@ -9,7 +9,9 @@ import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.LinearLayout;
@@ -142,6 +144,8 @@ public class PersonalActivity extends AppCompatActivity implements View.OnClickL
         loadErr.setOnClickListener(this);
         banner.setOnClickListener(this);
         avatar.setOnClickListener(this);
+        if (friendId == useId)
+            registerForContextMenu(avatar);
     }
 
     public void getListStatus() {
@@ -396,5 +400,23 @@ public class PersonalActivity extends AppCompatActivity implements View.OnClickL
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        getMenuInflater().inflate(R.menu.menu_ava,menu);
+
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.menu_ava_view:
+                break;
+            case R.id.menu_ava_change:
+                break;
+        }
+        return super.onContextItemSelected(item);
     }
 }

@@ -8,14 +8,15 @@ public class Chat {
     private String message;
     private int gender;
     private int typeMessage;
-
+    private int id;
     public Chat() {
     }
 
-    public Chat(int typeMessage, String message, int gender) {
+    public Chat(int typeMessage, String message, int gender,int id) {
         this.typeMessage = typeMessage;
         this.message = message;
         this.gender = gender;
+        this.id=id;
     }
 
     public String getMessage() {
@@ -40,5 +41,13 @@ public class Chat {
 
     public void setMyMessage(int typeMessage) {
         this.typeMessage = typeMessage;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

@@ -216,6 +216,7 @@ public class FragmentConversation extends Fragment implements View.OnClickListen
             Conversation conversation = new Conversation(idConversation, nameConversation, lastMessage, time, isNew, typeChoose);
             conversation.setShowCheckBox(isShowCheckBox);
             int size = cursor.getInt(7);
+            Log.d(Const.TAG,"size: "+size);
             if (size > 2) {
                 if (conversation.isNew())
                     groupNew.setVisibility(View.VISIBLE);
@@ -242,17 +243,18 @@ public class FragmentConversation extends Fragment implements View.OnClickListen
     public AdapterView.OnItemClickListener itemLvConversationClick = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            intent = new Intent(getActivity(), ChatActivity.class);
+            Bundle bundle1 = new Bundle();
+            Intent intent1 = new Intent(getActivity(), ChatActivity.class);
             Conversation item = data.get(position);
             if (item.isNew()) {
                 database.setNewMessageConversation(item.getId(), use_id);
                 item.setNew(false);
             }
-            bundle.putInt(Const.CONVERSATION_ID, item.getId());
+            bundle1.putInt(Const.CONVERSATION_ID, item.getId());
             Log.d(Const.TAG, "con: " + item.getId());
-            bundle.putString(Const.NAME_CONVERSATION, item.getNameConservation());
-            intent.putExtra(Const.PACKAGE, bundle);
-            startActivity(intent);
+            bundle1.putString(Const.NAME_CONVERSATION, item.getNameConservation());
+            intent1.putExtra(Const.PACKAGE, bundle1);
+            startActivity(intent1);
         }
     };
 

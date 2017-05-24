@@ -28,6 +28,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.nam.minisn.Activity.Main;
 import com.example.nam.minisn.Adapter.StatusAdapter;
 import com.example.nam.minisn.ItemListview.Chat;
 import com.example.nam.minisn.ItemListview.Friend;
@@ -164,7 +165,7 @@ public class FragmentStatus extends Fragment implements View.OnClickListener {
                                         int numberLike = jsonStatus.getInt(Const.NUMBER_LIKE);
                                         int numberComment = jsonStatus.getInt(Const.NUMBER_COMMENT);
                                         Friend friend = dataController.getFriend(idFriend);
-                                        Status item = new Status(idStatus, friend, timePost, status, typeLike,numberComment, numberLike);
+                                        Status item = new Status(idStatus, friend, timePost, status, typeLike, numberComment, numberLike);
                                         data.add(item);
                                     }
                                     adapter.notifyDataSetChanged();
@@ -173,7 +174,8 @@ public class FragmentStatus extends Fragment implements View.OnClickListener {
                                     page++;
                                 } else {
                                     isEmptyStatus = true;
-                                    Toast.makeText(getActivity(),"Không còn bảng tin cũ hơn",Toast.LENGTH_SHORT).show();
+                                    if (Main.tabLayout.getSelectedTabPosition() == Const.TAB_STATUS)
+                                        Toast.makeText(getActivity(), "Không còn bảng tin cũ hơn", Toast.LENGTH_SHORT).show();
                                 }
                             }
 
@@ -225,7 +227,7 @@ public class FragmentStatus extends Fragment implements View.OnClickListener {
                                     int numberComment = jsonStatus.getInt(Const.NUMBER_COMMENT);
 
                                     Friend friend = dataController.getFriend(idFriend);
-                                    Status item = new Status(idStatus, friend, timePost, status, typeLike,numberComment, numberLike);
+                                    Status item = new Status(idStatus, friend, timePost, status, typeLike, numberComment, numberLike);
                                     data.add(0, item);
                                 }
                                 adapter.notifyDataSetChanged();
@@ -276,12 +278,12 @@ public class FragmentStatus extends Fragment implements View.OnClickListener {
                         getNewStatus();
                     }
                 }
-                if (lvStatus.getLastVisiblePosition() == data.size()-1) {
+                if (lvStatus.getLastVisiblePosition() == data.size() - 1) {
                     if (lvStatus.getLastVisiblePosition() == lastPositionEnd) {
                         if (!isEmptyStatus)
                             getListStatus();
                         else
-                            Toast.makeText(getActivity(),"Không còn bảng tin cũ hơn",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), "Không còn bảng tin cũ hơn", Toast.LENGTH_SHORT).show();
                     }
                 }
                 lastPositionEnd = lvStatus.getLastVisiblePosition();
@@ -375,9 +377,9 @@ public class FragmentStatus extends Fragment implements View.OnClickListener {
                                     String displayName = SharedPrefManager.getInstance(getActivity()).getString(Const.DISPLAY_NAME);
                                     String username = SharedPrefManager.getInstance(getActivity()).getString(Const.USERNAME);
                                     int id = SharedPrefManager.getInstance(getActivity()).getInt(Const.ID);
-                                    Friend friend = new Friend(id,username,displayName);
-                                    Status status = new Status(response.getInt(Const.DATA),friend,System.currentTimeMillis()/1000,statusMessage,Const.STA_UNLIKE,0,0);
-                                    data.add(0,status);
+                                    Friend friend = new Friend(id, username, displayName);
+                                    Status status = new Status(response.getInt(Const.DATA), friend, System.currentTimeMillis() / 1000, statusMessage, Const.STA_UNLIKE, 0, 0);
+                                    data.add(0, status);
                                     adapter.notifyDataSetChanged();
                                     inputStatus.setText("");
                                     btnPost.setEnabled(false);

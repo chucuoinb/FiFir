@@ -80,23 +80,26 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             String nameConversation = jsonObject.getString(Const.NAME_CONVERSATION);
             useId = SharedPrefManager.getInstance(getApplicationContext()).getInt(Const.ID);
             idSend = jsonObject.getInt(Const.ID_USERNAME);
-
+            database = new SQLiteDataController(getApplicationContext());
             database.openDataBase();
+            int saveIdConversation=SharedPrefManager.getInstance(getApplicationContext()).getInt(Const.CONVERSATION_ID);
             if (!database.isExistConversation(idConversation)) {
-                database.addConversation(idConversation, nameConversation, message, useId, Const.TYPE_NEW_MESSAGE);
+                int type = (idConversation==saveIdConversation)?Const.TYPE_DONT_NEW_MESSAGE:Const.TYPE_NEW_MESSAGE;
+                database.addConversation(idConversation, nameConversation, message, useId, type);
 //                while (!database.isExistConversation(idConversation)) ;
             }
             getSizeConversation();
             database.saveMessage(message, idConversation, idSend, useId);
 //            database.close();
-            if (idConversation == SharedPrefManager.getInstance(getApplicationContext()).getInt(Const.CONVERSATION_ID)) {
-                displayMessageOnScreen(getApplicationContext(), message);
+            if (idConversation == saveIdConversation) {
+                displayMessageOnScreen(getApplicationContext(), message,idSend);
             } else {
                 Bundle bundle = new Bundle();
                 bundle.putString(Const.MESSAGE, message);
                 bundle.putString(Const.NAME_CONVERSATION, nameConversation);
                 bundle.putString(Const.USERNAME_SEND, usernameSend);
                 bundle.putInt(Const.CONVERSATION_ID, idConversation);
+                bundle.putInt(Const.ID,idSend);
                 pushNotifyMessage(bundle);
             }
 
@@ -106,10 +109,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     }
 
     //send broad cast receive
-    public static void displayMessageOnScreen(Context context, String message) {
+    public static void displayMessageOnScreen(Context context, String message,int idSend) {
 
         Intent intent = new Intent(Const.DISPLAY_MESSAGE_ACTION);
-        intent.putExtra(Const.MESSAGE, message);
+        Bundle bundle = new Bundle();
+        bundle.putInt(Const.ID,idSend);
+        bundle.putString(Const.MESSAGE,message);
+        intent.putExtra(Const.PACKAGE, bundle);
 
 
         context.sendBroadcast(intent);
