@@ -74,8 +74,8 @@ public class Const {
 
 //    public static final String URL = "http://www.namlv-hust.96.lt/ver1/";
 //    public static final String IP_LOCAL = "192.168.137.1";
-    public static final String IP_LOCAL = "192.168.4.242";
-//    public static final String IP_LOCAL = "192.168.43.205";
+//    public static final String IP_LOCAL = "192.168.4.242";
+    public static final String IP_LOCAL = "192.168.43.205";
     public static final String URL = "http://"+IP_LOCAL+":1010/ver1/";
     public static final String URL_LOGIN = URL + "user/login.php";
     public static final String URL_REGISTER = URL + "user/register.php";
@@ -100,6 +100,7 @@ public class Const {
     public static final String URL_GET_NEW_STATUS_FRIEND = URL + "status/get_new_status_friend.php";
     public static final String URL_GET_COMMENT = URL + "status/get_comment.php";
     public static final String URL_ADD_COMMENT = URL + "status/add_comment.php";
+    public static final String URL_GET_INFO_STATUS = URL + "status/get_info_status.php?";
 
     public static final String KEY_SEARCH = "search";
     public static final String KEY_LAST_LOAD = "last_load";
@@ -137,6 +138,8 @@ public class Const {
     public static final int TYPE_MESSAGE = 200;
     public static final int TYPE_REQUEST_FRIEND = 201;
     public static final int TYPE_RESPONSE_FRIEND = 202;
+    public static final int TYPE_LIKE_FCM = 203;
+    public static final int TYPE_COMMENT = 204;
 
 
     public static final int ID_NOTIFICATION_MESSAGE = 1111;

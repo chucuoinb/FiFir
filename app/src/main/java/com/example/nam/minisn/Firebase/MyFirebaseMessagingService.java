@@ -4,6 +4,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -32,7 +33,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private RemoteViews mContentView;
     private int idSend, useId, idConversation;
     private SQLiteDataController database;
-
+    private MediaPlayer player;
     public MyFirebaseMessagingService() {
     }
 
@@ -65,10 +66,16 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 case Const.TYPE_RESPONSE_FRIEND:
                     solveResponse(jsonObject);
                     break;
+                case Const.TYPE_COMMENT:
+                    solveComment(jsonObject);
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    public void solveComment(JSONObject jsonObject){
+
     }
 
     public void receiveMessage(JSONObject json) {
@@ -138,6 +145,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 setContentIntent(pending).
                 setAutoCancel(true);
         manager.notify(Const.ID_NOTIFICATION_MESSAGE, notification.build());
+        alertSound();
 
     }
 
@@ -163,6 +171,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     setSmallIcon(icon).
                     setContentIntent(pending).
                     setAutoCancel(true);
+            alertSound();
             manager.notify(Const.ID_NOTIFICATION_REQUEST, notification.build());
         } catch (JSONException e) {
             Log.d(Const.TAG, "json err: " + e.getMessage());
@@ -196,6 +205,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     setContentText(content).
                     setSmallIcon(icon).
                     setAutoCancel(true);
+            alertSound();
             manager.notify(Const.ID_NOTIFICATION_RESPONSE, notification.build());
         } catch (JSONException e) {
             Log.d(Const.TAG, "json err: " + e.getMessage());
@@ -235,5 +245,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         });
 
         requestQueue.add(objectRequest);
+    }
+
+    public void alertSound(){
+        player = MediaPlayer.create(getApplicationContext(),R.raw.alert);
+        player.start();
     }
 }

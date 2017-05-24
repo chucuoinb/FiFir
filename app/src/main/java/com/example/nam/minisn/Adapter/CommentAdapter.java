@@ -10,13 +10,10 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.example.nam.minisn.ItemListview.Comment;
-import com.example.nam.minisn.ItemListview.Status;
 import com.example.nam.minisn.R;
 import com.example.nam.minisn.Util.Const;
-import com.example.nam.minisn.Util.SQLiteDataController;
 
 import java.util.ArrayList;
-import java.util.zip.Inflater;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -58,7 +55,7 @@ public class CommentAdapter extends ArrayAdapter<Comment> {
         Comment comment = data.get(position);
         holder.comment.setText(comment.getComment());
         holder.time.setText(Const.getStringTime(context,comment.getTime()));
-        holder.username.setText(comment.getUsername());
+        holder.username.setText(comment.getDisplayname());
         return row;
     }
 

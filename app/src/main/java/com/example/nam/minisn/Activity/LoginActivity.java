@@ -270,7 +270,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void saveListConversation(String token) {
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-        JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.GET, Const.URL_GET_LIST_CONVERSATION + "/?" +
+        JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.GET, Const.URL_GET_LIST_CONVERSATION + "?" +
                 Const.TOKEN + "=" + token
                 , new Response.Listener<JSONObject>() {
             @Override

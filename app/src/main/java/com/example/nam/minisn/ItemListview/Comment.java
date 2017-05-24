@@ -9,15 +9,15 @@ public class Comment {
     private int idUser;
     private String comment;
     private long time;
-    private String username;
+    private String displayname;
     public Comment() {
     }
 
-    public Comment(int idComment, int idUser,String username, String comment, long time) {
+    public Comment(int idComment, int idUser,String displayname, String comment, long time) {
 
         this.idComment = idComment;
         this.idUser = idUser;
-        this.username = username;
+        this.displayname = displayname;
         this.comment = comment;
         this.time = time;
     }
@@ -54,11 +54,11 @@ public class Comment {
         this.time = time;
     }
 
-    public String getUsername() {
-        return username;
+    public String getDisplayname() {
+        return displayname;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setDisplayname(String displayname) {
+        this.displayname = displayname;
     }
 }

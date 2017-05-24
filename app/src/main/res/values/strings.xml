@@ -23,7 +23,7 @@
 
 
     <!--register-->
-    <string name="reg_username">username</string>
+    <string name="reg_username">displayname</string>
     <string name="reg_pass">password</string>
     <string name="reg_repass">Nhập lại password</string>
     <string name="reg_bt_reg">Register</string>

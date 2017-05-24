@@ -2,6 +2,7 @@ package com.example.nam.minisn.Adapter;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -80,7 +81,7 @@ public class StatusAdapter extends ArrayAdapter<Status> {
         } else
             holder = (Holder) row.getTag();
 
-        Status temp = data.get(position);
+        final Status temp = data.get(position);
 //        Log.d(Const.TAG,temp.getFriend().getDisplayName());
         holder.nameFriend.setText(temp.getFriend().getDisplayName());
         holder.timeStatus.setText(Const.getStringTime(context, temp.getTime()));
@@ -153,6 +154,9 @@ public class StatusAdapter extends ArrayAdapter<Status> {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, CommentActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putInt(Const.ID,temp.getId());
+                intent.putExtra(Const.PACKAGE,bundle);
                 context.startActivity(intent);
             }
         });
