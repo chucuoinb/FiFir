@@ -111,8 +111,8 @@ public class FragmentFriend extends Fragment implements View.OnClickListener {
     @Override
     public void onResume() {
         super.onResume();
-
         database.openDataBase();
+        database.setAllChooseFriend(Const.TYPE_NO_CHOOSE);
         int countRequest = database.getCountRequestFriend(useId);
         newRequestFriendSize.setText(String.valueOf(countRequest));
         if (countRequest > 0) {

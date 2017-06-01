@@ -8,11 +8,13 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.AbsListView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -38,6 +40,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -77,7 +81,8 @@ public class PersonalActivity extends AppCompatActivity implements View.OnClickL
     private int heightBackground;
     private Bitmap bitmap;
     private Uri filePath;
-    private int PICK_IMAGE_REQUEST = 1;
+    private int PICK_IMAGE_BANNER = 1;
+    private int PICK_IMAGE_AVATAR = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +105,7 @@ public class PersonalActivity extends AppCompatActivity implements View.OnClickL
         loadErr = (LinearLayout) findViewById(R.id.status_load_err);
         loadSucess = (LinearLayout) findViewById(R.id.status_loaded);
 
+        useId = SharedPrefManager.getInstance(getApplicationContext()).getInt(Const.ID);
         token = SharedPrefManager.getInstance(getApplicationContext()).getString(Const.TOKEN);
         data = new ArrayList<>();
         adapter = new PersonalAdapter(this, R.layout.item_lv_personal, data);
@@ -130,12 +136,9 @@ public class PersonalActivity extends AppCompatActivity implements View.OnClickL
             public void run() {
                 heightBackground = banner.getHeight();
                 withBackground = banner.getWidth();
-                Log.i("TEST", "Layout width : " + banner.getWidth());
 
             }
         });
-        Log.d(Const.TAG, "height: " + heightBackground);
-        Log.d(Const.TAG, "width: " + withBackground);
     }
 
     public void listener() {
@@ -317,7 +320,7 @@ public class PersonalActivity extends AppCompatActivity implements View.OnClickL
                 finish();
                 break;
             case R.id.personal_img_banner:
-                showFileChooser("Chọn ảnh bìa");
+                showFileChooser("Chọn ảnh bìa", PICK_IMAGE_BANNER);
                 break;
         }
     }
@@ -375,29 +378,40 @@ public class PersonalActivity extends AppCompatActivity implements View.OnClickL
         requestQueue.add(jsObjRequest);
     }
 
-    private void showFileChooser(String message) {
+    private void showFileChooser(String message, int type) {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, message), PICK_IMAGE_REQUEST);
+        startActivityForResult(Intent.createChooser(intent, message), type);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+        if (resultCode == RESULT_OK && data != null && data.getData() != null) {
 
             filePath = data.getData();
-//            File file = icon_new File(filePath);
-            try {
-                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
-                Bitmap resize = Bitmap.createScaledBitmap(bitmap, withBackground, heightBackground, false);
-                BitmapDrawable drawable = new BitmapDrawable(resize);
+            if (requestCode == PICK_IMAGE_BANNER) {
+
+                try {
+                    bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
+                    Bitmap resize = Bitmap.createScaledBitmap(bitmap, withBackground, heightBackground, false);
+                    BitmapDrawable drawable = new BitmapDrawable(resize);
 //                drawable.setGravity(Gravity.CENTER);
-                banner.setBackgroundDrawable(drawable);
-            } catch (IOException e) {
-                e.printStackTrace();
+                    banner.setBackgroundDrawable(drawable);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else if (requestCode == PICK_IMAGE_AVATAR) {
+                try {
+                    bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
+                    avatar.setImageBitmap(bitmap);
+                    showDialog("Đang tải lên...");
+                    doUploadAvatar(bitmap);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -405,18 +419,82 @@ public class PersonalActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        getMenuInflater().inflate(R.menu.menu_ava,menu);
+        getMenuInflater().inflate(R.menu.menu_ava, menu);
 
     }
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.menu_ava_view:
                 break;
             case R.id.menu_ava_change:
+                uploadAvatar();
                 break;
         }
         return super.onContextItemSelected(item);
+    }
+
+    public void uploadAvatar() {
+        showFileChooser("Chọn avatar", PICK_IMAGE_AVATAR);
+
+    }
+
+    public String convertBitmapToBase64(Bitmap bitmap) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        byte[] b = baos.toByteArray();
+        String strImage = Base64.encodeToString(b, Base64.DEFAULT);
+        return strImage;
+    }
+
+    public void doUploadAvatar(Bitmap bmp) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put(Const.TOKEN, token);
+        params.put(Const.AVATAR, convertBitmapToBase64(bmp));
+        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+        CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, Const.URL_UPLOAD_AVATAR, params,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d(Const.TAG, "done");
+                        dimissDialog();
+                        try {
+                            if (response.getInt(Const.CODE) != Const.CODE_OK) {
+                                Toasty.error(getApplicationContext(), getResources().getString(R.string.notifi_error), Toast.LENGTH_SHORT).show();
+                                avatar.setImageResource(R.drawable.test);
+                            } else {
+
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d(Const.TAG, "Request Error up");
+                        dimissDialog();
+                    }
+                });
+
+
+        jsObjRequest.setShouldCache(false);
+        requestQueue.add(jsObjRequest);
+    }
+
+    public void showDialog(String message) {
+        if (!dialog.isShowing()) {
+
+            dialog.setMessage(message);
+            dialog.show();
+        }
+    }
+
+    public void dimissDialog() {
+        if (dialog.isShowing())
+            dialog.dismiss();
     }
 }

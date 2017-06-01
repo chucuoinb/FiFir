@@ -1,17 +1,30 @@
 package com.example.nam.minisn.Util;
 
 import android.content.Context;
-import android.content.Intent;
-import android.database.Cursor;
+import android.content.ContextWrapper;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.os.Environment;
 import android.util.Log;
-import android.widget.TextView;
+import android.widget.ImageView;
 
-import com.example.nam.minisn.Activity.LoginActivity;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.nam.minisn.R;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Random;
 
 /**
  * Created by Nam on 2/19/2017.
@@ -60,6 +73,7 @@ public class Const {
     public static final String ID_REQUEST = "id_request";
     public static final String PAGE = "page";
     public static final String TIME_POST = "time_post";
+    public static final String TIME_COMMENT = "time_comment";
     public static final String KEY_NEW_STATUS = "time";
     public static final String STATUS_ID = "status_id";
     public static final String TYPE_LIKE = "type_like";
@@ -68,15 +82,18 @@ public class Const {
     public static final String COMMENT = "comment";
     public static final int STA_LIKE = 1;
     public static final int STA_UNLIKE = 2;
+    public static final String TYPE_IMAGE = "type_image";
 
+    public static final String SAVE_IMAGE = "fifir";
     //URL
 
 
-//    public static final String URL = "http://www.namlv-hust.96.lt/ver1/";
-//    public static final String IP_LOCAL = "192.168.137.1";
-//    public static final String IP_LOCAL = "192.168.4.242";
-    public static final String IP_LOCAL = "192.168.43.205";
-    public static final String URL = "http://"+IP_LOCAL+":1010/ver1/";
+    //    public static final String URL = "http://www.namlv-hust.96.lt/ver1/";
+    public static final String IP_LOCAL = "192.168.1.6";
+
+    //        public static final String IP_LOCAL = "192.168.4.242";
+//    public static final String IP_LOCAL = "192.168.43.205";
+    public static final String URL = "http://" + IP_LOCAL + ":1010/ver1/";
     public static final String URL_LOGIN = URL + "user/login.php";
     public static final String URL_REGISTER = URL + "user/register.php";
     public static final String URL_GET_LIST_CONVERSATION = URL + "conversation/get_list_conversation.php";
@@ -101,6 +118,8 @@ public class Const {
     public static final String URL_GET_COMMENT = URL + "status/get_comment.php";
     public static final String URL_ADD_COMMENT = URL + "status/add_comment.php";
     public static final String URL_GET_INFO_STATUS = URL + "status/get_info_status.php?";
+    public static final String URL_IMAGE_AVATAR_SMALL = URL + "uploads/avatar/50x50/";
+    public static final String URL_IMAGE_AVATAR = URL + "uploads/avatar/";
 
     public static final String KEY_SEARCH = "search";
     public static final String KEY_LAST_LOAD = "last_load";
@@ -192,6 +211,7 @@ public class Const {
     public static final String FRIENDS_COL5 = "fri_gender";
     public static final String FRIENDS_COL6 = "id_conversation";
     public static final String FRIENDS_COL7 = "choose";
+    public static final String FRIENDS_COL8 = "fri_ava";
 
     public static final String DATA_CONVERSATION_COL0 = "id";
     public static final String DATA_CONVERSATION_COL1 = "id_conversation";
@@ -278,4 +298,101 @@ public class Const {
 
     }
 
+    public static void SaveToExternalStorage(Bitmap bitmap, String name) {
+        String root = Environment.getExternalStorageDirectory().toString();
+        File myDir = new File(root + SAVE_IMAGE);
+        myDir.mkdirs();
+        File file = new File(myDir, name);
+        if (!file.exists()) {
+            try {
+                FileOutputStream out = new FileOutputStream(file);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+                out.flush();
+                out.close();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void saveToInternalStorage(String name, Context context) {
+        ContextWrapper cw = new ContextWrapper(context);
+        File directory = cw.getDir(SAVE_IMAGE, Context.MODE_PRIVATE);
+        final File file = new File(directory, name);
+        if (!file.exists()) {
+            RequestQueue requestQueue = Volley.newRequestQueue(context);
+            String url = Const.URL_IMAGE_AVATAR_SMALL + name;
+            Log.d(Const.TAG, url);
+            ImageRequest request = new ImageRequest(url,
+                    new Response.Listener<Bitmap>() {
+                        @Override
+                        public void onResponse(Bitmap response) {
+                            FileOutputStream fos = null;
+                            try {
+                                fos = new FileOutputStream(file);
+                                response.compress(Bitmap.CompressFormat.PNG, 100, fos);
+                                Log.d(Const.TAG, "ava suc");
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            } finally {
+                                try {
+                                    fos.close();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    }, 0, 0, null,
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                        }
+                    });
+            requestQueue.add(request);
+
+        }
+    }
+
+    public static void downloadAvatar(Context context, String name) {
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+        String url = Const.URL + "50x50/" + name;
+        ImageRequest request = new ImageRequest(url,
+                new Response.Listener<Bitmap>() {
+                    @Override
+                    public void onResponse(Bitmap response) {
+
+                    }
+                }, 0, 0, null,
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d(Const.TAG, "err");
+                    }
+                });
+        requestQueue.add(request);
+    }
+
+    public static Drawable loadImageFromInternal(Context context, String name) {
+        Drawable drawable;
+//        try {
+//            File f=new File(SAVE_IMAGE, name);
+//            bitmap = BitmapFactory.decodeStream(new FileInputStream(f));
+//        }
+//        catch (FileNotFoundException e)
+//        {
+//            bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.test);
+//            e.printStackTrace();
+//        }
+        ContextWrapper cw = new ContextWrapper(context);
+
+        File directory = cw.getDir(SAVE_IMAGE, Context.MODE_PRIVATE);
+
+        File myPath = new File(directory, name);
+        if (myPath.exists())
+            drawable = Drawable.createFromPath(myPath.getPath());
+        else
+            drawable = context.getResources().getDrawable(R.drawable.test);
+        return drawable;
+    }
 }

@@ -10,10 +10,13 @@
     <include layout="@layout/toolbar"></include>
 
     <ListView
+        android:layout_marginTop="5dp"
         android:id="@+id/request_friend_lv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:dividerHeight="5dp"
+        android:divider="@color/transparent">
 
     </ListView>
 

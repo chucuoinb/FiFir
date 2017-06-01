@@ -112,25 +112,18 @@ public class TestUpAvatar extends AppCompatActivity implements View.OnClickListe
         HashMap<String,String> params = new HashMap<>();
         params.put(Const.USERNAME,"admin");
         params.put(Const.AVATAR,convertBitmapToBase64(bmp));
-//        Log.d(Const.TAG,convertBitmapToBase64(bmp));
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-//        final ProgressDialog dialog = icon_new ProgressDialog(getApplicationContext());
-//        dialog.show();
         CustomRequest jsObjRequest = new CustomRequest(Request.Method.POST, Const.URL + "test.php", params,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.d(Const.TAG,"done");
-//                        dialog.dismiss();
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-//                        setEnableEdit(true);
                         Log.d(Const.TAG, "Request Error up");
-//                        Log.d(Const.TAG,error.getLocalizedMessage());
-//                        dialog.dismiss();
                     }
                 });
 

@@ -339,7 +339,12 @@ public class LoginActivity extends AppCompatActivity {
                             int gender = obj.getInt(Const.GENDER);
                             int fri_id = obj.getInt(Const.ID);
                             int id = obj.getInt(Const.ID_FRIEND);
+                            String avatar = obj.getString(Const.AVATAR);
                             database.addFriend(use_id, gender, username, fri_id, id, displayName);
+                            if (!"null".equals(avatar)){
+                                Const.saveToInternalStorage(avatar,getApplicationContext());
+                                database.updateAvatar(use_id,fri_id,avatar);
+                            }
                         }
                         saveListConversation(token);
 

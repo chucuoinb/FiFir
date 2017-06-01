@@ -69,7 +69,7 @@ public class ChatAdapter extends ArrayAdapter<Chat> {
         else
             holder = (Holder)row.getTag();
         int a = (item.getGender() == Const.GENDER_UNKNOW)?R.drawable.people_24:
-                        ((item.getGender() == Const.GENDER_MAN)?R.drawable.man_24:R.drawable.woman_24);
+                        ((item.getGender() == Const.GENDER_MAN)?R.drawable.woman:R.drawable.man);
         holder.textChat.setText(item.getMessage());
         holder.avatar.setImageResource(a);
 //        Log.d(Const.TAG,String.valueOf(position));

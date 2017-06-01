@@ -79,7 +79,9 @@
         android:id="@+id/comment_load_success"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/main_margin"
+        android:paddingTop="@dimen/main_margin">
 
 
         <!--<ScrollView-->
@@ -163,7 +165,6 @@
                     android:id="@+id/comment_lv"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="@dimen/main_margin"
                     android:divider="@color/colorDivide"
                     android:dividerHeight="1dp"
                     >

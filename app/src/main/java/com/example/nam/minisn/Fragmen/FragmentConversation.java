@@ -130,8 +130,6 @@ public class FragmentConversation extends Fragment implements View.OnClickListen
         database.openDataBase();
         adapter = new ConversationAdapter(getActivity(), R.layout.item_lvconversation, data);
         lvConversation.setAdapter(adapter);
-
-
         search = new String();
 
         setListener();

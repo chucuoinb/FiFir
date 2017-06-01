@@ -4,7 +4,8 @@
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <application
         android:name=".UseVoley.AppController"
         android:allowBackup="true"
@@ -81,7 +82,11 @@
             android:name=".Activity.CreateConversation"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
-        <activity android:name=".Activity.CommentActivity"
+        <activity
+            android:name=".Activity.CommentActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity android:name=".Activity.ActivityViewImage"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
     </application>

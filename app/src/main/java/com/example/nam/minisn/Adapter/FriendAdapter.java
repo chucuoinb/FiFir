@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +36,7 @@ public class FriendAdapter extends ArrayAdapter<ItemDeleteFriend> {
     private ArrayList<ItemDeleteFriend> data;
     private SQLiteDataController database;
     private int useId;
+
     public FriendAdapter(Context context, int layout, ArrayList<ItemDeleteFriend> data) {
         super(context, layout, data);
         this.context = context;
@@ -50,31 +52,31 @@ public class FriendAdapter extends ArrayAdapter<ItemDeleteFriend> {
     public View getView(final int position, View convertView, ViewGroup parent) {
         View row = convertView;
         Holder holder = null;
-        if (row == null){
-            LayoutInflater inflater = ((Activity)context).getLayoutInflater();
-            row = inflater.inflate(layout,parent,false);
+        if (row == null) {
+            LayoutInflater inflater = ((Activity) context).getLayoutInflater();
+            row = inflater.inflate(layout, parent, false);
             holder = new Holder();
-            holder.ava = (CircleImageView)row.findViewById(R.id.lv_friend_avata);
-            holder.namFriend =(TextView)row.findViewById(R.id.lv_friend_nameFriend);
-            holder.checkBox = (CheckBox)row.findViewById(R.id.friend_cb_delete);
+            holder.ava = (CircleImageView) row.findViewById(R.id.lv_friend_avata);
+            holder.namFriend = (TextView) row.findViewById(R.id.lv_friend_nameFriend);
+            holder.checkBox = (CheckBox) row.findViewById(R.id.friend_cb_delete);
             row.setTag(holder);
-        }else
-            holder = (Holder)row.getTag();
+        } else
+            holder = (Holder) row.getTag();
 
         ItemDeleteFriend temp = data.get(position);
         holder.namFriend.setText(temp.getFriend().getUsername());
-        if (temp.isShowCheckBox()){
+        if (temp.isShowCheckBox()) {
             holder.checkBox.setVisibility(View.VISIBLE);
-            if(temp.getTpeChoose() == Const.TYPE_CHOOSE){
+            if (temp.getTpeChoose() == Const.TYPE_CHOOSE) {
                 holder.checkBox.setChecked(true);
-            }
-            else holder.checkBox.setChecked(false);
-        }
-        else
+            } else holder.checkBox.setChecked(false);
+        } else {
             holder.checkBox.setVisibility(View.INVISIBLE);
-        if (!FragmentFriend.isSearch() || FragmentFriend.getTextSearch().length() == 0)
+        }
+        if (!FragmentFriend.isSearch() || FragmentFriend.getTextSearch().length() == 0) {
+
             holder.namFriend.setText(temp.getFriend().getUsername());
-        else {
+        } else {
             String name = temp.getFriend().getUsername();
             int start = name.indexOf(FragmentFriend.getTextSearch());
             int end = start + FragmentFriend.getTextSearch().length();
@@ -84,16 +86,30 @@ public class FriendAdapter extends ArrayAdapter<ItemDeleteFriend> {
 
             holder.namFriend.setText(spannable, TextView.BufferType.SPANNABLE);
         }
+        String ava = temp.getFriend().getAvatar();
+        if (ava != null){
+            if (ava.length()>0){
+                Log.d(Const.TAG,"ava: "+ava);
+                holder.ava.setImageDrawable(Const.loadImageFromInternal(context,ava));
+            }
+            else{
+                holder.ava.setImageResource(R.drawable.test);
+                Log.d(Const.TAG,"ava: "+ava);
+            }
+        }else{
+            holder.ava.setImageResource(R.drawable.test);
+            Log.d(Const.TAG,"ava null");
+        }
         holder.checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int choose = (FragmentFriend.getFriends().get(position).getTpeChoose()==Const.TYPE_CHOOSE)?
-                        Const.TYPE_NO_CHOOSE :Const.TYPE_CHOOSE;
+                int choose = (FragmentFriend.getFriends().get(position).getTpeChoose() == Const.TYPE_CHOOSE) ?
+                        Const.TYPE_NO_CHOOSE : Const.TYPE_CHOOSE;
                 FragmentFriend.getFriends().get(position).setTypeChoose(choose);
-                database.updateChooseFriend(useId, FragmentFriend.getFriends().get(position).getFriend().getId(),choose);
+                database.updateChooseFriend(useId, FragmentFriend.getFriends().get(position).getFriend().getId(), choose);
                 int count = 0;
                 FragmentFriend.getTvCount().setText(String.valueOf(database.getCountChooseFriend()));
-                for(int i = 0; i< FragmentFriend.getFriends().size(); i++){
+                for (int i = 0; i < FragmentFriend.getFriends().size(); i++) {
                     if (FragmentFriend.getFriends().get(i).getTpeChoose() == Const.TYPE_CHOOSE)
                         count++;
                 }
@@ -106,7 +122,7 @@ public class FriendAdapter extends ArrayAdapter<ItemDeleteFriend> {
         return row;
     }
 
-    public static  class Holder{
+    public static class Holder {
         CircleImageView ava;
         TextView namFriend;
         CheckBox checkBox;

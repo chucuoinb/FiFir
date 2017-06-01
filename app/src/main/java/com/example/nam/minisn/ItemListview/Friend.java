@@ -12,6 +12,7 @@ public class Friend implements Serializable{
     private String username ;
     private String displayName;
     private int gender;
+    private String avatar;
 
     public Friend(String username, String displayName, int gender) {
         this.username = username;
@@ -69,5 +70,11 @@ public class Friend implements Serializable{
         this.id = id;
     }
 
+    public String getAvatar() {
+        return avatar;
+    }
 
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
 }

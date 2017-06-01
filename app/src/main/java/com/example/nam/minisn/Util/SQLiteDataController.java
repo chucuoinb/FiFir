@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.example.nam.minisn.Fragmen.FragmentFriend;
 import com.example.nam.minisn.ItemListview.Chat;
@@ -277,8 +278,10 @@ public class SQLiteDataController extends SQLiteOpenHelper {
             String fri_username = cursor.getString(2);
             String fri_display = cursor.getString(3);
             int choose = cursor.getInt(7);
-
             Friend friend = new Friend(fri_id, fri_username, fri_display);
+            String avatar = cursor.getString(8);
+            if (avatar != null)
+                friend.setAvatar(avatar);
             friends.add(new ItemDeleteFriend(friend, isDelete, choose));
         }
         return friends;
@@ -1194,5 +1197,67 @@ public class SQLiteDataController extends SQLiteOpenHelper {
         int gender = cursor.getInt(4);
         Friend friend = new Friend(username, display, gender, id);
         return friend;
+    }
+    public boolean isExistAvatar(int useId,int friId,String avatar){
+        String sql = Const.SELECT+
+                    "*"+
+                    Const.FROM+
+                    Const.DB_FRIEND+
+                Const.WHERE+
+                Const.FRIENDS_COL8 +
+                "='"+
+                avatar+
+                "'"+
+                Const.AND+
+                Const.FRIENDS_COL4 +
+                "='"+
+                useId+
+                "'"+
+                Const.AND+
+                Const.FRIENDS_COL1+
+                "='"+
+                friId+
+                "'";
+        return database.rawQuery(sql,null).getCount()>0;
+    }
+    public void updateAvatar(int useId,int friId,String avatar){
+        String sql = Const.UPDATE+
+                Const.DB_FRIEND+
+                Const.SET+
+                Const.FRIENDS_COL8+
+                "='"+
+                avatar+
+                "'"+
+                Const.WHERE+
+                Const.FRIENDS_COL4 +
+                "='"+
+                useId+
+                "'"+
+                Const.AND+
+                Const.FRIENDS_COL1+
+                "='"+
+                friId+
+                "'";
+        database.execSQL(sql);
+    }
+
+    public String getAvatar(int useId,int friId){
+        String sql = Const.SELECT+
+                Const.FRIENDS_COL8+
+                Const.FROM+
+                Const.DB_FRIEND+
+                Const.WHERE+
+                Const.FRIENDS_COL4 +
+                "='"+
+                useId+
+                "'"+
+                Const.AND+
+                Const.FRIENDS_COL1+
+                "='"+
+                friId+
+                "'";
+        Cursor cursor = database.rawQuery(sql,null);
+        cursor.moveToFirst();
+        return cursor.getString(0);
     }
 }

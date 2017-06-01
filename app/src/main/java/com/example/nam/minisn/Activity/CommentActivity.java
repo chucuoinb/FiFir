@@ -8,6 +8,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -28,6 +29,7 @@ import com.example.nam.minisn.UseVoley.CustomRequest;
 import com.example.nam.minisn.Util.Const;
 import com.example.nam.minisn.Util.SharedPrefManager;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -60,12 +62,16 @@ public class CommentActivity extends AppCompatActivity implements View.OnClickLi
     private int typeLike;
     private long timeStatus;
     private Intent intent;
+    private int page;
     private Bundle bundle;
     private ArrayList<Comment> data;
     private CommentAdapter adapter;
     private LinearLayout loadError, loadSuccess, btBack;
     private ProgressDialog dialog;
-
+    private boolean isLoad = false;
+    private int lastPositionFirst = 0;
+    private int lastPositionEnd = 0;
+    private boolean isEmptyComment = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,14 +102,13 @@ public class CommentActivity extends AppCompatActivity implements View.OnClickLi
         bundle = intent.getBundleExtra(Const.PACKAGE);
         idStatus = bundle.getInt(Const.ID);
         comment = new String();
-
+        page = 0;
         dialog = new ProgressDialog(this, R.style.AppTheme_Dialog);
         dialog.setCancelable(false);
         showDialog("Đang tải ...");
         data = new ArrayList<>();
         adapter = new CommentAdapter(this, R.layout.item_lv_comment, data);
         lvComment.setAdapter(adapter);
-
 
         loadInfoStatus();
     }
@@ -115,6 +120,7 @@ public class CommentActivity extends AppCompatActivity implements View.OnClickLi
         btGoChat.setOnClickListener(this);
         btSend.setOnClickListener(this);
         edInput.addTextChangedListener(changeComment);
+        lvComment.setOnScrollListener(lvScroll);
     }
 
     public void loadInfoStatus() {
@@ -129,7 +135,7 @@ public class CommentActivity extends AppCompatActivity implements View.OnClickLi
                                 setLoad(false);
                                 Toasty.error(getApplicationContext(), getResources().getString(R.string.notifi_error), Toast.LENGTH_SHORT).show();
                             } else {
-                                setLoad(true);
+//                                setLoad(true);
                                 JSONObject jsStatus = response.getJSONObject(Const.DATA);
                                 idUsername = jsStatus.getInt(Const.ID_USERNAME);
                                 status = jsStatus.getString(Const.STATUS);
@@ -145,6 +151,7 @@ public class CommentActivity extends AppCompatActivity implements View.OnClickLi
                                     btLikeStatus.setImageResource(R.drawable.like);
                                 else
                                     btLikeStatus.setImageResource(R.drawable.unlike);
+                                loadComment();
                             }
                         } catch (JSONException e) {
                             dimissDialog();
@@ -239,14 +246,13 @@ public class CommentActivity extends AppCompatActivity implements View.OnClickLi
                     public void onResponse(JSONObject response) {
                         dimissDialog();
                         try {
-                            if (response.getInt(Const.CODE) != Const.CODE_OK){
+                            if (response.getInt(Const.CODE) != Const.CODE_OK) {
                                 Toasty.error(getApplicationContext(), getResources().getString(R.string.notifi_error), Toast.LENGTH_SHORT).show();
-                            }
-                            else {
+                            } else {
                                 edInput.setText("");
                                 int idComment = response.getInt(Const.DATA);
-                                Comment myComment = new Comment(idComment,useId, fullname,comment,System.currentTimeMillis()/1000);
-                                data.add(0,myComment);
+                                Comment myComment = new Comment(idComment, useId, fullname, comment, System.currentTimeMillis() / 1000);
+                                data.add(0, myComment);
                                 adapter.notifyDataSetChanged();
                             }
                         } catch (JSONException e) {
@@ -257,7 +263,7 @@ public class CommentActivity extends AppCompatActivity implements View.OnClickLi
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-
+                        dimissDialog();
                     }
                 }
         );
@@ -265,13 +271,92 @@ public class CommentActivity extends AppCompatActivity implements View.OnClickLi
         requestQueue.add(request);
     }
 
-    public void showDialog(String message){
+    public void showDialog(String message) {
         dialog.setMessage(message);
         dialog.show();
     }
-    public void dimissDialog(){
+
+    public void dimissDialog() {
         if (dialog.isShowing())
             dialog.dismiss();
     }
 
+
+    public void loadComment() {
+        HashMap<String, String> params = new HashMap<>();
+        params.put(Const.TOKEN, token);
+        params.put(Const.ID, String.valueOf(idStatus));
+        params.put(Const.PAGE, String.valueOf(page));
+        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+        CustomRequest request = new CustomRequest(Request.Method.POST, Const.URL_GET_COMMENT, params,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            if (response.getInt(Const.CODE) != Const.CODE_OK) {
+                                Log.d(Const.TAG,response.getString(Const.MESSAGE));
+                                Toasty.error(getApplicationContext(), getResources().getString(R.string.notifi_error), Toast.LENGTH_SHORT).show();
+                                setLoad(false);
+                            } else {
+                                JSONArray jsonArray = response.getJSONArray(Const.DATA);
+                                if (jsonArray.length()>0){
+
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    JSONObject jsonCmt = jsonArray.getJSONObject(i);
+                                    String fullName = jsonCmt.getString(Const.DISPLAY_NAME);
+                                    int idUser = jsonCmt.getInt(Const.ID_USERNAME);
+                                    int idComment = jsonCmt.getInt(Const.ID);
+                                    String dataComment = jsonCmt.getString(Const.COMMENT);
+                                    long timeComment = jsonCmt.getLong(Const.TIME_COMMENT);
+                                    Comment commentTemp = new Comment(idComment, idUser, fullName, dataComment, timeComment);
+                                    data.add(commentTemp);
+                                }
+                                adapter.notifyDataSetChanged();
+                                page++;
+                                }
+                                else
+                                    isEmptyComment = true;
+                                setLoad(true);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Toasty.error(getApplicationContext(), getResources().getString(R.string.notifi_error), Toast.LENGTH_SHORT).show();
+                            Log.d(Const.TAG, "cmt json err");
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toasty.error(getApplicationContext(), getResources().getString(R.string.notifi_error), Toast.LENGTH_SHORT).show();
+                        Log.d(Const.TAG, "cmt vl err");
+                        setLoad(false);
+                    }
+                });
+        requestQueue.add(request);
+    }
+
+    public AbsListView.OnScrollListener lvScroll = new AbsListView.OnScrollListener() {
+        @Override
+        public void onScrollStateChanged(AbsListView view, int scrollState) {
+            if (scrollState == 0) {
+
+                if (lvComment.getLastVisiblePosition() == data.size() - 1) {
+                    if (lvComment.getLastVisiblePosition() == lastPositionEnd) {
+                        if (!isEmptyComment)
+                            loadComment();
+                        else
+                            Toasty.info(getApplicationContext(), "Không còn bình luận cũ hơn", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                lastPositionEnd = lvComment.getLastVisiblePosition();
+            }
+
+        }
+
+        @Override
+        public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
+        }
+    };
 }

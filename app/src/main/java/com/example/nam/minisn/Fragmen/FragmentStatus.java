@@ -116,7 +116,6 @@ public class FragmentStatus extends Fragment implements View.OnClickListener {
         token = SharedPrefManager.getInstance(getActivity()).getString(Const.TOKEN);
         useId = SharedPrefManager.getInstance(getActivity()).getInt(Const.ID);
 
-
         if (!isEmptyStatus)
             getListStatus();
         listener();
