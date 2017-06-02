@@ -8,7 +8,7 @@ public class Chat {
     private String message;
     private int gender;
     private int typeMessage;
-    private int id;
+    private int idSend;
     public Chat() {
     }
 
@@ -16,7 +16,7 @@ public class Chat {
         this.typeMessage = typeMessage;
         this.message = message;
         this.gender = gender;
-        this.id=id;
+        this.idSend =id;
     }
 
     public String getMessage() {
@@ -43,11 +43,11 @@ public class Chat {
         this.typeMessage = typeMessage;
     }
 
-    public int getId() {
-        return id;
+    public int getIdSend() {
+        return idSend;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setIdSend(int idSend) {
+        this.idSend = idSend;
     }
 }

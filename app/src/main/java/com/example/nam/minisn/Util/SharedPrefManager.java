@@ -49,7 +49,7 @@ public class SharedPrefManager
     //this method will fetch the device token from shared preferences
     public String getString(String tag){
         SharedPreferences sharedPreferences = mCtx.getSharedPreferences(Const.SHARED_PREF_NAME, Context.MODE_PRIVATE);
-        return  sharedPreferences.getString(tag, null);
+        return  sharedPreferences.getString(tag, "");
     }
 
     public int getInt(String tag){

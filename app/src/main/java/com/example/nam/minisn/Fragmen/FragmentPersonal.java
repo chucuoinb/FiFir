@@ -50,6 +50,7 @@ import org.w3c.dom.Text;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import es.dmoral.toasty.Toasty;
 
 public class FragmentPersonal extends Fragment implements View.OnClickListener {
@@ -58,7 +59,9 @@ public class FragmentPersonal extends Fragment implements View.OnClickListener {
     private Intent intent;
     private TextView tvName;
     private LinearLayout goPersonal, lnLogout;
+    private CircleImageView avatar;
     private int useId;
+    private String strAvatar;
     public FragmentPersonal() {
     }
 
@@ -80,6 +83,7 @@ public class FragmentPersonal extends Fragment implements View.OnClickListener {
     }
 
     public void init() {
+        avatar = (CircleImageView)rootView.findViewById(R.id.tab_personal_ava);
         intent = new Intent(getActivity(), PersonalActivity.class);
         intent.putExtra(Const.PACKAGE, bundle);
 
@@ -89,7 +93,15 @@ public class FragmentPersonal extends Fragment implements View.OnClickListener {
 
         tvName.setText(SharedPrefManager.getInstance(getActivity()).getString(Const.DISPLAY_NAME));
         useId = SharedPrefManager.getInstance(getActivity()).getInt(Const.ID);
+
         listener();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        strAvatar = SharedPrefManager.getInstance(getActivity()).getString(Const.AVATAR);
+        avatar.setImageDrawable(Const.loadImageFromInternal(getActivity(),strAvatar));
     }
 
     public void listener() {

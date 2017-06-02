@@ -89,10 +89,10 @@ public class Const {
 
 
     //    public static final String URL = "http://www.namlv-hust.96.lt/ver1/";
-    public static final String IP_LOCAL = "192.168.1.6";
+//    public static final String IP_LOCAL = "192.168.1.6";
 
     //        public static final String IP_LOCAL = "192.168.4.242";
-//    public static final String IP_LOCAL = "192.168.43.205";
+    public static final String IP_LOCAL = "192.168.43.205";
     public static final String URL = "http://" + IP_LOCAL + ":1010/ver1/";
     public static final String URL_LOGIN = URL + "user/login.php";
     public static final String URL_REGISTER = URL + "user/register.php";
@@ -384,15 +384,20 @@ public class Const {
 //            bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.test);
 //            e.printStackTrace();
 //        }
-        ContextWrapper cw = new ContextWrapper(context);
-
-        File directory = cw.getDir(SAVE_IMAGE, Context.MODE_PRIVATE);
-
-        File myPath = new File(directory, name);
-        if (myPath.exists())
-            drawable = Drawable.createFromPath(myPath.getPath());
-        else
+        if (name == null || "".equals(name))
             drawable = context.getResources().getDrawable(R.drawable.test);
+        else {
+
+            ContextWrapper cw = new ContextWrapper(context);
+
+            File directory = cw.getDir(SAVE_IMAGE, Context.MODE_PRIVATE);
+
+            File myPath = new File(directory, name);
+            if (myPath.exists())
+                drawable = Drawable.createFromPath(myPath.getPath());
+            else
+                drawable = context.getResources().getDrawable(R.drawable.test);
+        }
         return drawable;
     }
 }

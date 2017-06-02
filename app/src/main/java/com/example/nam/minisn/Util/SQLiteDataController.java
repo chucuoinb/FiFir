@@ -319,6 +319,7 @@ public class SQLiteDataController extends SQLiteOpenHelper {
     }
 
     public void addFriend(int useId, int friGender, String friUsername, int friId, int id, String displayName) {
+        if (!isExistFriend(useId, friId)){
         String sql = Const.INSERT +
                 Const.DB_FRIEND +
                 " (" +
@@ -348,7 +349,9 @@ public class SQLiteDataController extends SQLiteOpenHelper {
                 "','" +
                 friGender +
                 "')";
-        database.execSQL(sql);
+
+            database.execSQL(sql);
+        }
     }
 
     public void insertListFriend(int fri_id, String fri_username, int useId, int gender, int id) {
@@ -381,28 +384,31 @@ public class SQLiteDataController extends SQLiteOpenHelper {
     }
 
     public void insertConversation(int id, String name, int use_id, int size) {
-        String sql = Const.INSERT +
-                Const.DB_CONVERSATION +
-                " (" +
-                Const.CONVERSATION_COL1 +
-                "," +
-                Const.CONVERSATION_COL2 +
-                "," +
-                Const.CONVERSATION_COL5 +
-                "," +
-                Const.CONVERSATION_COL7 +
-                ")" +
-                Const.VALUES +
-                "('" +
-                name +
-                "','" +
-                id +
-                "','" +
-                use_id +
-                "','" +
-                size +
-                "')";
-        database.execSQL(sql);
+        if (!isExistConversation(id)) {
+
+            String sql = Const.INSERT +
+                    Const.DB_CONVERSATION +
+                    " (" +
+                    Const.CONVERSATION_COL1 +
+                    "," +
+                    Const.CONVERSATION_COL2 +
+                    "," +
+                    Const.CONVERSATION_COL5 +
+                    "," +
+                    Const.CONVERSATION_COL7 +
+                    ")" +
+                    Const.VALUES +
+                    "('" +
+                    name +
+                    "','" +
+                    id +
+                    "','" +
+                    use_id +
+                    "','" +
+                    size +
+                    "')";
+            database.execSQL(sql);
+        }
     }
 
     public void updateConversation(String lastMessage, long time, int idConversation, int type) {
@@ -885,7 +891,7 @@ public class SQLiteDataController extends SQLiteOpenHelper {
                     gender = 0;
                     typeMessage = Const.MESSAGE_SEND;
                 }
-                Chat chat = new Chat(typeMessage, message, gender,idSend);
+                Chat chat = new Chat(typeMessage, message, gender, idSend);
                 data.add(chat);
             } while (cursor.moveToPrevious());
         }
@@ -1198,65 +1204,67 @@ public class SQLiteDataController extends SQLiteOpenHelper {
         Friend friend = new Friend(username, display, gender, id);
         return friend;
     }
-    public boolean isExistAvatar(int useId,int friId,String avatar){
-        String sql = Const.SELECT+
-                    "*"+
-                    Const.FROM+
-                    Const.DB_FRIEND+
-                Const.WHERE+
+
+    public boolean isExistAvatar(int useId, int friId, String avatar) {
+        String sql = Const.SELECT +
+                "*" +
+                Const.FROM +
+                Const.DB_FRIEND +
+                Const.WHERE +
                 Const.FRIENDS_COL8 +
-                "='"+
-                avatar+
-                "'"+
-                Const.AND+
+                "='" +
+                avatar +
+                "'" +
+                Const.AND +
                 Const.FRIENDS_COL4 +
-                "='"+
-                useId+
-                "'"+
-                Const.AND+
-                Const.FRIENDS_COL1+
-                "='"+
-                friId+
+                "='" +
+                useId +
+                "'" +
+                Const.AND +
+                Const.FRIENDS_COL1 +
+                "='" +
+                friId +
                 "'";
-        return database.rawQuery(sql,null).getCount()>0;
+        return database.rawQuery(sql, null).getCount() > 0;
     }
-    public void updateAvatar(int useId,int friId,String avatar){
-        String sql = Const.UPDATE+
-                Const.DB_FRIEND+
-                Const.SET+
-                Const.FRIENDS_COL8+
-                "='"+
-                avatar+
-                "'"+
-                Const.WHERE+
+
+    public void updateAvatar(int useId, int friId, String avatar) {
+        String sql = Const.UPDATE +
+                Const.DB_FRIEND +
+                Const.SET +
+                Const.FRIENDS_COL8 +
+                "='" +
+                avatar +
+                "'" +
+                Const.WHERE +
                 Const.FRIENDS_COL4 +
-                "='"+
-                useId+
-                "'"+
-                Const.AND+
-                Const.FRIENDS_COL1+
-                "='"+
-                friId+
+                "='" +
+                useId +
+                "'" +
+                Const.AND +
+                Const.FRIENDS_COL1 +
+                "='" +
+                friId +
                 "'";
         database.execSQL(sql);
     }
 
-    public String getAvatar(int useId,int friId){
-        String sql = Const.SELECT+
-                Const.FRIENDS_COL8+
-                Const.FROM+
-                Const.DB_FRIEND+
-                Const.WHERE+
+    public String getAvatar(int useId, int friId) {
+        String sql = Const.SELECT +
+                Const.FRIENDS_COL8 +
+                Const.FROM +
+                Const.DB_FRIEND +
+                Const.WHERE +
                 Const.FRIENDS_COL4 +
-                "='"+
-                useId+
-                "'"+
-                Const.AND+
-                Const.FRIENDS_COL1+
-                "='"+
-                friId+
+                "='" +
+                useId +
+                "'" +
+                Const.AND +
+                Const.FRIENDS_COL1 +
+                "='" +
+                friId +
                 "'";
-        Cursor cursor = database.rawQuery(sql,null);
+        Cursor cursor = database.rawQuery(sql, null);
         cursor.moveToFirst();
         return cursor.getString(0);
     }

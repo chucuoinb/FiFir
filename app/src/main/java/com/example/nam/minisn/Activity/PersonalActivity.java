@@ -83,6 +83,7 @@ public class PersonalActivity extends AppCompatActivity implements View.OnClickL
     private Uri filePath;
     private int PICK_IMAGE_BANNER = 1;
     private int PICK_IMAGE_AVATAR = 2;
+    private String urlAvatar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,6 +140,12 @@ public class PersonalActivity extends AppCompatActivity implements View.OnClickL
 
             }
         });
+        if (friendId == useId) {
+            urlAvatar = SharedPrefManager.getInstance(getApplicationContext()).getString(Const.AVATAR);
+        } else {
+            urlAvatar = dataController.getAvatar(useId, friendId);
+        }
+        avatar.setImageDrawable(Const.loadImageFromInternal(getApplicationContext(), urlAvatar));
     }
 
     public void listener() {
@@ -465,10 +472,14 @@ public class PersonalActivity extends AppCompatActivity implements View.OnClickL
                                 Toasty.error(getApplicationContext(), getResources().getString(R.string.notifi_error), Toast.LENGTH_SHORT).show();
                                 avatar.setImageResource(R.drawable.test);
                             } else {
-
+                                String avatar = response.getString(Const.DATA);
+                                SharedPrefManager.getInstance(getApplicationContext()).savePreferences(Const.AVATAR, avatar);
+                                Const.saveToInternalStorage(avatar, getApplicationContext());
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
+                            Toasty.error(getApplicationContext(), getResources().getString(R.string.notifi_error), Toast.LENGTH_SHORT).show();
+
                         }
                     }
                 },
@@ -476,6 +487,7 @@ public class PersonalActivity extends AppCompatActivity implements View.OnClickL
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.d(Const.TAG, "Request Error up");
+                        Toasty.error(getApplicationContext(), getResources().getString(R.string.notifi_error), Toast.LENGTH_SHORT).show();
                         dimissDialog();
                     }
                 });

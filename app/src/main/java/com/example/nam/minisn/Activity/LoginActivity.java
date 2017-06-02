@@ -131,7 +131,7 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            Log.d(Const.TAG,response.getString(Const.MESSAGE));
+                            Log.d(Const.TAG, response.getString(Const.MESSAGE));
                             if (response.getInt(Const.CODE) != Const.CODE_OK) {
                                 progressDialog.dismiss();
                                 CheckCode(response.getInt(Const.CODE));
@@ -147,7 +147,7 @@ public class LoginActivity extends AppCompatActivity {
                                 bundle.putString(Const.TOKEN, token);
                                 bundle.putString(Const.DISPLAY_NAME, displayName);
                                 bundle.putInt(Const.ID, use_id);
-                                Log.d(Const.TAG,"id: "+use_id);
+                                Log.d(Const.TAG, "id: " + use_id);
                                 SharedPrefManager.getInstance(getApplicationContext()).savePreferences(Const.TOKEN, token);
                                 SharedPrefManager.getInstance(getApplicationContext()).savePreferences(Const.USERNAME, newObject.getString(Const.USERNAME));
                                 SharedPrefManager.getInstance(getApplicationContext()).savePreferences(Const.ID, use_id);
@@ -156,9 +156,9 @@ public class LoginActivity extends AppCompatActivity {
                                 intentLogin.putExtra(Const.PACKAGE, bundle);
                                 setEnableEdit(true);
 
+                                saveListFriend();
                                 if (!database.checkLogged(use_id)) {
                                     database.saveAccount(use_id, username, displayName, gender);
-                                    saveListFriend();
                                 } else {
                                     progressDialog.dismiss();
                                     Toasty.success(getApplicationContext(), getResources().getString(R.string.login_success), Toast.LENGTH_SHORT, true).show();
@@ -225,7 +225,7 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             Bundle bundle = new Bundle();
-            intentReg.putExtra(Const.PACKAGE,bundle);
+            intentReg.putExtra(Const.PACKAGE, bundle);
             startActivityForResult(intentReg, Const.REQUEST_CODE_REGISTER);
         }
     };
@@ -246,8 +246,8 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Bundle bundle = new Bundle();
-                        bundle.putString(Const.USERNAME,edUser.getText().toString());
-                        intentReg.putExtra(Const.PACKAGE,bundle);
+                        bundle.putString(Const.USERNAME, edUser.getText().toString());
+                        intentReg.putExtra(Const.PACKAGE, bundle);
                         startActivityForResult(intentReg, Const.REQUEST_CODE_REGISTER);
                         setEnableEdit(true);
                     }
@@ -341,9 +341,9 @@ public class LoginActivity extends AppCompatActivity {
                             int id = obj.getInt(Const.ID_FRIEND);
                             String avatar = obj.getString(Const.AVATAR);
                             database.addFriend(use_id, gender, username, fri_id, id, displayName);
-                            if (!"null".equals(avatar)){
-                                Const.saveToInternalStorage(avatar,getApplicationContext());
-                                database.updateAvatar(use_id,fri_id,avatar);
+                            if (!"null".equals(avatar)) {
+                                Const.saveToInternalStorage(avatar, getApplicationContext());
+                                database.updateAvatar(use_id, fri_id, avatar);
                             }
                         }
                         saveListConversation(token);
@@ -417,6 +417,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onBackPressed();
         showAlertIsCloseApp();
     }
+
     public void showAlertIsCloseApp() {
         android.support.v7.app.AlertDialog.Builder alertDialogBuilder = new android.support.v7.app.AlertDialog.Builder(this);
         alertDialogBuilder.setTitle("Đóng ứng dụng?");
@@ -447,9 +448,9 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK && requestCode == Const.REQUEST_CODE_REGISTER){
+        if (resultCode == RESULT_OK && requestCode == Const.REQUEST_CODE_REGISTER) {
             Bundle bundle = new Bundle();
-            bundle=data.getBundleExtra(Const.PACKAGE);
+            bundle = data.getBundleExtra(Const.PACKAGE);
             String username = bundle.getString(Const.USERNAME);
             String password = bundle.getString(Const.PASSWORD);
             edUser.setText(username);
